@@ -1,0 +1,139 @@
+[{
+        "pair": "EURUSD",
+        "position": "LONG",
+        "status": "OPEN",
+        "type": "POSITION",
+        "pips": "+ 50",
+        "date": "10 January 2020",
+        "excerpt": "This was a greay trade. ",
+        "nuggets": ["62.8 OTE", "-OB"],
+        "strategyName": "Breaker",
+        "riskReward": "3.4"
+    }, {
+        "pair": "USDCAD",
+        "position": "LONG",
+        "status": "OPEN",
+        "type": "DAY",
+        "pips": "+ 50",
+        "date": "10 January 2020",
+        "excerpt": "This was a greay trade, This was a greay trade",
+        "nuggets": [
+            "62.8 OTE",
+            "-OB"
+        ],
+        "strategyName": "Order Block",
+        "riskReward": "3.4"
+    }, {
+        "pair": "XAUUSD",
+        "position": "LONG",
+        "status": "OPEN",
+        "type": "DAY",
+        "pips": "+ 50",
+        "date": "10 January 2020",
+        "excerpt": "This was a greay trade.",
+        "nuggets": [
+            "62.8 OTE",
+            "-OB"
+        ],
+        "strategyName": "Liquidity Void",
+        "riskReward": "3.4"
+    },
+    {
+        "pair": "USDMXN",
+        "position": "SHORT",
+        "status": "CLOSED",
+        "type": "SWING",
+        "pips": "- 30",
+        "date": "3 December 2019",
+        "excerpt": "This was a greay trade.",
+        "nuggets": [
+            "Divergence"
+        ],
+        "strategyName": "OrderBlock",
+        "riskReward": "3.4"
+    },
+    {
+        "pair": "USDMXN",
+        "position": "SHORT",
+        "status": "CLOSED",
+        "type": "SWING",
+        "pips": "- 30",
+        "date": "3 December 2019",
+        "excerpt": "This was a greay trade",
+        "nuggets": [
+            "Divergence"
+        ],
+        "strategyName": "OrderBlock",
+        "riskReward": "3.4"
+    },
+    {
+        "pair": "USDMXN",
+        "position": "SHORT",
+        "status": "CLOSED",
+        "type": "SWING",
+        "pips": "- 30",
+        "date": "3 December 2019",
+        "excerpt": "This was a greay trade. ",
+        "nuggets": [
+            "Divergence"
+        ],
+        "strategyName": "OrderBlock",
+        "riskReward": "3.4"
+    },
+    {
+        "pair": "USDMXN",
+        "position": "SHORT",
+        "status": "CLOSED",
+        "type": "SWING",
+        "pips": "- 30",
+        "date": "3 December 2019",
+        "excerpt": "This was a greay trade. ",
+        "nuggets": [
+            "Divergence"
+        ],
+        "strategyName": "OrderBlock",
+        "riskReward": "3.4"
+    },
+    {
+        "pair": "USDMXN",
+        "position": "SHORT",
+        "status": "CLOSED",
+        "type": "SWING",
+        "pips": "- 30",
+        "date": "3 December 2019",
+        "excerpt": "This was a greay trade. ",
+        "nuggets": [
+            "Divergence"
+        ],
+        "strategyName": "OrderBlock",
+        "riskReward": "3.4"
+    },
+    {
+        "pair": "USDMXN",
+        "position": "SHORT",
+        "status": "CLOSED",
+        "type": "SWING",
+        "pips": "- 30",
+        "date": "3 December 2019",
+        "excerpt": "This was a greay trade. ",
+        "nuggets": [
+            "Divergence"
+        ],
+        "strategyName": "OrderBlock",
+        "riskReward": "3.4"
+    },
+    {
+        "pair": "USDMXN",
+        "position": "SHORT",
+        "status": "CLOSED",
+        "type": "SWING",
+        "pips": "- 30",
+        "date": "3 December 2019",
+        "excerpt": "This was a greay trade, This was a greay trade,. ",
+        "nuggets": [
+            "Divergence Oscillator"
+        ],
+        "strategyName": "OrderBlock ",
+        "riskReward": "3.4"
+    }
+]

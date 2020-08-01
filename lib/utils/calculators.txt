@@ -1,0 +1,18 @@
+1. Price movement in pips
+    2/4 decimal difference is standard pips
+    3/5 decimal difference is pippeted   :: /10
+
+
+2. Value of a pip for 1 unit
+    base/quote   - pair
+
+    if quote is not USD:
+        (0.0001 or 0.01)/quote * 1      in base currency
+    else:
+        (0.0001 or 0.01)/quote * quote  in USD
+
+
+3. pip value in trading account currency
+- multiply/divide the “found pip value” by the exchange rate of your 
+  account currency and the currency in question.
+  
