@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:msagetrader/auth/auth.dart';
+import 'package:msagetrader/forms/task_form.dart';
 import 'package:msagetrader/providers/files.dart';
 import 'package:msagetrader/providers/tasks.dart';
 import 'package:msagetrader/providers/trading_plans.dart';
@@ -325,7 +326,15 @@ Widget menuItemFABs(BuildContext context, index) {
       );
     case 3:
       return FloatingActionButton(
-        onPressed: null,
+        onPressed: () {
+          navigateToPage(
+            context,
+            TaskForm(
+              newTask: true,
+              taskID: null,
+            ),
+          );
+        },
         child: FABStack(icon: Icons.speaker_notes),
       );
       break;

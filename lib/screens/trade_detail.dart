@@ -260,7 +260,7 @@ class _TradeDetailState extends State<TradeDetail> {
                 : files.length == 0 // _images.length == 0
                     ? Center(
                         child: Text(
-                          "We have not found any images for this strategy",
+                          "We have not found any images for this trade",
                           style: TextStyle(color: Colors.red),
                         ),
                       )
