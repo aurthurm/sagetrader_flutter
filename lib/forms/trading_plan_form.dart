@@ -99,7 +99,7 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
                         validator: (value) => _validateLength(
                           value,
                           3,
-                          "Strategy Name is too short!!",
+                          "TradingPlan name is too short!!",
                         ),
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
@@ -109,7 +109,7 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
                       ),
                       TextFormField(
                         decoration: InputDecoration(
-                            labelText: "Straegy Description",
+                            labelText: "TradingPlan Description",
                             filled: true,
                             fillColor: Colors.grey.shade100),
                         minLines: 5,
@@ -123,7 +123,7 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
                         validator: (value) => _validateLength(
                           value,
                           10,
-                          "Trade Description is too short!!",
+                          "TradingPlan Description is too short!!",
                         ),
                         textInputAction: TextInputAction.newline,
                         focusNode: _descriptionFocus,

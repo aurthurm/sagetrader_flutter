@@ -87,7 +87,7 @@ class _TaskFormState extends State<TaskForm> {
                     children: <Widget>[
                       TextFormField(
                         decoration: InputDecoration(
-                            labelText: "Strategy Name",
+                            labelText: "Task Name",
                             filled: true,
                             fillColor: Colors.grey.shade100),
                         initialValue: _task.title,
@@ -99,7 +99,7 @@ class _TaskFormState extends State<TaskForm> {
                         validator: (value) => _validateLength(
                           value,
                           3,
-                          "Strategy Name is too short!!",
+                          "Task Name is too short!!",
                         ),
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
@@ -109,7 +109,7 @@ class _TaskFormState extends State<TaskForm> {
                       ),
                       TextFormField(
                         decoration: InputDecoration(
-                            labelText: "Straegy Description",
+                            labelText: "Task Description",
                             filled: true,
                             fillColor: Colors.grey.shade100),
                         minLines: 5,
@@ -123,7 +123,7 @@ class _TaskFormState extends State<TaskForm> {
                         validator: (value) => _validateLength(
                           value,
                           10,
-                          "Trade Description is too short!!",
+                          "Task Description is too short!!",
                         ),
                         textInputAction: TextInputAction.newline,
                         focusNode: _descriptionFocus,

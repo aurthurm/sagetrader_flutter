@@ -251,12 +251,13 @@ class _TradeDetailState extends State<TradeDetail> {
               ),
             ),
             loading
-                ? Center(
-                    child: Text(
-                      "---- LOADING -----",
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  )
+                ? CircularProgressIndicator()
+                // Center(
+                //     child: Text(
+                //       "---- LOADING -----",
+                //       style: TextStyle(color: Colors.green),
+                //     ),
+                //   )
                 : files.length == 0 // _images.length == 0
                     ? Center(
                         child: Text(

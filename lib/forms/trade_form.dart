@@ -210,7 +210,7 @@ class _TradeFormState extends State<TradeForm> {
                         },
                       ),
                       SwitchListTile(
-                        title: Text("Trade is  Open?"),
+                        title: Text("Trade is Open?"),
                         value: _trade.status,
                         onChanged: (val) {
                           setState(() => _trade.status = val);
@@ -289,7 +289,7 @@ class _TradeFormState extends State<TradeForm> {
                                 setState(() => _trade.strategy = value),
                             validator: (value) => _validateChoices(
                               value,
-                              "Please Select a Strategy",
+                              "Please select a strategy",
                             ),
                             items: strategies.map(
                               (strategy) {
@@ -318,7 +318,7 @@ class _TradeFormState extends State<TradeForm> {
                                 setState(() => _trade.style = value),
                             validator: (value) => _validateChoices(
                               value,
-                              "Please Select a trading Style",
+                              "Please select a trading Style",
                             ),
                             items: styles.map(
                               (style) {
