@@ -15,8 +15,11 @@ class _StrategyFormState extends State<StrategyForm> {
   //New Tade entry or editing
   String formTitle, saveButtonTitle;
   Strategy _strategy;
+  bool done, loading;
   @override
   void initState() {
+    done  = false;
+    loading = false;
     final _strategies = Provider.of<Strategies>(context, listen: false);
     if (widget.newStrategy) {
       formTitle = "New";
@@ -43,7 +46,10 @@ class _StrategyFormState extends State<StrategyForm> {
     return null;
   }
 
-  void _saveForm() {
+  void _saveForm() async {
+    setState(() {
+      loading = true;
+    }); 
     bool formIsValid = _formKey.currentState.validate();
     if (formIsValid) {
       _formKey.currentState.save();
@@ -51,11 +57,30 @@ class _StrategyFormState extends State<StrategyForm> {
       final _strategies = Provider.of<Strategies>(context, listen: false);
 
       if (_strategy.id == null) {
-        _strategies.addStrategy(_strategy);
+          await _strategies.addStrategy(_strategy).then((value) => {
+            setState((){
+              done = true;
+            })
+          }).catchError((error) => {
+            Exception("$error")
+          });     
       } else {
-        _strategies.updateStrategy(_strategy);
+        await _strategies.updateStrategy(_strategy).then((value) => {
+            setState((){
+              done = true;
+            })
+          }).catchError((error) => {
+            Exception("$error")
+          });  
       }
-      Navigator.of(context).pop();
+      setState(() {
+        loading = false;
+      }); 
+      if (done) {
+        Navigator.of(context).pop();
+      } else {
+        Exception("Error Occured try again :)");
+      }
     } else {
       return;
     }
@@ -73,7 +98,26 @@ class _StrategyFormState extends State<StrategyForm> {
           ),
         ],
       ),
-      body: Container(
+      body: loading ? 
+      // showDialog(
+      //   context: context, 
+      //   barrierDismissible: false,
+      //   builder: (BuildContext context) {
+      //     return SimpleDialog(
+      //       elevation: 0.0,
+      //       backgroundColor: Colors.transparent,
+      //       children: <Widget>[
+      //         Center(
+      //           child: CircularProgressIndicator(),
+      //         )
+      //       ],
+      //     );
+      //   }
+      // )
+      Center(
+        child: CircularProgressIndicator(),
+      ) 
+      : Container(
         child: Padding(
           padding: EdgeInsets.fromLTRB(4, 2, 4, 0),
           child: Builder(
@@ -109,7 +153,7 @@ class _StrategyFormState extends State<StrategyForm> {
                       ),
                       TextFormField(
                         decoration: InputDecoration(
-                            labelText: "Straegy Description",
+                            labelText: "Strategy Description",
                             filled: true,
                             fillColor: Colors.grey.shade100),
                         minLines: 5,

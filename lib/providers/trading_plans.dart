@@ -24,7 +24,7 @@ class TradingPlans with ChangeNotifier {
     _plans.removeWhere((item) => item.id == id);
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
       tradingPlansURI + "/$id",
       headers: bearerAuthHeader(token),
@@ -39,15 +39,14 @@ class TradingPlans with ChangeNotifier {
   }
 
   Future<void> fetchPlans() async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       tradingPlansURI,
       headers: bearerAuthHeader(token),
     );
-
+    
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
-      // print(responseData);
       responseData.forEach((item) {
         //dont add if  exists in case of multi reloads
         final TradingPlan inComing = TradingPlan.fromJson(item);
@@ -59,17 +58,15 @@ class TradingPlans with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      Exception("(${response.statusCode}): $message");
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Response Body: ${response.body}");
-      Exception('Failed to load Styles');
+      Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }
 
   Future<void> addPlan(TradingPlan plan) async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.post(
       tradingPlansURI,
       body: json.encode(
@@ -87,9 +84,7 @@ class TradingPlans with ChangeNotifier {
       _plans.add(newPlan);
       notifyListeners();
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
-      // Exception('Failed to Add instrument');
+      Exception("(${response.statusCode}): ${response.body}");
     }
     // _instruments.add(_instrument);
     // notifyListeners();
@@ -101,7 +96,7 @@ class TradingPlans with ChangeNotifier {
     _plans[index] = editedPlan;
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
       tradingPlansURI + "/${editedPlan.id}",
       headers: bearerAuthHeader(token),
@@ -117,8 +112,7 @@ class TradingPlans with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _plans[index] = _oldStrategy;
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
     }
   }
 }

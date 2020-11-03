@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:msagetrader/providers/files.dart';
+import 'package:msagetrader/widgets/keyvaluepair.dart';
 import 'package:provider/provider.dart';
 import 'package:msagetrader/forms/strategy_form.dart';
 import 'package:msagetrader/models/strategy.dart';
@@ -63,7 +64,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
       );
     } on Exception catch (e) {
       final String error = e.toString();
-      print("Errored: $error");
+      Exception("Errored: $error");
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -118,16 +119,21 @@ class _StrategyDetailState extends State<StrategyDetail> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(strategy.name + " Strategy"),
+        title: Text(
+          strategy.name + " Strategy",
+          style:  Theme.of(context).textTheme.headline2.copyWith(
+            color: Colors.white,
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.attach_file),
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () => _pickImages(context),
           ),
           IconButton(
             icon: Icon(Icons.edit),
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () {
               navigateToPage(context,
                   StrategyForm(newStrategy: false, strategyID: strategy.id));
@@ -286,14 +292,11 @@ class _StrategyDetailState extends State<StrategyDetail> {
                                                 flex: 9,
                                                 child: SizedBox.expand(
                                                   child: Center(
-                                                    child: Expanded(
-                                                      flex: 1,
-                                                      child: Container(
-                                                        child: PhotoView(
-                                                          imageProvider:
-                                                              NetworkImage(image
-                                                                  .location), // MemoryImage(bytes),
-                                                        ),
+                                                    child: Container(
+                                                      child: PhotoView(
+                                                        imageProvider:
+                                                            NetworkImage(image
+                                                                .location), // MemoryImage(bytes),
                                                       ),
                                                     ),
                                                   ),
@@ -361,56 +364,19 @@ class _StrategyDetailState extends State<StrategyDetail> {
                   SizedBox(height: 10),
                   Text(
                     "Strategy Description.",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: Theme.of(context).textTheme.headline2,
                   ),
-                  SizedBox(height: 5),
-                  Text(strategy.description)
+                  SizedBox(height: 15),
+                  Text(
+                    strategy.description,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  )
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class KeyValuePair extends StatelessWidget {
-  const KeyValuePair({
-    Key key,
-    @required this.label,
-    @required this.value,
-    @required this.color,
-  }) : super(key: key);
-
-  final label;
-  final value;
-  final color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-            color: color,
-          ),
-        ),
-      ],
     );
   }
 }

@@ -11,20 +11,35 @@ import 'package:provider/provider.dart';
 class TradesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _trades = Provider.of<Trades>(context);
+   final _trades = Provider.of<Trades>(context);
     List<Trade> trades = _trades.trades;
 
     return Container(
-      child: ListView.builder(
+      child: _trades.loading ?
+      Center(
+        child: CircularProgressIndicator(),
+      ) :
+      ListView.builder(
         itemCount: trades.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
-            child: TradeCard(trade: trades[index]),
-            onTap: () => navigateToPage(
-              context,
-              TradeDetail(tradeId: trades[index].id),
-            ),
-          );
+            if (trades.length > 0) {
+              return GestureDetector(
+              child: TradeCard(trade: trades[index]),
+              onTap: () => navigateToPage(
+                context,
+                TradeDetail(tradeId: trades[index].id),
+              ),
+            );
+          } else {
+            return Center(
+              child: Text(
+                "You havent Journaled any trades yet.",
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  color: Theme.of(context).primaryColor,
+                )
+              ),
+            );
+          }
         },
         scrollDirection: Axis.vertical,
         // shrinkWrap: true,
@@ -32,6 +47,8 @@ class TradesTab extends StatelessWidget {
     );
   }
 }
+
+
 
 class TradeCard extends StatelessWidget {
   final trade;
@@ -67,10 +84,7 @@ class TradeCard extends StatelessWidget {
                   children: [
                     Text(
                       instrument.name(),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: Theme.of(context).textTheme.headline2
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
@@ -79,13 +93,16 @@ class TradeCard extends StatelessWidget {
                         children: <Widget>[
                           trade.getPosition(),
                           Text(" | "),
-                          Text(trade.statusAsText()),
+                          Text(
+                            trade.statusAsText(),
+                            style:  Theme.of(context).textTheme.headline4
+                          ),
                         ],
                       ),
                     ),
                     Tag(
-                      text: strategy.name,
-                      background: Colors.green,
+                      text: getExerpt(strategy.name, 10),
+                      background: Theme.of(context).primaryColor, // Color(0xFFFFB703),
                       fsize: 13,
                       fweight: FontWeight.w400,
                       fcolor: Colors.white,
@@ -100,8 +117,7 @@ class TradeCard extends StatelessWidget {
                   children: [
                     Text(
                       humanizeDate(trade.date),
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                      style: Theme.of(context).textTheme.headline5,
                     ),
                     Divider(
                       color: Colors.grey,
@@ -109,8 +125,10 @@ class TradeCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
                       child: Text(
-                        getExerpt(trade.description, 40),
-                        style: TextStyle(fontStyle: FontStyle.italic),
+                        getExerpt(trade.description, 30),
+                        style:  Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ),
                     // Row(
@@ -140,18 +158,22 @@ class TradeCard extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      style.name(),
+                      getExerpt(style.name(), 7),
+                      style:  Theme.of(context).textTheme.headline5
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                       child: Text(
                         (trade.outcome ? "+ " : "- ") + trade.pips.toString(),
-                        style: TextStyle(
-                          color: trade.outcome ? Colors.green : Colors.red,
+                        style:  Theme.of(context).textTheme.headline5.copyWith(
+                          color: trade.outcome ? Colors.green : Colors.red
                         ),
                       ),
                     ),
-                    Text("RR  1:" + trade.riskReward.toString()),
+                    Text(
+                      "RR  1:" + trade.riskReward.toString(),                      
+                      style:  Theme.of(context).textTheme.headline5,
+                    ),
                   ],
                 ),
               ),
@@ -196,3 +218,71 @@ class Tag extends StatelessWidget {
     );
   }
 }
+
+
+// Kept for future reference, they work
+// just that they fetch from the api evertime the
+// tab is opened: therefore i am using didchangedependencies
+
+
+// child: FutureProvider<List<Trade>>(
+//   create: (_) async => Trades().fetchTrades(),
+//   child: Consumer<List<Trade>>(
+//     builder: (context, data, __) {
+//       var length = data?.length ?? 0;
+//       if (length == 0) {
+//         return Center(child: CircularProgressIndicator(),);
+//       }
+//       return ListView.builder(
+//             itemCount: length,
+//             itemBuilder: (context, index) {
+//               return GestureDetector(
+//                 child: TradeCard(trade: data[index]),
+//                 onTap: () => navigateToPage(
+//                   context,
+//                   TradeDetail(tradeId: data[index].id),
+//                 ),
+//               );
+//             },
+//             scrollDirection: Axis.vertical,
+//             // shrinkWrap: true,
+//           );
+//     }
+//   ),
+// ),
+
+//       child: FutureBuilder(
+//         future: Trades().fetchTrades(),
+//         builder: (context, snapshot) {
+//           switch (snapshot.connectionState) {
+//             case ConnectionState.active:
+//             case ConnectionState.waiting:
+//               return Center(child: CircularProgressIndicator());
+//             case ConnectionState.none:
+//               return Center(child: Text("Add trades."));
+//             case ConnectionState.done:              
+//               if (snapshot.hasError) {
+//                 return Center(child: Text("Error Occured"),);
+//               }
+
+//               if(snapshot.hasData) {
+//                 return ListView.builder(
+//                   itemCount: snapshot.data.length,
+//                   itemBuilder: (context, index) {
+//                     return GestureDetector(
+//                       child: TradeCard(trade: snapshot.data[index]),
+//                       onTap: () => navigateToPage(
+//                         context,
+//                         TradeDetail(tradeId: snapshot.data[index].id),
+//                       ),
+//                     );
+//                   },
+//                   scrollDirection: Axis.vertical,
+//                   // shrinkWrap: true,
+//                 );
+//               }
+
+//               return Center(child: Text("Arrg, not supposed to happen"));
+//           }
+//         },
+//       ),

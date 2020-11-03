@@ -34,7 +34,7 @@ bool isPipettes(double number) {
  * Get pips
 */
 double getPips(double number1, double number2) {
-  if (decimalPlaces(number1) != decimalPlaces(number2)) {
+  if (decimalPlaces(number1) == decimalPlaces(number2)) {
     return 0;
   }
 
@@ -72,9 +72,10 @@ double pipValueforLot(double pipvalue, double lotunits) {
 double pipValueforAccount(
   CurrencyPair pair,
   double price,
-  Instrument account_currency,
+  Instrument accountcurrency,
   double units,
 ) {
-  double pip_value = pipValue(pair, price);
-  double price_per_pip = pipValueforLot(pip_value, units);
+  double pipvalue = pipValue(pair, price);
+  double priceperpip = pipValueforLot(pipvalue, units);
+  return 0 * priceperpip;
 }

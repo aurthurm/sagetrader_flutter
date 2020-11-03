@@ -25,3 +25,12 @@ String humanizeDate(String date) {
   DateTime _date = DateTime.parse(date);
   return DateFormat("EEEE d MMMM y").format(_date); // e.g Monday 12 May 2020
 }
+
+
+/*
+ * Nulll value getter
+*/
+dynamic processNull(var val) {
+  if(val == null) return val;
+  return double.parse(val.toString());
+}

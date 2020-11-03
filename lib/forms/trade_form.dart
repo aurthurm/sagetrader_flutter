@@ -38,9 +38,20 @@ class _TradeFormState extends State<TradeForm> {
         style: '',
         strategy: '',
         description: '',
-        pips: 0,
-        riskReward: 0,
+        pips: null,
+        riskReward: null,
         date: 'use a date picker',
+        sl: null,
+        tp: null,
+        entryPrice:  null,
+        slPrice:  null,
+        tpPrice:  null,
+        tpReached:  false,
+        tpExceeded:  false,
+        fullStop:  false,
+        scaledIn:  false,
+        scaledOut:  false,
+        correlatedPosition:  false,
       );
     } else {
       formTitle = "Edit";
@@ -58,6 +69,11 @@ class _TradeFormState extends State<TradeForm> {
   FocusNode _pipsFocus = FocusNode();
   FocusNode _strategyFocus = FocusNode();
   FocusNode _styleFocus = FocusNode();
+  FocusNode _slFocus = FocusNode();
+  FocusNode _tpFocus = FocusNode();
+  FocusNode _slPriceFocus = FocusNode();
+  FocusNode _tpPriceFocus = FocusNode();
+  FocusNode _entryPriceFocus = FocusNode();
 
   //Validations[]
   String _validateRiskReward(v, msg) {
@@ -131,6 +147,31 @@ class _TradeFormState extends State<TradeForm> {
     if (picked != null) setState(() => _pickedDate = picked.toString());
   }
 
+
+  InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      isDense: true,
+      labelStyle: TextStyle(
+        color: Theme.of(context).primaryColor,
+      ),
+      labelText: hintText,
+      // hintText: hintText,
+      // hintStyle: TextStyle(
+      //   color: Colors.white,
+      // ),
+      filled: true,
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.2),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderSide: BorderSide(
+          width: 0,
+          style: BorderStyle.none,
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final _strategies = Provider.of<Strategies>(context, listen: false);
@@ -158,7 +199,7 @@ class _TradeFormState extends State<TradeForm> {
               key: _formKey,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -167,7 +208,9 @@ class _TradeFormState extends State<TradeForm> {
                           children: <Widget>[
                             RaisedButton(
                               onPressed: () => _selectDate(context),
-                              child: Text("Select Trade Date ..."),
+                              child: Text(
+                                "Select Trade Date ...",
+                              ),
                             ),
                             Spacer(),
                             Text(humanizeDate(_pickedDate.toString())),
@@ -177,7 +220,7 @@ class _TradeFormState extends State<TradeForm> {
                       Focus(
                         child: Listener(
                           onPointerUp: (_) {
-                            // FocusScope.of(context).requestFocus(_pipsFocus);
+                            // FocusScope.of(context).requestFocus(_riskRewardFocus);
                           },
                           child: DropdownButtonFormField(
                             value: _trade.instrument.isNotEmpty
@@ -205,7 +248,6 @@ class _TradeFormState extends State<TradeForm> {
                         title: Text("Long Trade?"),
                         value: _trade.position,
                         onChanged: (val) {
-                          print("Hey " + _trade.position.toString());
                           setState(() => _trade.position = val);
                         },
                       ),
@@ -227,36 +269,63 @@ class _TradeFormState extends State<TradeForm> {
                         ),
                       ),
                       Visibility(
-                        visible: !_trade.status,
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: "How many pips",
-                          ),
-                          initialValue:
-                              _trade.id == null ? '' : _trade.pips.toString(),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              _trade.pips = double.parse(newValue);
-                            });
+                        visible: !_trade.outcome,
+                        child: SwitchListTile(
+                          title: Text("Full Stop Hit?"),
+                          value: _trade.fullStop,
+                          onChanged: (val) {
+                            setState(() => _trade.fullStop = val);
                           },
-                          validator: (value) => _validatePips(value),
-                          textInputAction: TextInputAction.next,
-                          onFieldSubmitted: (_) {
-                            FocusScope.of(context)
-                                .requestFocus(_riskRewardFocus);
-                          },
-                          focusNode: _pipsFocus,
                         ),
                       ),
+                      SwitchListTile(
+                        title: Text("Scaled In?"),
+                        value: _trade.scaledIn,
+                        onChanged: (val) {
+                          setState(() => _trade.scaledIn = val);
+                        },
+                      ),
+                      SwitchListTile(
+                        title: Text("Scaled Out?"),
+                        value: _trade.scaledOut,
+                        onChanged: (val) {
+                          setState(() => _trade.scaledOut = val);
+                        },
+                      ),
+                      Visibility(
+                        visible: !_trade.status,
+                        child: SwitchListTile(
+                          title: Text("TP Hit?"),
+                          value: _trade.tpReached,
+                          onChanged: (val) {
+                            setState(() => _trade.tpReached = val);
+                          },
+                        ),
+                      ),
+                      Visibility(
+                        visible: !_trade.status,
+                        child: SwitchListTile(
+                          title: Text("TP Exceeded?"),
+                          value: _trade.tpExceeded,
+                          onChanged: (val) {
+                            setState(() => _trade.tpExceeded = val);
+                          },
+                        ),
+                      ),
+                      SwitchListTile(
+                        title: Text("Correlated Position?"),
+                        value: _trade.correlatedPosition,
+                        onChanged: (val) {
+                          setState(() => _trade.correlatedPosition = val);
+                        },
+                      ),
+                      SizedBox(height: 10),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Risk Reward 1:?",
                         ),
-                        initialValue: _trade.riskReward.toString() == "0.0"
-                            ? ''
-                            : _trade.riskReward.toString(),
+                        initialValue: _trade.riskReward?.toString() ?? "",
                         onChanged: (String value) {
                           setState(() {
                             _trade.riskReward = double.parse(value);
@@ -268,9 +337,117 @@ class _TradeFormState extends State<TradeForm> {
                         ),
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
-                          FocusScope.of(context).requestFocus(_strategyFocus);
+                          FocusScope.of(context).requestFocus(_entryPriceFocus);
                         },
                         focusNode: _riskRewardFocus,
+                      ),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Entry Price",
+                        ),
+                        initialValue: _trade.entryPrice?.toString() ?? "" ,
+                        onChanged: (String value) {
+                          setState(() {
+                            _trade.entryPrice = double.parse(value);
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_tpPriceFocus);
+                        },
+                        focusNode: _entryPriceFocus,
+                      ),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Take Profit Price",
+                        ),
+                        initialValue: _trade.tpPrice?.toString() ?? "",
+                        onChanged: (String value) {
+                          setState(() {
+                            _trade.tpPrice = double.parse(value);
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_slPriceFocus);
+                        },
+                        focusNode: _tpPriceFocus,
+                      ),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Stop Loss Price",
+                        ),
+                        initialValue: _trade.slPrice?.toString() ?? "",
+                        onChanged: (String value) {
+                          setState(() {
+                            _trade.slPrice = double.parse(value);
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_slFocus);
+                        },
+                        focusNode: _slPriceFocus,
+                      ),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Stop Loss in pips",
+                        ),
+                        initialValue: _trade.sl?.toString() ?? "",
+                        onChanged: (String value) {
+                          setState(() {
+                            _trade.sl = double.parse(value);
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_tpFocus);
+                        },
+                        focusNode: _slFocus,
+                      ),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Take Profit in pips",
+                        ),
+                        initialValue: _trade.tp?.toString() ?? "",
+                        onChanged: (String value) {
+                          setState(() {
+                            _trade.tp = double.parse(value);
+                          });
+                        },
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_strategyFocus);
+                        },
+                        focusNode: _tpFocus,
+                      ),
+                      Visibility(
+                        visible: !_trade.status,
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: "How many pips Gained/Lost",
+                          ),
+                          initialValue:
+                              _trade.id == null ? '' : _trade.pips?.toString() ?? "",
+                          onChanged: (String newValue) {
+                            setState(() {
+                              _trade.pips = double.parse(newValue);
+                            });
+                          },
+                          validator: (value) => _validatePips(value),
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) {
+                            FocusScope.of(context)
+                                .requestFocus(_strategyFocus);
+                          },
+                          focusNode: _pipsFocus,
+                        ),
                       ),
                       Focus(
                         focusNode: _strategyFocus,
@@ -331,11 +508,9 @@ class _TradeFormState extends State<TradeForm> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10),
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Trade Description",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration: _buildInputDecoration("Trade Description"),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _trade.description,

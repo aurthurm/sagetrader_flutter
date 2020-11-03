@@ -68,7 +68,7 @@ class TaskItem extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey.shade300,
+          color: Theme.of(context).primaryColor.withOpacity(0.7),
           width: 1,
         ),
         borderRadius: BorderRadius.all(
@@ -82,16 +82,14 @@ class TaskItem extends StatelessWidget {
           children: <Widget>[
             Text(
               task.title,
-              style: TextStyle(
+              style:  Theme.of(context).textTheme.headline3.copyWith(
                 fontWeight: FontWeight.w800,
-                color: Colors.grey.shade800,
-                fontSize: 16,
               ),
             ),
-            SizedBox(height: 10),
+            Divider(color: Theme.of(context).primaryColor),
             Text(
               task.description,
-              style: TextStyle(
+              style:  Theme.of(context).textTheme.bodyText2.copyWith(
                 color: Colors.grey.shade600,
               ),
             ),

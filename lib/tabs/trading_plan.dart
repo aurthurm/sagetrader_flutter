@@ -45,7 +45,7 @@ class _TradingPlanTabState extends State<TradingPlanTab> {
               ),
               title: Text(
                 plan.title,
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                style: Theme.of(context).textTheme.headline2,
               ),
               onTap: () => {
                 navigateToPage(context, TradingPlanDetail(planID: plan.id)),

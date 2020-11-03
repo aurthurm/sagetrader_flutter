@@ -16,6 +16,9 @@ class Strategy {
     if (total == 0) {
       return "0.00 %";
     }
+    if (lost > won) {
+      return "-" + (lost * 100 / total).toStringAsFixed(1) + " %";
+    }
     return (won * 100 / total).toStringAsFixed(2) + " %";
   }
 

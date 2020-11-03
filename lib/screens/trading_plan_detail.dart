@@ -16,11 +16,16 @@ class TradingPlanDetail extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(plan.title),
+        title: Text(
+          plan.title,
+          style:  Theme.of(context).textTheme.headline2.copyWith(
+            color: Colors.white,
+          )
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () {
               navigateToPage(
                   context, TradingPlanForm(newPlan: false, planID: plan.id));
@@ -75,13 +80,13 @@ class TradingPlanDetail extends StatelessWidget {
           children: <Widget>[
             Text(
               "Plan Detail",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
+              style:  Theme.of(context).textTheme.headline2,
             ),
             Divider(),
-            Text(plan.description)
+            Text(
+              plan.description,
+              style:  Theme.of(context).textTheme.bodyText1
+            )
           ],
         ),
       ),

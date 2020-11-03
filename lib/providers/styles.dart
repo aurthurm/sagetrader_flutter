@@ -20,7 +20,7 @@ class Styles with ChangeNotifier {
   }
 
   Future<void> fetchStyles() async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       stylesURI,
       headers: bearerAuthHeader(token),
@@ -28,7 +28,6 @@ class Styles with ChangeNotifier {
 
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
-      // print(responseData);
       responseData.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Style inComing = Style.fromJson(item);
@@ -40,11 +39,9 @@ class Styles with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      Exception("(${response.statusCode}): $message");
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Response Body: ${response.body}");
-      Exception('Failed to load Styles');
+      Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }

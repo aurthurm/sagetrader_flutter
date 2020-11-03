@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:msagetrader/models/file.dart';
 import 'package:msagetrader/providers/files.dart';
+import 'package:msagetrader/widgets/keyvaluepair.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
@@ -69,7 +70,7 @@ class _TradeDetailState extends State<TradeDetail> {
       );
     } on Exception catch (e) {
       final String error = e.toString();
-      print("Errored: $error");
+      Exception("Errored: $error");
     }
 
     if (!mounted) return;
@@ -130,22 +131,27 @@ class _TradeDetailState extends State<TradeDetail> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(instrument.name() + " Trade Detail"),
+            Text(
+              instrument.name() + " Trade Detail",
+              style:  Theme.of(context).textTheme.headline2.copyWith(
+                color: Colors.white,
+              ),
+            ),
             Text(
               humanizeDate(trade.date),
-              style: TextStyle(fontSize: 14),
+              style:  Theme.of(context).textTheme.subtitle2
             ),
           ],
         ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.attach_file),
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () => _pickImages(context),
           ),
           IconButton(
             icon: Icon(Icons.edit),
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () {
               navigateToPage(
                   context, TradeForm(newTrade: false, tradeID: trade.id));
@@ -194,260 +200,335 @@ class _TradeDetailState extends State<TradeDetail> {
         ],
       ),
       body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 19, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  KeyValuePair(
-                    label: "Status:",
-                    value: trade.status
-                        ? "This Trade is still running"
-                        : "This Trade was closed",
-                    color: Colors.black,
-                  ),
-                  SizedBox(height: 10),
-                  KeyValuePair(
-                    label: "Position:",
-                    value: trade.positionAsText(),
-                    color: Colors.black,
-                  ),
-                  SizedBox(height: 10),
-                  KeyValuePair(
-                    label: "Outcome:",
-                    value: trade.status
-                        ? "-----------------------"
-                        : trade.outcome
-                            ? "Gained + ${trade.pips} pips"
-                            : "Lost - ${trade.pips} pips",
-                    color: trade.status
-                        ? Colors.black
-                        : trade.outcome ? Colors.green : Colors.red,
-                  ),
-                  SizedBox(height: 10),
-                  KeyValuePair(
-                    label: "Strategy:",
-                    value: strategy.name,
-                    color: Colors.black,
-                  ),
-                  SizedBox(height: 10),
-                  KeyValuePair(
-                    label: "Style:",
-                    value: style.name(),
-                    color: Colors.black,
-                  ),
-                  SizedBox(height: 10),
-                  KeyValuePair(
-                    label: "Risk Reward:",
-                    value: "1:" + trade.riskReward.toString(),
-                    color: Colors.black,
-                  ),
-                  SizedBox(height: 10),
-                  Divider(color: Colors.grey.shade600),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 19, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    KeyValuePair(
+                      label: "Status:",
+                      value: trade.status
+                          ? "This Trade is still running"
+                          : "This Trade was closed",
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Position:",
+                      value: trade.positionAsText(),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Outcome:",
+                      value: trade.status
+                          ? "-- running trade --"
+                          : trade.outcome
+                              ? "Gained + ${trade.pips} pips"
+                              : "Lost - ${trade.pips} pips",
+                      color: trade.status
+                          ? Colors.black87
+                          : trade.outcome ? Colors.green : Colors.red,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Strategy:",
+                      value: strategy.name,
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Style:",
+                      value: style.name(),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Risk Reward:",
+                      value: "1:" + trade.riskReward.toString(),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Stop Loss Price:",
+                      value: trade.slPrice?.toString() ?? "-- not set --",
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Entry Price:",
+                      value: trade.entryPrice?.toString() ?? "-- not set --",
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Take Profit Price:",
+                      value: trade.slPrice?.toString() ?? "-- not set --",
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Stop Loss in pips:",
+                      value: trade.sl?.toString() ?? "-- not set --",
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Take Profit in pips:",
+                      value: trade.tp?.toString() ?? "-- not set --",
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Reached Take Profit",
+                      value: trade.toYesNo(trade.tpReached),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Exceeded Take Profit",
+                      value: trade.toYesNo(trade.tpExceeded),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Took a Full Stop",
+                      value: trade.toYesNo(trade.fullStop),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Scaled In",
+                      value: trade.toYesNo(trade.scaledIn),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Scaled Out",
+                      value: trade.toYesNo(trade.scaledOut),
+                      color: Colors.black87,
+                    ),
+                    SizedBox(height: 10),
+                    KeyValuePair(
+                      label: "Correlated Position",
+                      value: trade.toYesNo(trade.correlatedPosition),
+                      color: Colors.black87,
+                    ),
+                    Divider(color: Colors.grey.shade600),
+                  ],
+                ),
               ),
-            ),
-            loading
-                ? CircularProgressIndicator()
-                // Center(
-                //     child: Text(
-                //       "---- LOADING -----",
-                //       style: TextStyle(color: Colors.green),
-                //     ),
-                //   )
-                : files.length == 0 // _images.length == 0
-                    ? Center(
-                        child: Text(
-                          "We have not found any images for this trade",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      )
-                    : Container(
-                        height: 120.0,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: files.length, // _byteImageMaps.length,
-                          itemBuilder: (context, index) {
-                            // final bytes = _byteImageMaps[index].bytes;
-                            final image = files[index];
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4),
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  left: 0,
-                                  top: 10,
-                                  right: 5,
-                                  bottom: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10),
-                                    bottomLeft: Radius.circular(10),
-                                    bottomRight: Radius.circular(10),
+              loading
+                  ? Center(child: CircularProgressIndicator(),)
+                  : files.length == 0 // _images.length == 0
+                      ? Center(
+                          child: Text(
+                            "We have not found any images for this trade",
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              color: Colors.red,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 120.0,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: files.length, // _byteImageMaps.length,
+                            itemBuilder: (context, index) {
+                              // final bytes = _byteImageMaps[index].bytes;
+                              final image = files[index];
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4),
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    left: 0,
+                                    top: 10,
+                                    right: 5,
+                                    bottom: 10,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 2,
-                                      blurRadius: 5,
-                                      offset: Offset(
-                                        2,
-                                        3,
-                                      ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
                                     ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: GestureDetector(
-                                    child: Image.network(
-                                        image.location), // Image.memory(bytes),
-                                    onTap: () => showGeneralDialog(
-                                      context: context,
-                                      barrierColor:
-                                          Colors.black12.withOpacity(0.6),
-                                      barrierDismissible: false,
-                                      barrierLabel: "Text Dialog",
-                                      transitionDuration:
-                                          Duration(milliseconds: 400),
-                                      pageBuilder: (_, __, ___) {
-                                        return SizedBox.expand(
-                                          child: Column(
-                                            children: <Widget>[
-                                              Expanded(
-                                                flex: 9,
-                                                child: SizedBox.expand(
-                                                  child: Center(
-                                                    child: Expanded(
-                                                      flex: 1,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: Offset(
+                                          2,
+                                          3,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: GestureDetector(
+                                      child: Image.network(
+                                          image.location,
+                                          errorBuilder: (context, _, __) => 
+                                          Center(
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0,),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.error, color: Colors.red,),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                    "Not Found",
+                                                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                                      color: Colors.red,
+                                                    ),
+                                                  )
+                                                ]
+                                              ),
+                                            ),
+                                          ),
+                                      ), // Image.memory(bytes),
+                                      onTap: () => showGeneralDialog(
+                                        context: context,
+                                        barrierColor:
+                                            Colors.black12.withOpacity(0.6),
+                                        barrierDismissible: false,
+                                        barrierLabel: "Text Dialog",
+                                        transitionDuration:
+                                            Duration(milliseconds: 400),
+                                        pageBuilder: (_, __, ___) {
+                                          return SizedBox.expand(
+                                            child: Column(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  flex: 9,
+                                                  child: SizedBox.expand(
+                                                    child: Center(
                                                       child: Container(
                                                         child: PhotoView(
-                                                          imageProvider:
-                                                              NetworkImage(image
-                                                                  .location), // MemoryImage(bytes),
+                                                          imageProvider: NetworkImage(image .location), // MemoryImage(bytes),
+                                                          loadFailedChild: 
+                                                          Container(
+                                                            color: Theme.of(context).primaryColor,
+                                                            child: Center(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0,),
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Icon(Icons.error, color: Colors.red,),
+                                                                    SizedBox(height: 10),
+                                                                    Text(
+                                                                      "Image Not Found",
+                                                                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                                                        color: Colors.red,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 10),
+                                                                    Divider(),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.all(20.0),
+                                                                      child: Text(
+                                                                        "Click Delete to remove reference to old image and re upload",
+                                                                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                                                          color: Colors.red,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ]
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ), 
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: SizedBox.expand(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: <Widget>[
-                                                      RaisedButton(
-                                                        color: Colors.red,
-                                                        child: Text(
-                                                          "Delete",
-                                                          style: TextStyle(
-                                                            fontSize: 40,
-                                                            color:
-                                                                Colors.white70,
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: SizedBox.expand(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: <Widget>[
+                                                        RaisedButton(
+                                                          color: Colors.red,
+                                                          child: Text(
+                                                            "Delete",
+                                                            style: TextStyle(
+                                                              fontSize: 40,
+                                                              color:
+                                                                  Colors.white70,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        onPressed: () => {
-                                                          Navigator.pop(
-                                                              context),
-                                                          _files.deleteFile(
-                                                              'trade', image.id)
-                                                        },
-                                                      ),
-                                                      RaisedButton(
-                                                        color: Colors.blue,
-                                                        child: Text(
-                                                          "Close",
-                                                          style: TextStyle(
-                                                              fontSize: 40),
-                                                        ),
-                                                        onPressed: () =>
+                                                          onPressed: () => {
                                                             Navigator.pop(
                                                                 context),
-                                                      ),
-                                                    ],
+                                                            _files.deleteFile(
+                                                                'trade', image.id)
+                                                          },
+                                                        ),
+                                                        RaisedButton(
+                                                          color: Colors.blue,
+                                                          child: Text(
+                                                            "Close",
+                                                            style: TextStyle(
+                                                                fontSize: 40),
+                                                          ),
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      },
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 19, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Divider(color: Colors.grey.shade600),
-                  SizedBox(height: 10),
-                  Text(
-                    "Trade Description.",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 19, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Divider(color: Colors.grey.shade600),
+                    SizedBox(height: 10),
+                    Text(
+                      "Trade Description.",
+                      style: Theme.of(context).textTheme.headline2,
                     ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(trade.description),
-                ],
+                    SizedBox(height: 15),
+                    Text(
+                      trade.description,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class KeyValuePair extends StatelessWidget {
-  const KeyValuePair({
-    Key key,
-    @required this.label,
-    @required this.value,
-    @required this.color,
-  }) : super(key: key);
-
-  final label;
-  final value;
-  final color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-            color: color,
-          ),
-        ),
-      ],
     );
   }
 }

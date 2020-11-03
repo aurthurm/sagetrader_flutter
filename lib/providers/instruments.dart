@@ -28,7 +28,7 @@ class Instruments with ChangeNotifier {
     _instruments.removeWhere((instrument) => instrument.id == id);
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.delete(
       instrumentsURI + "/$id",
@@ -47,7 +47,7 @@ class Instruments with ChangeNotifier {
     // final newId = (_instruments.length + 1).toString();
     // _instrument.id = newId;
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.post(
       instrumentsURI,
@@ -65,9 +65,7 @@ class Instruments with ChangeNotifier {
       _instruments.add(newInstrument);
       notifyListeners();
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
-      // Exception('Failed to Add instrument');
+      Exception("(${response.statusCode}): ${response.body}");
     }
 
     // _instruments.add(_instrument);
@@ -81,7 +79,7 @@ class Instruments with ChangeNotifier {
     _instruments[index] = editedInstrument;
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.put(
       instrumentsURI + "/${editedInstrument.id}",
@@ -97,13 +95,12 @@ class Instruments with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _instruments[index] = _oldInstrument;
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
     }
   }
 
   Future<void> fetchInstruments() async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       instrumentsURI,
       headers: bearerAuthHeader(token),
@@ -111,7 +108,6 @@ class Instruments with ChangeNotifier {
 
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
-      // print(responseData);
       responseData.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Instrument inComing = Instrument.fromJson(item);
@@ -124,12 +120,9 @@ class Instruments with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      Exception("(${response.statusCode}): $message");
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error REsponse Body: ${response.body}");
-      Exception('Failed to load instruments');
+      Exception("(${response.statusCode}): ${response.body}");
     }
-    //
   }
 }

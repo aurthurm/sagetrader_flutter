@@ -13,9 +13,16 @@ final String tradesURI = serverURI + "mspt/trade";
  * Provider: Trades Provider
 */
 class Trades with ChangeNotifier {
+  bool _loading = false;
   List<Trade> _trades = <Trade>[];
 
   List<Trade> get trades => _trades;
+  bool get loading => _loading;
+
+  void toggleLoading() => {
+    _loading = !_loading,
+    notifyListeners()
+  };
 
   Trade findById(String id) {
     final index = _trades.indexWhere((trade) => trade.id == id);
@@ -30,7 +37,7 @@ class Trades with ChangeNotifier {
     _trades.removeWhere((trade) => trade.id == id);
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
       tradesURI + "/$id",
       headers: bearerAuthHeader(token),
@@ -45,23 +52,11 @@ class Trades with ChangeNotifier {
   }
 
   Future<void> addTrade(Trade trade) async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
+    final data = json.encode(trade.toJson());
     final response = await http.post(
       tradesURI,
-      body: json.encode(
-        {
-          "instrument_id": trade.instrument,
-          "position": trade.position,
-          "status": trade.status,
-          "outcome": trade.outcome,
-          "pips": trade.pips,
-          "date": trade.date.toString(),
-          "style_id": trade.style,
-          "description": trade.description,
-          "strategy_id": trade.strategy,
-          "rr": trade.riskReward,
-        },
-      ),
+      body: data,
       headers: bearerAuthHeader(token),
     );
 
@@ -71,8 +66,7 @@ class Trades with ChangeNotifier {
       _trades.add(newTrade);
       notifyListeners();
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
       // Exception('Failed to Add instrument');
     }
     // _instruments.add(_instrument);
@@ -85,7 +79,8 @@ class Trades with ChangeNotifier {
     _trades[index] = editedTrade;
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
+    
     final response = await http.put(
       tradesURI + "/${editedTrade.id}",
       headers: bearerAuthHeader(token),
@@ -109,21 +104,21 @@ class Trades with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _trades[index] = _oldTrade;
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
     }
   }
 
-  Future<void> fetchTrades() async {
-    await MSPTAuth().token().then((String value) => token = value);
+  Future<List<Trade>> fetchTrades() async {
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       tradesURI,
       headers: bearerAuthHeader(token),
     );
 
+    await Future.delayed(Duration(seconds: 10));
+
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
-      // print(responseData);
       responseData.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Trade inComing = Trade.fromJson(item);
@@ -133,13 +128,11 @@ class Trades with ChangeNotifier {
         }
       });
       notifyListeners();
-    } else if (response.statusCode == 401) {
-      final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      await Future.delayed(Duration(seconds: 2)); 
+      return _trades;
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Response Body: ${response.body}");
-      Exception('Failed to load Trades');
+      final String message = json.decode(response.body)['detail'];
+      throw Exception("(${response.statusCode}): $message");
     }
     //
   }

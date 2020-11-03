@@ -47,23 +47,23 @@ class StrategyCard extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       "" + strategy.won.toString() + "",
-                      style: TextStyle(color: Colors.green),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        color: Colors.green,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 0, vertical: 5),
                       child: Text(
                         strategy.winRate(),
-                        style: TextStyle(
-                          color: Colors.grey.shade800,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: Theme.of(context).textTheme.headline4,
                       ),
                     ),
                     Text(
                       strategy.lost.toString(),
-                      style: TextStyle(color: Colors.red),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        color: Colors.red,
+                      ),
                     )
                   ],
                 ),
@@ -77,15 +77,14 @@ class StrategyCard extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       strategy.name,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: Theme.of(context).textTheme.headline2,
                     ),
                     SizedBox(height: 4),
                     Text(
                       getExerpt(strategy.description, 45),
-                      style: TextStyle(fontStyle: FontStyle.italic),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ],
                 ),

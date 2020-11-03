@@ -31,7 +31,7 @@ class Strategies with ChangeNotifier {
     _strategies.removeWhere((strategy) => strategy.id == id);
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.delete(
       strategiesURI + "/$id",
@@ -46,8 +46,8 @@ class Strategies with ChangeNotifier {
     }
   }
 
-  Future<void> addStrategy(Strategy strategy) async {
-    await MSPTAuth().token().then((String value) => token = value);
+  Future addStrategy(Strategy strategy) async {
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.post(
       strategiesURI,
       body: json.encode(
@@ -63,24 +63,22 @@ class Strategies with ChangeNotifier {
       dynamic responseData = json.decode(response.body);
       Strategy newStrategy = Strategy.fromJson(responseData);
       _strategies.add(newStrategy);
+      // await Future.delayed(const Duration(seconds: 5));
       notifyListeners();
+      return true;
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
-      // Exception('Failed to Add instrument');
+      Exception('Failed to Add Srategy: Try Again <<sc ${response.statusCode} | ${response.body}>>');
     }
-    // _instruments.add(_instrument);
-    // notifyListeners();
   }
 
-  Future<void> updateStrategy(Strategy editedStrategy) async {
+  Future updateStrategy(Strategy editedStrategy) async {
     final index =
         _strategies.indexWhere((strategy) => strategy.id == editedStrategy.id);
     final _oldStrategy = _strategies[index];
     _strategies[index] = editedStrategy;
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
       strategiesURI + "/${editedStrategy.id}",
       headers: bearerAuthHeader(token),
@@ -95,13 +93,12 @@ class Strategies with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _strategies[index] = _oldStrategy;
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
     }
   }
 
   Future<void> fetchStrategies() async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       strategiesURI,
       headers: bearerAuthHeader(token),
@@ -109,7 +106,6 @@ class Strategies with ChangeNotifier {
 
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
-      // print(responseData);
       responseData.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Strategy inComing = Strategy.fromJson(item);
@@ -122,11 +118,9 @@ class Strategies with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      Exception("(${response.statusCode}): $message");
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Response Body: ${response.body}");
-      Exception('Failed to load Strategies');
+      Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }

@@ -34,7 +34,7 @@ class Files with ChangeNotifier {
 
   Future<void> deleteFile(String parent, String fileId) async {
     loading = true;
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
       deleteFileURI + "/$parent-$fileId",
       headers: bearerAuthHeader(token),
@@ -44,10 +44,9 @@ class Files with ChangeNotifier {
       _files.removeWhere((file) => file.id == fileId);
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      Exception("(${response.statusCode}): $message");
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Response Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
     }
     loading = false;
     notifyListeners();
@@ -57,7 +56,7 @@ class Files with ChangeNotifier {
   Future<void> fetchFiles(String parent, String parentId) async {
     loading = true;
     clearFiles();
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       filesFetchURI + "/$parent-$parentId",
       headers: bearerAuthHeader(token),
@@ -68,10 +67,9 @@ class Files with ChangeNotifier {
       responseData.forEach((item) => _files.add(FileData.fromJson(item)));
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      Exception("(${response.statusCode}): $message");
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Response Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
     }
     loading = false;
     notifyListeners();
@@ -81,7 +79,7 @@ class Files with ChangeNotifier {
   Future uploadFiles(
       List<FileData> images, String parent, String parentId) async {
     loading = true;
-    await MSPTAuth().token().then((String value) => {token = value});
+    await MSPTAuth().getToken().then((String value) => {token = value});
 
     http.MultipartFile _multipartFile;
     Uri uri = Uri.parse(uploadsHandlerURI);
@@ -104,8 +102,8 @@ class Files with ChangeNotifier {
     request.fields['parent'] = "$parent-$parentId";
     request.fields['parentId'] = parentId;
     var _response = await request.send();
-    print(_response.reasonPhrase);
-    print(_response.statusCode);
+    // print(_response.reasonPhrase);
+    // print(_response.statusCode);
     http.Response.fromStream(_response)
         .then((_) => fetchFiles(parent, parentId));
   }

@@ -24,7 +24,7 @@ class Tasks with ChangeNotifier {
     _tasks.removeWhere((item) => item.id == id);
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
       tasksURI + "/$id",
       headers: bearerAuthHeader(token),
@@ -39,7 +39,7 @@ class Tasks with ChangeNotifier {
   }
 
   Future<void> fetchTasks() async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       tasksURI,
       headers: bearerAuthHeader(token),
@@ -47,7 +47,6 @@ class Tasks with ChangeNotifier {
 
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
-      // print(responseData);
       responseData.forEach((item) {
         //dont add if  exists in case of multi reloads
         final Task inComing = Task.fromJson(item);
@@ -59,17 +58,15 @@ class Tasks with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      print("Error: ${response.statusCode} : $message");
+      Exception("(${response.statusCode}): $message");
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Response Body: ${response.body}");
-      Exception('Failed to load _tasks');
+      Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }
 
   Future<void> addTask(Task task) async {
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.post(
       tasksURI,
       body: json.encode(
@@ -87,8 +84,7 @@ class Tasks with ChangeNotifier {
       _tasks.add(newTask);
       notifyListeners();
     } else {
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
       // Exception('Failed to Add instrument');
     }
     // _instruments.add(_instrument);
@@ -101,7 +97,7 @@ class Tasks with ChangeNotifier {
     _tasks[index] = editedTask;
     notifyListeners();
 
-    await MSPTAuth().token().then((String value) => token = value);
+    await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
       tasksURI + "/${editedTask.id}",
       headers: bearerAuthHeader(token),
@@ -117,8 +113,7 @@ class Tasks with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _tasks[index] = _oldTask;
-      print("StatusCode: ${response.statusCode}");
-      print("Error Body: ${response.body}");
+      Exception("(${response.statusCode}): ${response.body}");
     }
   }
 }
