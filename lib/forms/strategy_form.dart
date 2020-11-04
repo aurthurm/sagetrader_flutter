@@ -86,6 +86,30 @@ class _StrategyFormState extends State<StrategyForm> {
     }
   }
 
+
+  InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      isDense: true,
+      labelStyle: TextStyle(
+        color: Theme.of(context).primaryColor,
+      ),
+      labelText: hintText,
+      // hintText: hintText,
+      // hintStyle: TextStyle(
+      //   color: Colors.white,
+      // ),
+      filled: true,
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.2),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderSide: BorderSide(
+          width: 0,
+          style: BorderStyle.none,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,10 +154,7 @@ class _StrategyFormState extends State<StrategyForm> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Strategy Name",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration: _buildInputDecoration("Strategy Name"),
                         initialValue: _strategy.name,
                         onChanged: (String value) {
                           setState(() {
@@ -151,11 +172,9 @@ class _StrategyFormState extends State<StrategyForm> {
                               .requestFocus(_descriptionFocus);
                         },
                       ),
+                      SizedBox(height: 10,),
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Strategy Description",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration:  _buildInputDecoration("Strategy Description"),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _strategy.description,
@@ -174,12 +193,11 @@ class _StrategyFormState extends State<StrategyForm> {
                       ),
                       SizedBox(height: 10),
                       RaisedButton(
-                        color: Colors.blue,
+                        color: Theme.of(context).primaryColor,
                         child: Text(
                           saveButtonTitle.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.headline4.copyWith(
+                            color: Colors.white
                           ),
                         ),
                         onPressed: _saveForm,

@@ -78,27 +78,14 @@ class Trades with ChangeNotifier {
     final _oldTrade = _trades[index];
     _trades[index] = editedTrade;
     notifyListeners();
+    final data = json.encode(editedTrade.toJson());
 
     await MSPTAuth().getToken().then((String value) => token = value);
-    
+    print(data);
     final response = await http.put(
       tradesURI + "/${editedTrade.id}",
       headers: bearerAuthHeader(token),
-      body: json.encode(
-        {
-          "id": editedTrade.id,
-          "instrument_id": editedTrade.instrument,
-          "position": editedTrade.position,
-          "status": editedTrade.status,
-          "outcome": editedTrade.outcome,
-          "pips": editedTrade.pips,
-          "date": editedTrade.date.toString(),
-          "style_id": editedTrade.style,
-          "description": editedTrade.description,
-          "strategy_id": editedTrade.strategy,
-          "rr": editedTrade.riskReward,
-        },
-      ),
+      body: data,
     );
 
     if (response.statusCode == 200) {

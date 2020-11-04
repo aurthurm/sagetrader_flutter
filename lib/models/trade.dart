@@ -83,6 +83,7 @@ class Trade {
 
   Map<String, dynamic> toJson() =>
     <String, dynamic>{
+      "id": instrument,
       "instrument_id": instrument,
       "position": position,
       "status": status,
