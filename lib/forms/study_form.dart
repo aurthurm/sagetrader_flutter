@@ -62,7 +62,7 @@ class _StudyFormState extends State<StudyForm> {
               done = true;
             })
           }).catchError((error) => {
-            Exception("$error")
+            throw Exception("$error")
           });     
       } else {
         await _studies.updateStudy(_study).then((value) => {
@@ -70,7 +70,7 @@ class _StudyFormState extends State<StudyForm> {
               done = true;
             })
           }).catchError((error) => {
-            Exception("$error")
+            throw Exception("$error")
           });  
       }
       setState(() {
@@ -79,11 +79,34 @@ class _StudyFormState extends State<StudyForm> {
       if (done) {
         Navigator.of(context).pop();
       } else {
-        Exception("An Error Occured, try again :)");
+        throw Exception("An Error Occured, try again :)");
       }
     } else {
       return;
     }
+  }
+
+  InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      isDense: true,
+      labelStyle: TextStyle(
+        color: Theme.of(context).primaryColor,
+      ),
+      labelText: hintText,
+      // hintText: hintText,
+      // hintStyle: TextStyle(
+      //   color: Colors.white,
+      // ),
+      filled: true,
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderSide: BorderSide(
+          width: 0,
+          style: BorderStyle.none,
+        ),
+      ),
+    );
   }
 
   @override
@@ -115,10 +138,10 @@ class _StudyFormState extends State<StudyForm> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Study Name",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration: _buildInputDecoration("Study Name"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         initialValue: _study.name,
                         onChanged: (String value) {
                           setState(() {
@@ -136,11 +159,12 @@ class _StudyFormState extends State<StudyForm> {
                               .requestFocus(_descriptionFocus);
                         },
                       ),
+                      SizedBox(height: 10,),
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Study Description",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration:  _buildInputDecoration("Study Description"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _study.description,
@@ -159,12 +183,11 @@ class _StudyFormState extends State<StudyForm> {
                       ),
                       SizedBox(height: 10),
                       RaisedButton(
-                        color: Colors.blue,
+                        color: Theme.of(context).primaryColor,
                         child: Text(
                           saveButtonTitle.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.headline4.copyWith(
+                            color: Colors.white
                           ),
                         ),
                         onPressed: _saveForm,

@@ -76,7 +76,7 @@ class Attributes with ChangeNotifier {
       notifyListeners();
       return true;
     } else {
-      Exception('Failed to Add Attribute: Try Again <<sc ${response.statusCode} | ${response.body}>>');
+      throw Exception('Failed to Add Attribute: Try Again <<sc ${response.statusCode} | ${response.body}>>');
     }
   }
 
@@ -102,7 +102,7 @@ class Attributes with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _attributes[index] = _oldAttribute;
-      Exception("StatusCode: ${response.statusCode}, Error Body: ${response.body}");
+      throw Exception("StatusCode: ${response.statusCode}, Error Body: ${response.body}");
     }
   }
 
@@ -126,9 +126,9 @@ class Attributes with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("Error: ${response.statusCode} :  $message ");
+      throw Exception("Error: ${response.statusCode} :  $message ");
     } else {
-      Exception('Failed to load Attributes | ${response.statusCode}');
+      throw Exception('Failed to load Attributes | ${response.statusCode}');
     }
     //
   }

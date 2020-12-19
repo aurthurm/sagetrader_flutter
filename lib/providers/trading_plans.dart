@@ -58,9 +58,9 @@ class TradingPlans with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }
@@ -84,7 +84,7 @@ class TradingPlans with ChangeNotifier {
       _plans.add(newPlan);
       notifyListeners();
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     // _instruments.add(_instrument);
     // notifyListeners();
@@ -112,7 +112,7 @@ class TradingPlans with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _plans[index] = _oldStrategy;
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
   }
 }

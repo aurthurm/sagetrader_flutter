@@ -66,6 +66,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void didChangeDependencies() async {
     if (_isInit) {
+      setState(() {
+        _isInit = false;
+      });
       // Async await to enforce fetch order: Otherwise use .then((_) => next_here)
       await Provider.of<Instruments>(context, listen: false).fetchInstruments();
       await Provider.of<Strategies>(context, listen: false).fetchStrategies();
@@ -73,9 +76,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       await Provider.of<Trades>(context, listen: false).fetchTrades();
       await Provider.of<Studies>(context, listen: false).fetchStudies();
     }
-    setState(() {
-      _isInit = false;
-    });
     super.didChangeDependencies();
   }
 

@@ -12,7 +12,7 @@ class AuthCheckRedirect extends StatefulWidget {
 }
 
 class _AuthCheckRedirectState extends State<AuthCheckRedirect> {
- Widget _welcome_or_home;
+ Widget welcomeOrHome;
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +20,11 @@ class _AuthCheckRedirectState extends State<AuthCheckRedirect> {
 
     if (_authService.user == null) {
       setState(() {
-        _welcome_or_home = WelcomePage();
+        welcomeOrHome = WelcomePage();
       });
     } else {
       setState(() {
-        _welcome_or_home = Home();
+        welcomeOrHome = Home();
       });      
     }
    
@@ -32,7 +32,7 @@ class _AuthCheckRedirectState extends State<AuthCheckRedirect> {
       duration: Duration(milliseconds: 500),
       switchInCurve: Curves.elasticIn,
       switchOutCurve: Curves.bounceInOut,
-      child: _welcome_or_home,
+      child: welcomeOrHome,
     );// _user == null ? WelcomePage() : Home();
   }
 }

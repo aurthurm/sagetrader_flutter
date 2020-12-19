@@ -58,9 +58,9 @@ class Tasks with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }
@@ -84,8 +84,8 @@ class Tasks with ChangeNotifier {
       _tasks.add(newTask);
       notifyListeners();
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
-      // Exception('Failed to Add instrument');
+      throw Exception("(${response.statusCode}): ${response.body}");
+      // throw Exception('Failed to Add instrument');
     }
     // _instruments.add(_instrument);
     // notifyListeners();
@@ -113,7 +113,7 @@ class Tasks with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _tasks[index] = _oldTask;
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
   }
 }

@@ -39,9 +39,9 @@ class Styles with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }

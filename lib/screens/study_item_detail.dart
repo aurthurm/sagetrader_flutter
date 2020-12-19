@@ -29,6 +29,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
   List<Asset> _images = List<Asset>();
   List<FileData> _byteImageMaps = List<FileData>();
   bool _isInit = true, loading = true;
+  List<dynamic> tags = List<dynamic>();
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
       );
     } on Exception catch (e) {
       final String error = e.toString();
-      Exception("Errored: $error");
+      throw Exception("Errored: $error");
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -89,6 +90,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
         _byteImageMaps,
         'studyitem',
         widget.studyItemId,
+        tags,
       );
     });
   }
@@ -113,6 +115,18 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     });
   }
 
+  _buildTags(StudyItem st, Style sty, Instrument inst) {
+    var _tags = [];
+    _tags.add(inst.title.toUpperCase());
+    _tags.add(st.positionAsText().toUpperCase());
+    _tags.add(sty.title.toUpperCase());
+    st.attributes.forEach((attr) =>  _tags.add(attr.name.toUpperCase()));
+    setState(() {
+      tags = _tags;
+    });
+    // print("StudyItemTags: $tags");
+  }
+
   Widget build(BuildContext context) {
     final _studyItems = Provider.of<StudyItems>(context);
     StudyItem studyItem = _studyItems.findById(widget.studyItemId);
@@ -127,6 +141,8 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     setState(() {
       loading = _files.loading;
     });
+    _buildTags(studyItem, style, instrument);
+
 
     return Scaffold(
       appBar: AppBar(

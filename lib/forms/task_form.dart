@@ -61,6 +61,30 @@ class _TaskFormState extends State<TaskForm> {
     }
   }
 
+  InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      isDense: true,
+      labelStyle: TextStyle(
+        color: Theme.of(context).primaryColor,
+      ),
+      labelText: hintText,
+      // hintText: hintText,
+      // hintStyle: TextStyle(
+      //   color: Colors.white,
+      // ),
+      filled: true,
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderSide: BorderSide(
+          width: 0,
+          style: BorderStyle.none,
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,10 +110,10 @@ class _TaskFormState extends State<TaskForm> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Task Name",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration: _buildInputDecoration("Task Name"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         initialValue: _task.title,
                         onChanged: (String value) {
                           setState(() {
@@ -107,11 +131,12 @@ class _TaskFormState extends State<TaskForm> {
                               .requestFocus(_descriptionFocus);
                         },
                       ),
+                      SizedBox(height: 10),
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Task Description",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration: _buildInputDecoration("Task Detail"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _task.description,
@@ -123,19 +148,18 @@ class _TaskFormState extends State<TaskForm> {
                         validator: (value) => _validateLength(
                           value,
                           10,
-                          "Task Description is too short!!",
+                          "Task Detail is too short!!",
                         ),
                         textInputAction: TextInputAction.newline,
                         focusNode: _descriptionFocus,
                       ),
                       SizedBox(height: 10),
                       RaisedButton(
-                        color: Colors.blue,
+                        color: Theme.of(context).primaryColor,
                         child: Text(
                           saveButtonTitle.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.headline4.copyWith(
+                            color: Colors.white
                           ),
                         ),
                         onPressed: _saveForm,

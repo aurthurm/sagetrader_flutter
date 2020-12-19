@@ -9,10 +9,13 @@ import 'package:http_parser/http_parser.dart';
 
 String token;
 final String uploadsHandlerURI = serverURI + "mspt/uploads-handler";
+final String cloudinaryURI = serverURI + "mspt/cloudinary";
 final String filesFetchURI = serverURI + "mspt/fetch-files";
 final String deleteFileURI = serverURI + "mspt/delete-file";
 
-class Files with ChangeNotifier {
+
+
+class BaseFiles with ChangeNotifier {
   bool loading = true;
   List<FileData> _files = <FileData>[];
 
@@ -32,6 +35,10 @@ class Files with ChangeNotifier {
     _files.clear();
   }
 
+}
+
+class Files extends BaseFiles  {
+
   Future<void> deleteFile(String parent, String fileId) async {
     loading = true;
     await MSPTAuth().getToken().then((String value) => token = value);
@@ -44,9 +51,9 @@ class Files with ChangeNotifier {
       _files.removeWhere((file) => file.id == fileId);
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     loading = false;
     notifyListeners();
@@ -67,9 +74,9 @@ class Files with ChangeNotifier {
       responseData.forEach((item) => _files.add(FileData.fromJson(item)));
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     loading = false;
     notifyListeners();
@@ -77,7 +84,7 @@ class Files with ChangeNotifier {
   }
 
   Future uploadFiles(
-      List<FileData> images, String parent, String parentId) async {
+    List<FileData> images, String parent, String parentId, dynamic tags) async {
     loading = true;
     await MSPTAuth().getToken().then((String value) => {token = value});
 
@@ -101,10 +108,25 @@ class Files with ChangeNotifier {
 
     request.fields['parent'] = "$parent-$parentId";
     request.fields['parentId'] = parentId;
+    request.fields['tags'] = tags.join(", ");
     var _response = await request.send();
     // print(_response.reasonPhrase);
     // print(_response.statusCode);
+    // http.Response.fromStream(_response)
+    //     .then((_) => fetchFiles(parent, parentId));
     http.Response.fromStream(_response)
-        .then((_) => fetchFiles(parent, parentId));
+    .then((res) {
+      if (res.statusCode == 200) {
+        List<dynamic> responseData = json.decode(res.body);
+        responseData.forEach((item) => _files.add(FileData.fromJson(item)));
+        loading = false;
+        notifyListeners();
+      } else {
+        loading = false;
+        notifyListeners();
+        throw Exception("An error occured ${res.body.toString()}");
+      }
+    });
   }
 }
+

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:msagetrader/auth/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:msagetrader/widgets/offline.dart';
 import 'package:provider/provider.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -13,7 +14,8 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  String email, firstname, lastname, password1, password2;
+  String email, firstname, lastname, password1, password2, errorMsgs;
+  bool showError = false;
   @override
   void initState() {
     super.initState();
@@ -54,7 +56,12 @@ class _SignUpFormState extends State<SignUpForm> {
         "last_name": lastname,
         "password": password1,
       });
-      await _auth.createUser(payload);
+      await _auth.createUser(payload).catchError((onError){
+        setState(() {
+          showError = true;
+          errorMsgs = onError.toString();
+        });
+      });
     } else {
       return;
     }
@@ -229,6 +236,9 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               onPressed: _saveForm,
             ),
+            showError ? 
+            offlineMessageCard(context, errorMsgs)
+            : Text(""),
             SizedBox(height: 10),
           ],
         ),

@@ -17,7 +17,9 @@ class TradesTab extends StatelessWidget {
     return Container(
       child: _trades.loading ?
       Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.red,
+        ),
       ) :
       ListView.builder(
         itemCount: trades.length,

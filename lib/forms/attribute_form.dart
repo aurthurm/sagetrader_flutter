@@ -63,7 +63,7 @@ class _AttributeFormState extends State<AttributeForm> {
               done = true;
             })
           }).catchError((error) => {
-            Exception("$error")
+            throw Exception("$error")
           });     
       } else {
         await _attributes.updateAttribute(_attribute).then((value) => {
@@ -71,7 +71,7 @@ class _AttributeFormState extends State<AttributeForm> {
               done = true;
             })
           }).catchError((error) => {
-            Exception("$error")
+            throw Exception("$error")
           });  
       }
       setState(() {
@@ -80,7 +80,7 @@ class _AttributeFormState extends State<AttributeForm> {
       if (done) {
         Navigator.of(context).pop();
       } else {
-        Exception("Error Occured try again :)");
+        throw Exception("Error Occured try again :)");
       }
     } else {
       setState(() {
@@ -88,6 +88,29 @@ class _AttributeFormState extends State<AttributeForm> {
       });
       return;
     }
+  }
+
+  InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      isDense: true,
+      labelStyle: TextStyle(
+        color: Theme.of(context).primaryColor,
+      ),
+      labelText: hintText,
+      // hintText: hintText,
+      // hintStyle: TextStyle(
+      //   color: Colors.white,
+      // ),
+      filled: true,
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderSide: BorderSide(
+          width: 0,
+          style: BorderStyle.none,
+        ),
+      ),
+    );
   }
 
   @override
@@ -134,10 +157,10 @@ class _AttributeFormState extends State<AttributeForm> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Attribute Name",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration: _buildInputDecoration("Attribute Name"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         initialValue: _attribute.name,
                         onChanged: (String value) {
                           setState(() {
@@ -155,11 +178,12 @@ class _AttributeFormState extends State<AttributeForm> {
                               .requestFocus(_descriptionFocus);
                         },
                       ),
+                      SizedBox(height: 10),
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Attribute Description",
-                            filled: true,
-                            fillColor: Colors.grey.shade100),
+                        decoration:  _buildInputDecoration("Attribute Description"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _attribute.description,
@@ -178,12 +202,11 @@ class _AttributeFormState extends State<AttributeForm> {
                       ),
                       SizedBox(height: 10),
                       RaisedButton(
-                        color: Colors.blue,
+                        color: Theme.of(context).primaryColor,
                         child: Text(
                           saveButtonTitle.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.headline4.copyWith(
+                            color: Colors.white
                           ),
                         ),
                         onPressed: _saveForm,

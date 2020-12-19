@@ -118,7 +118,7 @@ class StudyItems with ChangeNotifier {
       // await Future.delayed(const Duration(seconds: 5));
       notifyListeners();
     } else {
-      Exception('Failed to Add StudyItem: Try Again <<sc ${response.statusCode} | ${response.body}>>');
+      throw Exception('Failed to Add StudyItem: Try Again <<sc ${response.statusCode} | ${response.body}>>');
     }
   }
 
@@ -163,7 +163,7 @@ class StudyItems with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _studyItems[index] = _oldStudy;
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
   }
 
@@ -188,9 +188,9 @@ class StudyItems with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }

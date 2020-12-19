@@ -155,6 +155,25 @@ class _StudyItemFormState extends State<StudyItemForm> {
     if (picked != null) setState(() => _pickedDate = picked.toString());
   }
 
+ InputDecoration _buildInputDecoration(String hintText) {
+    return InputDecoration(
+      isDense: true,
+      labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+          color: Theme.of(context).primaryColor
+      ),
+      labelText: hintText,
+      filled: true,
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderSide: BorderSide(
+          width: 0,
+          style: BorderStyle.none,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final _instruments = Provider.of<Instruments>(context, listen: false);
@@ -200,7 +219,12 @@ class _StudyItemFormState extends State<StudyItemForm> {
                                 child: Text("Select Study Date ..."),
                               ),
                               Spacer(),
-                              Text(humanizeDate(_pickedDate.toString())),
+                              Text(
+                              humanizeDate(_pickedDate.toString()),
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
+                              ),
+                            ),
                             ],
                           ),
                         ),
@@ -215,7 +239,13 @@ class _StudyItemFormState extends State<StudyItemForm> {
                                   : null,
                               hint: Text(
                                 'Select an Instrument',
-                              ),
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
+                              )
+                            ),
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                            ),
                               onChanged: (value) =>
                                   setState(() => _studyItem.instrument = value),
                               validator: (value) => _validateChoices(
@@ -232,23 +262,40 @@ class _StudyItemFormState extends State<StudyItemForm> {
                           ),
                         ),
                         SwitchListTile(
-                          title: Text("Long Trade?"),
+                          title: Text(
+                            "Long Trade?",
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                            )
+                          ),
                           value: _studyItem.position,
                           onChanged: (val) {
                             setState(() => _studyItem.position = val);
                           },
+                          activeColor: Theme.of(context).primaryColor,
+                          activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                         ),
                         SwitchListTile(
-                          title: Text("Closed in Profit?"),
+                          title: Text(
+                            "Closed in Profit?",
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                            )
+                         ),
                           value: _studyItem.outcome,
                           onChanged: (val) {
                             setState(() => _studyItem.outcome = val);
                           },
+                          activeColor: Theme.of(context).primaryColor,
+                          activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                         ),             
                         TextFormField(
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: "How many pips",
+                            labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
+                            ), 
                           ),
                           initialValue:
                               _studyItem.id == null ? '' : _studyItem.pips.toString(),
@@ -269,6 +316,9 @@ class _StudyItemFormState extends State<StudyItemForm> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: "Risk Reward 1:?",
+                            labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
+                            ), 
                           ),
                           initialValue: _studyItem.riskReward.toString() == "0.0"
                               ? ''
@@ -299,6 +349,12 @@ class _StudyItemFormState extends State<StudyItemForm> {
                                   _studyItem.style.isNotEmpty ? _studyItem.style : null,
                               hint: Text(
                                 'Select a trading style',
+                                style: Theme.of(context).textTheme.headline5.copyWith(
+                                    color: Theme.of(context).primaryColor
+                                ),
+                              ),
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                  color: Theme.of(context).primaryColor
                               ),
                               onChanged: (value) =>
                                   setState(() => _studyItem.style = value),
@@ -317,11 +373,12 @@ class _StudyItemFormState extends State<StudyItemForm> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 10),
                         TextFormField(
-                          decoration: InputDecoration(
-                              labelText: "Study Item Description",
-                              filled: true,
-                              fillColor: Colors.grey.shade100),
+                          decoration: _buildInputDecoration("StudyItem Detail"),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
                           minLines: 5,
                           maxLines: 20,
                           initialValue: _studyItem.description,
@@ -332,7 +389,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
                           },
                           validator: (value) => _validateDescription(
                             value,
-                            "StudyItem Description is too short!!",
+                            "StudyItem Detail is too short!!",
                           ),
                           textInputAction: TextInputAction.newline,
                           focusNode: _descriptionFocus,
@@ -347,14 +404,13 @@ class _StudyItemFormState extends State<StudyItemForm> {
                         ),
                         SizedBox(height: 10),
                         RaisedButton(
-                          color: Colors.blue,
+                          color: Theme.of(context).primaryColor,
                           child: Text(
                             saveButtonTitle.toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Colors.white
                             ),
-                          ),
+                        ),
                           onPressed: _saveForm,
                         ),
                         SizedBox(height: 10),
@@ -413,9 +469,11 @@ class _SelectTagState extends State<SelectTag> {
         child: Chip(
           label: Text(
             widget.attr.name,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              color: Colors.white
+            )
           ),
-          backgroundColor: !toggled ? Colors.black12 : Colors.lightGreen,
+          backgroundColor: !toggled ? Colors.grey : Theme.of(context).primaryColor,
         ),
         onTap: () => {
           setState(() => {

@@ -96,13 +96,14 @@ class Trades with ChangeNotifier {
   }
 
   Future<List<Trade>> fetchTrades() async {
+    toggleLoading();
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       tradesURI,
       headers: bearerAuthHeader(token),
     );
 
-    await Future.delayed(Duration(seconds: 10));
+    // await Future.delayed(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       List<dynamic> responseData = json.decode(response.body);
@@ -114,11 +115,12 @@ class Trades with ChangeNotifier {
           _trades.add(inComing);
         }
       });
-      notifyListeners();
+      toggleLoading();
       await Future.delayed(Duration(seconds: 2)); 
       return _trades;
     } else {
       final String message = json.decode(response.body)['detail'];
+      toggleLoading();
       throw Exception("(${response.statusCode}): $message");
     }
     //

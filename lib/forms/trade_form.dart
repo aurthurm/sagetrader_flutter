@@ -151,16 +151,12 @@ class _TradeFormState extends State<TradeForm> {
   InputDecoration _buildInputDecoration(String hintText) {
     return InputDecoration(
       isDense: true,
-      labelStyle: TextStyle(
-        color: Theme.of(context).primaryColor,
+      labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+          color: Theme.of(context).primaryColor
       ),
       labelText: hintText,
-      // hintText: hintText,
-      // hintStyle: TextStyle(
-      //   color: Colors.white,
-      // ),
       filled: true,
-      fillColor: Theme.of(context).primaryColor.withOpacity(0.2),
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         borderSide: BorderSide(
@@ -213,7 +209,12 @@ class _TradeFormState extends State<TradeForm> {
                               ),
                             ),
                             Spacer(),
-                            Text(humanizeDate(_pickedDate.toString())),
+                            Text(
+                              humanizeDate(_pickedDate.toString()),
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -228,6 +229,12 @@ class _TradeFormState extends State<TradeForm> {
                                 : null,
                             hint: Text(
                               'Select an Instrument',
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
+                              )
+                            ),
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
                             ),
                             onChanged: (value) =>
                                 setState(() => _trade.instrument = value),
@@ -245,85 +252,151 @@ class _TradeFormState extends State<TradeForm> {
                         ),
                       ),
                       SwitchListTile(
-                        title: Text("Long Trade?"),
+                        title: Text(
+                          "Long Trade?",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                            color: Theme.of(context).primaryColor
+                          ),
+                        ),
                         value: _trade.position,
                         onChanged: (val) {
                           setState(() => _trade.position = val);
                         },
+                        activeColor: Theme.of(context).primaryColor,
+                        activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                       ),
                       SwitchListTile(
-                        title: Text("Trade is Open?"),
+                        title: Text(
+                          "Trade is Open?",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                            color: Theme.of(context).primaryColor
+                          ),
+                        ),
                         value: _trade.status,
                         onChanged: (val) {
                           setState(() => _trade.status = val);
                         },
+                        activeColor: Theme.of(context).primaryColor,
+                        activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                       ),
                       Visibility(
                         visible: !_trade.status,
                         child: SwitchListTile(
-                          title: Text("Closed in Profit?"),
+                          title: Text(
+                            "Closed in Profit?",
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                            ),
+                          ),
                           value: _trade.outcome,
                           onChanged: (val) {
                             setState(() => _trade.outcome = val);
                           },
+                          activeColor: Theme.of(context).primaryColor,
+                          activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                         ),
                       ),
                       Visibility(
                         visible: !_trade.outcome,
                         child: SwitchListTile(
-                          title: Text("Full Stop Hit?"),
+                          title: Text(
+                            "Full Stop Hit?",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                            color: Theme.of(context).primaryColor
+                          ),
+                        ),
                           value: _trade.fullStop,
                           onChanged: (val) {
                             setState(() => _trade.fullStop = val);
                           },
+                          activeColor: Theme.of(context).primaryColor,
+                          activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                         ),
                       ),
                       SwitchListTile(
-                        title: Text("Scaled In?"),
+                        title: Text(
+                          "Scaled In?",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                            color: Theme.of(context).primaryColor
+                          ),
+                        ),
                         value: _trade.scaledIn,
                         onChanged: (val) {
                           setState(() => _trade.scaledIn = val);
                         },
+                        activeColor: Theme.of(context).primaryColor,
+                        activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                       ),
                       SwitchListTile(
-                        title: Text("Scaled Out?"),
+                        title: Text(
+                          "Scaled Out?",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                            color: Theme.of(context).primaryColor
+                          ),
+                        ),
                         value: _trade.scaledOut,
                         onChanged: (val) {
                           setState(() => _trade.scaledOut = val);
                         },
+                        activeColor: Theme.of(context).primaryColor,
+                        activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                       ),
                       Visibility(
                         visible: !_trade.status,
                         child: SwitchListTile(
-                          title: Text("TP Hit?"),
+                          title: Text(
+                            "TP Hit?",
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                            ),
+                        ),
                           value: _trade.tpReached,
                           onChanged: (val) {
                             setState(() => _trade.tpReached = val);
                           },
+                          activeColor: Theme.of(context).primaryColor,
+                          activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                         ),
                       ),
                       Visibility(
                         visible: !_trade.status,
                         child: SwitchListTile(
-                          title: Text("TP Exceeded?"),
+                          title: Text(
+                            "TP Exceeded?",
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
+                              ),
+                          ),
                           value: _trade.tpExceeded,
                           onChanged: (val) {
                             setState(() => _trade.tpExceeded = val);
                           },
+                          activeColor: Theme.of(context).primaryColor,
+                          activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                         ),
                       ),
                       SwitchListTile(
-                        title: Text("Correlated Position?"),
+                        title: Text(
+                          "Correlated Position?",
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                            ),
+                        ),
                         value: _trade.correlatedPosition,
                         onChanged: (val) {
                           setState(() => _trade.correlatedPosition = val);
                         },
+                        activeColor: Theme.of(context).primaryColor,
+                        activeTrackColor: Theme.of(context).primaryColor.withOpacity(0.6),
                       ),
                       SizedBox(height: 10),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Risk Reward 1:?",
+                          labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                          ),                        
                         ),
                         initialValue: _trade.riskReward?.toString() ?? "",
                         onChanged: (String value) {
@@ -345,6 +418,9 @@ class _TradeFormState extends State<TradeForm> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Entry Price",
+                          labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                          ),                        
                         ),
                         initialValue: _trade.entryPrice?.toString() ?? "" ,
                         onChanged: (String value) {
@@ -362,6 +438,9 @@ class _TradeFormState extends State<TradeForm> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Take Profit Price",
+                          labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                          ),                        
                         ),
                         initialValue: _trade.tpPrice?.toString() ?? "",
                         onChanged: (String value) {
@@ -379,6 +458,9 @@ class _TradeFormState extends State<TradeForm> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Stop Loss Price",
+                          labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                          ),                        
                         ),
                         initialValue: _trade.slPrice?.toString() ?? "",
                         onChanged: (String value) {
@@ -396,6 +478,9 @@ class _TradeFormState extends State<TradeForm> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Stop Loss in pips",
+                          labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                          ),                        
                         ),
                         initialValue: _trade.sl?.toString() ?? "",
                         onChanged: (String value) {
@@ -413,6 +498,9 @@ class _TradeFormState extends State<TradeForm> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Take Profit in pips",
+                          labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                          ),                        
                         ),
                         initialValue: _trade.tp?.toString() ?? "",
                         onChanged: (String value) {
@@ -432,7 +520,10 @@ class _TradeFormState extends State<TradeForm> {
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: "How many pips Gained/Lost",
-                          ),
+                          labelStyle: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor
+                          ),                        
+                        ),
                           initialValue:
                               _trade.id == null ? '' : _trade.pips?.toString() ?? "",
                           onChanged: (String newValue) {
@@ -461,6 +552,12 @@ class _TradeFormState extends State<TradeForm> {
                                 : null,
                             hint: Text(
                               'Select a trading strategy',
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                  color: Theme.of(context).primaryColor
+                              ),                 
+                            ),
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
                             ),
                             onChanged: (value) =>
                                 setState(() => _trade.strategy = value),
@@ -490,6 +587,12 @@ class _TradeFormState extends State<TradeForm> {
                                 _trade.style.isNotEmpty ? _trade.style : null,
                             hint: Text(
                               'Select a trading style',
+                              style: Theme.of(context).textTheme.headline5.copyWith(
+                                  color: Theme.of(context).primaryColor
+                              ),                        
+                            ),
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                                color: Theme.of(context).primaryColor
                             ),
                             onChanged: (value) =>
                                 setState(() => _trade.style = value),
@@ -511,6 +614,9 @@ class _TradeFormState extends State<TradeForm> {
                       SizedBox(height: 10),
                       TextFormField(
                         decoration: _buildInputDecoration("Trade Description"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor
+                        ),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _trade.description,
@@ -528,12 +634,11 @@ class _TradeFormState extends State<TradeForm> {
                       ),
                       SizedBox(height: 10),
                       RaisedButton(
-                        color: Colors.blue,
+                        color: Theme.of(context).primaryColor,
                         child: Text(
                           saveButtonTitle.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: Colors.white
                           ),
                         ),
                         onPressed: _saveForm,

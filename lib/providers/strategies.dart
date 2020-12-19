@@ -67,7 +67,7 @@ class Strategies with ChangeNotifier {
       notifyListeners();
       return true;
     } else {
-      Exception('Failed to Add Srategy: Try Again <<sc ${response.statusCode} | ${response.body}>>');
+      throw Exception('Failed to Add Srategy: Try Again <<sc ${response.statusCode} | ${response.body}>>');
     }
   }
 
@@ -93,7 +93,7 @@ class Strategies with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _strategies[index] = _oldStrategy;
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
   }
 
@@ -118,9 +118,9 @@ class Strategies with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }

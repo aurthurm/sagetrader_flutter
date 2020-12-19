@@ -62,7 +62,7 @@ class _StrategyFormState extends State<StrategyForm> {
               done = true;
             })
           }).catchError((error) => {
-            Exception("$error")
+            throw Exception("$error")
           });     
       } else {
         await _strategies.updateStrategy(_strategy).then((value) => {
@@ -70,7 +70,7 @@ class _StrategyFormState extends State<StrategyForm> {
               done = true;
             })
           }).catchError((error) => {
-            Exception("$error")
+            throw Exception("$error")
           });  
       }
       setState(() {
@@ -79,7 +79,7 @@ class _StrategyFormState extends State<StrategyForm> {
       if (done) {
         Navigator.of(context).pop();
       } else {
-        Exception("Error Occured try again :)");
+        throw Exception("Error Occured try again :)");
       }
     } else {
       return;
@@ -99,7 +99,7 @@ class _StrategyFormState extends State<StrategyForm> {
       //   color: Colors.white,
       // ),
       filled: true,
-      fillColor: Theme.of(context).primaryColor.withOpacity(0.2),
+      fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         borderSide: BorderSide(
@@ -155,6 +155,9 @@ class _StrategyFormState extends State<StrategyForm> {
                     children: <Widget>[
                       TextFormField(
                         decoration: _buildInputDecoration("Strategy Name"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         initialValue: _strategy.name,
                         onChanged: (String value) {
                           setState(() {
@@ -175,6 +178,9 @@ class _StrategyFormState extends State<StrategyForm> {
                       SizedBox(height: 10,),
                       TextFormField(
                         decoration:  _buildInputDecoration("Strategy Description"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _strategy.description,

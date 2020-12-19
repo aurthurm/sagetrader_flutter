@@ -65,7 +65,7 @@ class Instruments with ChangeNotifier {
       _instruments.add(newInstrument);
       notifyListeners();
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
 
     // _instruments.add(_instrument);
@@ -95,7 +95,7 @@ class Instruments with ChangeNotifier {
     if (response.statusCode == 200) {
     } else {
       _instruments[index] = _oldInstrument;
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
   }
 
@@ -120,9 +120,9 @@ class Instruments with ChangeNotifier {
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
-      Exception("(${response.statusCode}): $message");
+      throw Exception("(${response.statusCode}): $message");
     } else {
-      Exception("(${response.statusCode}): ${response.body}");
+      throw Exception("(${response.statusCode}): ${response.body}");
     }
   }
 }

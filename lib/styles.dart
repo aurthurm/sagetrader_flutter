@@ -8,48 +8,48 @@ class MSPTTheme {
   static final ThemeData baseDark = ThemeData.dark();
 
   // Base Text Theme Style
-  static TextTheme baseTextTheme(TextTheme default_base){
-    return default_base.copyWith(
+  static TextTheme baseTextTheme(TextTheme defaultBase){
+    return defaultBase.copyWith(
       
-      headline1: default_base.headline1.copyWith(
+      headline1: defaultBase.headline1.copyWith(
         fontSize: 24,
         fontWeight: FontWeight.w800,
       ),
-      headline2: default_base.headline1.copyWith(
+      headline2: defaultBase.headline1.copyWith(
         fontSize: 20,
         color: Colors.black87,
         fontWeight: FontWeight.w700,
       ),
-      headline3: default_base.headline1.copyWith(
+      headline3: defaultBase.headline1.copyWith(
         fontSize: 18,
         fontWeight: FontWeight.w600,
       ),
-      headline4: default_base.headline1.copyWith(
+      headline4: defaultBase.headline1.copyWith(
         fontSize: 16,
         fontWeight: FontWeight.w500,
       ),
-      headline5: default_base.headline1.copyWith(
+      headline5: defaultBase.headline1.copyWith(
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
-      headline6: default_base.headline1.copyWith(
+      headline6: defaultBase.headline1.copyWith(
         fontSize: 12,
         fontWeight: FontWeight.w300,
       ),
-      subtitle1: default_base.headline1.copyWith(
+      subtitle1: defaultBase.headline1.copyWith(
         fontSize: 16,
         fontWeight: FontWeight.w300,
       ),
-      subtitle2: default_base.headline1.copyWith(
+      subtitle2: defaultBase.headline1.copyWith(
         fontSize: 14,
         color: Colors.grey,
         fontWeight: FontWeight.w300,
       ),
-      bodyText1: default_base.headline1.copyWith(
+      bodyText1: defaultBase.headline1.copyWith(
         color: Colors.grey,
         fontSize: 16,
       ),
-      bodyText2: default_base.headline1.copyWith(
+      bodyText2: defaultBase.headline1.copyWith(
         color: Colors.grey.withOpacity(0.9),
         fontSize: 14,
       ),

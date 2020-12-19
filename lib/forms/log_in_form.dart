@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:msagetrader/widgets/offline.dart';
 import 'package:provider/provider.dart';
 
 import 'package:msagetrader/auth/auth.dart';
-import 'package:msagetrader/widgets/input_decoration.dart';
 
 class LogInForm extends StatefulWidget {
   const LogInForm({
@@ -14,7 +14,8 @@ class LogInForm extends StatefulWidget {
 }
 
 class _LogInFormState extends State<LogInForm> {
-  String username, password;
+  String username, password, errorMsgs;
+  bool showError = false;
   @override
   void initState() {
     super.initState();
@@ -39,7 +40,12 @@ class _LogInFormState extends State<LogInForm> {
     bool formIsValid = _formKey.currentState.validate();
     if (formIsValid) {
       _formKey.currentState.save();
-      await _auth.authenticate(username, password);
+      await _auth.authenticate(username, password).catchError((onError){
+        setState(() {
+          showError = true;
+          errorMsgs = onError.toString();
+        });
+      });
     } else {
       return;
     }
@@ -174,6 +180,9 @@ class _LogInFormState extends State<LogInForm> {
               ],),
               onPressed: _saveForm,
             ),
+            showError ? 
+            offlineMessageCard(context, errorMsgs)
+            : Text(""),
             SizedBox(height: 10),
           ],
         ),

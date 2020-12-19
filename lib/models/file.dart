@@ -6,7 +6,6 @@
 import 'package:msagetrader/config/conf.dart';
 
 enum FileType { image, pdf, word, excel }
-
 class FileData {
   String id;
   FileType type;
@@ -34,7 +33,7 @@ class FileData {
       bytes: json['bytes'],
       parent: json['parent'],
       parentId: json['parent_id'],
-      location: "$baseURI${json['location']}",
+      location: json['location'], // "$baseURI${json['location']}",
     );
   }
 }

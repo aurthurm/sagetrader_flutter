@@ -24,6 +24,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
   List<Asset> _images = List<Asset>();
   List<FileData> _byteImageMaps = List<FileData>();
   bool _isInit = true, loading = true;
+  List<dynamic> tags = List<dynamic>();
 
   @override
   void initState() {
@@ -50,7 +51,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
+        maxImages: 5,
         enableCamera: true,
         selectedAssets: _images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
@@ -64,7 +65,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
       );
     } on Exception catch (e) {
       final String error = e.toString();
-      Exception("Errored: $error");
+      throw Exception("Errored: $error");
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -84,6 +85,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
         _byteImageMaps,
         'strategy',
         widget.strategyId,
+        tags,
       );
     });
   }
@@ -108,6 +110,15 @@ class _StrategyDetailState extends State<StrategyDetail> {
     });
   }
 
+  _buildTags(Strategy st ) {
+    var _tags = [];
+    _tags.add(st.name.toUpperCase());
+    setState(() {
+      tags = _tags;
+    });
+    // print("StrategyTags: $tags");
+  }
+
   Widget build(BuildContext context) {
     final _strategies = Provider.of<Strategies>(context);
     Strategy strategy = _strategies.findById(widget.strategyId);
@@ -116,6 +127,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
     setState(() {
       loading = _files.loading;
     });
+    _buildTags(strategy);
 
     return Scaffold(
       appBar: AppBar(

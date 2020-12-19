@@ -30,6 +30,7 @@ class _TradeDetailState extends State<TradeDetail> {
   List<Asset> _images = List<Asset>();
   List<FileData> _byteImageMaps = List<FileData>();
   bool _isInit = true, loading = true;
+  List<dynamic> tags = List<dynamic>();
 
   @override
   void initState() {
@@ -70,7 +71,7 @@ class _TradeDetailState extends State<TradeDetail> {
       );
     } on Exception catch (e) {
       final String error = e.toString();
-      Exception("Errored: $error");
+      throw Exception("Errored: $error");
     }
 
     if (!mounted) return;
@@ -86,6 +87,7 @@ class _TradeDetailState extends State<TradeDetail> {
         _byteImageMaps,
         'trade',
         widget.tradeId,
+        tags,
       );
     });
   }
@@ -110,6 +112,18 @@ class _TradeDetailState extends State<TradeDetail> {
     });
   }
 
+  _buildTags(Trade tr, Instrument ins, Style sty, Strategy str) {
+    var _tags = [];
+    _tags.add(ins.title.toUpperCase());
+    _tags.add(tr.positionAsText().toUpperCase());
+    _tags.add(sty.title.toUpperCase());
+    _tags.add(str.name.toUpperCase());
+    setState(() {
+      tags = _tags;
+    });
+    // print("TradeTags: $tags");
+  }
+
   @override
   Widget build(BuildContext context) {
     final _trades = Provider.of<Trades>(context);
@@ -125,6 +139,7 @@ class _TradeDetailState extends State<TradeDetail> {
     setState(() {
       loading = _files.loading;
     });
+    _buildTags(trade, instrument, style, strategy);
 
     return Scaffold(
       appBar: AppBar(
