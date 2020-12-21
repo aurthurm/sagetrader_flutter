@@ -31,6 +31,7 @@ class _TradeDetailState extends State<TradeDetail> {
   List<FileData> _byteImageMaps = List<FileData>();
   bool _isInit = true, loading = true;
   List<dynamic> tags = List<dynamic>();
+  String caption = "";
 
   @override
   void initState() {
@@ -88,6 +89,7 @@ class _TradeDetailState extends State<TradeDetail> {
         'trade',
         widget.tradeId,
         tags,
+        caption
       );
     });
   }
@@ -103,7 +105,7 @@ class _TradeDetailState extends State<TradeDetail> {
 
     _file = FileData(
       bytes: img,
-      parentId: widget.tradeId,
+      parentUid: widget.tradeId,
       parent: "trade",
     );
 
@@ -112,7 +114,7 @@ class _TradeDetailState extends State<TradeDetail> {
     });
   }
 
-  _buildTags(Trade tr, Instrument ins, Style sty, Strategy str) {
+  _buildTagsAlt(Trade tr, Instrument ins, Style sty, Strategy str) {
     var _tags = [];
     _tags.add(ins.title.toUpperCase());
     _tags.add(tr.positionAsText().toUpperCase());
@@ -120,6 +122,7 @@ class _TradeDetailState extends State<TradeDetail> {
     _tags.add(str.name.toUpperCase());
     setState(() {
       tags = _tags;
+      caption = "${tr.positionAsText().toUpperCase()} ${ins.title.toUpperCase()} ${sty.title.toUpperCase()} Trade";
     });
     // print("TradeTags: $tags");
   }
@@ -139,7 +142,7 @@ class _TradeDetailState extends State<TradeDetail> {
     setState(() {
       loading = _files.loading;
     });
-    _buildTags(trade, instrument, style, strategy);
+    _buildTagsAlt(trade, instrument, style, strategy);
 
     return Scaffold(
       appBar: AppBar(
@@ -169,7 +172,7 @@ class _TradeDetailState extends State<TradeDetail> {
             color: Colors.white,
             onPressed: () {
               navigateToPage(
-                  context, TradeForm(newTrade: false, tradeID: trade.id));
+                  context, TradeForm(newTrade: false, tradeID: trade.uid));
             },
           ),
           IconButton(
@@ -196,9 +199,8 @@ class _TradeDetailState extends State<TradeDetail> {
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop(); // pop alert dialog
-                        Navigator.of(context).pop(); // pop from deleted trade
-                        _trades.deleteById(trade.id);
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                        _trades.deleteById(trade.uid);
                       },
                     ),
                     FlatButton(
@@ -490,7 +492,7 @@ class _TradeDetailState extends State<TradeDetail> {
                                                             Navigator.pop(
                                                                 context),
                                                             _files.deleteFile(
-                                                                'trade', image.id)
+                                                                'trade', image.uid)
                                                           },
                                                         ),
                                                         RaisedButton(

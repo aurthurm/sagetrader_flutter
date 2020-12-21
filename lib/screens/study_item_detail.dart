@@ -30,6 +30,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
   List<FileData> _byteImageMaps = List<FileData>();
   bool _isInit = true, loading = true;
   List<dynamic> tags = List<dynamic>();
+  String caption = "";
 
   @override
   void initState() {
@@ -91,6 +92,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
         'studyitem',
         widget.studyItemId,
         tags,
+        caption
       );
     });
   }
@@ -106,7 +108,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
 
     _file = FileData(
       bytes: img,
-      parentId: widget.studyItemId,
+      parentUid: widget.studyItemId,
       parent: "studyitem",
     );
 
@@ -115,7 +117,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     });
   }
 
-  _buildTags(StudyItem st, Style sty, Instrument inst) {
+  _buildTagsAlt(StudyItem st, Style sty, Instrument inst) {
     var _tags = [];
     _tags.add(inst.title.toUpperCase());
     _tags.add(st.positionAsText().toUpperCase());
@@ -123,6 +125,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     st.attributes.forEach((attr) =>  _tags.add(attr.name.toUpperCase()));
     setState(() {
       tags = _tags;
+      caption = "${st.positionAsText().toUpperCase()} ${inst.title.toUpperCase()} ${sty.title.toUpperCase()} Study";
     });
     // print("StudyItemTags: $tags");
   }
@@ -131,7 +134,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     final _studyItems = Provider.of<StudyItems>(context);
     StudyItem studyItem = _studyItems.findById(widget.studyItemId);
     final _studies = Provider.of<Studies>(context);
-    Study study = _studies.findById(studyItem.sid);
+    Study study = _studies.findById(studyItem.suid);
     final _styles = Provider.of<Styles>(context, listen: false);
     Style style = _styles.findById(studyItem.style);
     final _instruments = Provider.of<Instruments>(context, listen: false);
@@ -141,7 +144,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     setState(() {
       loading = _files.loading;
     });
-    _buildTags(studyItem, style, instrument);
+    _buildTagsAlt(studyItem, style, instrument);
 
 
     return Scaffold(
@@ -158,7 +161,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
             color: Colors.white,
             onPressed: () {
               navigateToPage(context,
-                  StudyItemForm(newStudyItem: false, studyId: study.id, studyItemId: studyItem.id,));
+                  StudyItemForm(newStudyItem: false, studyId: study.uid, studyItemId: studyItem.uid,));
             },
           ),
           IconButton(
@@ -187,7 +190,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
                       onPressed: () {
                         Navigator.of(context).pop(); // pop alert dialog
                         Navigator.of(context).pop(); // pop from deleted trade
-                        _studyItems.deleteById(studyItem.id);
+                        _studyItems.deleteById(studyItem.uid);
                       },
                     ),
                     FlatButton(
@@ -386,7 +389,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
                                                       context),
                                                   _files.deleteFile(
                                                       'studyitem',
-                                                      image.id)
+                                                      image.uid)
                                                 },
                                               ),
                                               RaisedButton(

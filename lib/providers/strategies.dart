@@ -17,8 +17,18 @@ class Strategies with ChangeNotifier {
 
   List<Strategy> get strategies => _strategies;
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _strategies.clear();
+    });
+    notifyListeners();
+  }
+
   Strategy findById(String id) {
-    final index = strategies.indexWhere((strat) => strat.id == id);
+    final index = strategies.indexWhere((strat) => strat.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return strategies[index];
   }
 
@@ -26,10 +36,10 @@ class Strategies with ChangeNotifier {
   ///
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _strategies.indexWhere((inst) => inst.id == id);
+    final _oldIndex = _strategies.indexWhere((inst) => inst.uid == id);
     Strategy _oldStrategy = _strategies[_oldIndex];
-    _strategies.removeWhere((strategy) => strategy.id == id);
-    notifyListeners();
+    _strategies.removeWhere((strategy) => strategy.uid == id);
+    await  Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
 
@@ -73,18 +83,18 @@ class Strategies with ChangeNotifier {
 
   Future updateStrategy(Strategy editedStrategy) async {
     final index =
-        _strategies.indexWhere((strategy) => strategy.id == editedStrategy.id);
+        _strategies.indexWhere((strategy) => strategy.uid == editedStrategy.uid);
     final _oldStrategy = _strategies[index];
     _strategies[index] = editedStrategy;
     notifyListeners();
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      strategiesURI + "/${editedStrategy.id}",
+      strategiesURI + "/${editedStrategy.uid}",
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
-          "id": editedStrategy.id,
+          "uid": editedStrategy.uid,
           "name": editedStrategy.name,
         },
       ),
@@ -110,7 +120,7 @@ class Strategies with ChangeNotifier {
         //dont add if instrument exists in case of multi reloads
         final Strategy inComing = Strategy.fromJson(item);
         final elements =
-            _strategies.where((element) => element.id == inComing.id);
+            _strategies.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _strategies.add(inComing);
         }

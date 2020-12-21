@@ -35,8 +35,8 @@ class _StudyItemFormState extends State<StudyItemForm> {
       formTitle = "New";
       saveButtonTitle = "!! Save Study Item !!";
       _studyItem = StudyItem(
-        sid: widget.studyId,
-        id: null,
+        suid: widget.studyId,
+        uid: null,
         instrument: '',
         position: true,
         outcome: true,
@@ -128,7 +128,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
       final _attrs = Provider.of<Attributes>(context, listen: false);
       _studyItem.date = _pickedDate;
       _studyItem.attributes = _attrs.seleted;
-      if (_studyItem.id == null) {
+      if (_studyItem.uid == null) {
         /*
          * Safety checks:
          * outcome is true ?
@@ -254,7 +254,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
                               ),
                               items: instruments.map((instrument) {
                                 return DropdownMenuItem(
-                                  value: instrument.id,
+                                  value: instrument.uid,
                                   child: Text(instrument.name()),
                                 );
                               }).toList(),
@@ -298,7 +298,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
                             ), 
                           ),
                           initialValue:
-                              _studyItem.id == null ? '' : _studyItem.pips.toString(),
+                              _studyItem.uid == null ? '' : _studyItem.pips.toString(),
                           onChanged: (String newValue) {
                             setState(() {
                               _studyItem.pips = double.parse(newValue);
@@ -365,7 +365,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
                               items: styles.map(
                                 (style) {
                                   return DropdownMenuItem(
-                                    value: style.id,
+                                    value: style.uid,
                                     child: Text(style.name()),
                                   );
                                 },
@@ -454,7 +454,7 @@ class _SelectTagState extends State<SelectTag> {
   }
 
   bool isToggled(Attribute attr) {
-    final index = widget._attributes.seleted.indexWhere((e) => e.id == attr.id);
+    final index = widget._attributes.seleted.indexWhere((e) => e.uid == attr.uid);
     if (index == -1) {
       return false;
     }

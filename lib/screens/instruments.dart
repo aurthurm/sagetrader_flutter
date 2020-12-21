@@ -14,7 +14,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
   Instrument _instrument;
   @override
   void initState() {
-    _instrument = Instrument(id: null, title: '');
+    _instrument = Instrument(uid: null, title: '');
     super.initState();
   }
 
@@ -34,12 +34,12 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
       _formKey.currentState.save();
       //new or edit form
       final _instruments = Provider.of<Instruments>(context, listen: false);
-      if (_instrument.id == null) {
+      if (_instrument.uid == null) {
         _instruments.addInstrument(_instrument);
       } else {
         _instruments.updateInstrument(_instrument);
       }
-      _instrument = Instrument(id: null, title: "");
+      _instrument = Instrument(uid: null, title: "");
     } else {
       return;
     }
@@ -89,7 +89,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                     },
                     child: Icon(
                       Icons.add_box,
-                      color: Colors.blue,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ],
@@ -118,7 +118,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                           ],
                         ),
                       ),
-                      key: Key(instrument.id),
+                      key: Key(instrument.uid),
                       child: Card(
                         elevation: 0.5,
                         child: Row(
@@ -177,7 +177,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                             backgroundColor: Colors.red,
                           ),
                         );
-                        _instruments.deleteById(instrument.id);
+                        _instruments.deleteById(instrument.uid);
                       },
                     );
                   },
@@ -231,17 +231,27 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
         ),
         actions: <Widget>[
           FlatButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                _instrument = Instrument(id: null, title: "");
-                Navigator.pop(context);
-              }),
+            color: Colors.orange,
+            child: Text('Cancel', 
+              style: Theme.of(context).textTheme.headline5.copyWith(
+                color: Colors.white,
+              )
+            ),
+            onPressed: () {
+              _instrument = Instrument(uid: null, title: "");
+              Navigator.pop(context);
+          }),
           FlatButton(
-              child: Text(_buttomText),
-              onPressed: () {
-                Navigator.pop(context);
-                _saveForm();
-              })
+            color: Theme.of(context).primaryColor,
+            child: Text(_buttomText, 
+              style: Theme.of(context).textTheme.headline5.copyWith(
+                color: Colors.white,
+              )
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              _saveForm();
+          })
         ],
       ),
     );

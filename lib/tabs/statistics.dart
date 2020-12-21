@@ -5,7 +5,7 @@ class StatisticsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: Text("Statistics for Trades"),
+        child: Text("Statistics for Journalled Trades \n\n-- coming soon --"),
       ),
     );
   }

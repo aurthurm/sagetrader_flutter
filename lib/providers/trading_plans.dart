@@ -13,16 +13,26 @@ class TradingPlans with ChangeNotifier {
   List<TradingPlan> _plans = <TradingPlan>[];
   List<TradingPlan> get plans => _plans;
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _plans.clear();
+    });
+    notifyListeners();
+  }
+
   TradingPlan findById(String id) {
-    final index = _plans.indexWhere((item) => item.id == id);
+    final index = _plans.indexWhere((item) => item.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return _plans[index];
   }
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _plans.indexWhere((item) => item.id == id);
+    final _oldIndex = _plans.indexWhere((item) => item.uid == id);
     TradingPlan _oldPlan = _plans[_oldIndex];
-    _plans.removeWhere((item) => item.id == id);
-    notifyListeners();
+    _plans.removeWhere((item) => item.uid == id);
+    await  Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
@@ -50,7 +60,7 @@ class TradingPlans with ChangeNotifier {
       responseData.forEach((item) {
         //dont add if  exists in case of multi reloads
         final TradingPlan inComing = TradingPlan.fromJson(item);
-        final elements = _plans.where((element) => element.id == inComing.id);
+        final elements = _plans.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _plans.add(inComing);
         }
@@ -91,18 +101,18 @@ class TradingPlans with ChangeNotifier {
   }
 
   Future<void> updatePlan(TradingPlan editedPlan) async {
-    final index = _plans.indexWhere((item) => item.id == editedPlan.id);
+    final index = _plans.indexWhere((item) => item.uid == editedPlan.uid);
     final _oldStrategy = _plans[index];
     _plans[index] = editedPlan;
     notifyListeners();
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      tradingPlansURI + "/${editedPlan.id}",
+      tradingPlansURI + "/${editedPlan.uid}",
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
-          "id": editedPlan.id,
+          "uid": editedPlan.uid,
           "name": editedPlan.title,
           "description": editedPlan.description,
         },

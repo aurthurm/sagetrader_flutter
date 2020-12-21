@@ -13,23 +13,34 @@ class Attributes with ChangeNotifier {
   List<Attribute> _attributes = <Attribute>[];
   List<Attribute> _selected = <Attribute>[];
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _selected.clear();
+      _attributes.clear();
+    });
+    notifyListeners();
+  }
+
   List<Attribute> get attributes => _attributes;
   List<Attribute> get seleted => _selected;
 
   Attribute findById(String id) {
-    final index = attributes.indexWhere((attr) => attr.id == id);
+    final index = attributes.indexWhere((attr) => attr.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return attributes[index];
   }
 
   List<Attribute> attrsByStudy(String sid) {
-    return attributes.where((x) => x.sid == sid).toList();
+    return attributes.where((x) => x.suid == sid).toList();
   }
 
   void toggleSelection(Attribute attr, bool toggled) {
     if(toggled) {
       _selected.add(attr);
     } else {
-      _selected.removeWhere((s) => s.id == attr.id);
+      _selected.removeWhere((s) => s.uid == attr.uid);
     }
     notifyListeners();
   }
@@ -40,10 +51,10 @@ class Attributes with ChangeNotifier {
   }
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _attributes.indexWhere((inst) => inst.id == id);
+    final _oldIndex = _attributes.indexWhere((inst) => inst.uid == id);
     Attribute _oldAttribute = _attributes[_oldIndex];
-    _attributes.removeWhere((strategy) => strategy.id == id);
-    notifyListeners();
+    _attributes.removeWhere((strategy) => strategy.uid == id);
+    await  Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
 
@@ -82,18 +93,18 @@ class Attributes with ChangeNotifier {
 
   Future updateAttribute(Attribute editedAttribute) async {
     final index =
-        _attributes.indexWhere((strategy) => strategy.id == editedAttribute.id);
+        _attributes.indexWhere((strategy) => strategy.uid == editedAttribute.uid);
     final _oldAttribute = _attributes[index];
     _attributes[index] = editedAttribute;
     notifyListeners();
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      attributesURI + "/${editedAttribute.id}",
+      attributesURI + "/${editedAttribute.uid}",
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
-          "id": editedAttribute.id,
+          "uid": editedAttribute.uid,
           "name": editedAttribute.name,
         },
       ),
@@ -118,17 +129,15 @@ class Attributes with ChangeNotifier {
       responseData.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Attribute inComing = Attribute.fromJson(item);
-        final elements = _attributes.where((element) => element.id == inComing.id);
+        final elements = _attributes.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _attributes.add(inComing);
         }
       });
       notifyListeners();
-    } else if (response.statusCode == 401) {
-      final String message = json.decode(response.body)['detail'];
-      throw Exception("Error: ${response.statusCode} :  $message ");
     } else {
-      throw Exception('Failed to load Attributes | ${response.statusCode}');
+      final String message = json.decode(response.body)['detail'];
+      throw Exception("(${response.statusCode}): $message");
     }
     //
   }

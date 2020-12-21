@@ -137,10 +137,41 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   navigateToPage(context, InstrumentsPage()),
                 },
               ),
+              Divider(color: Colors.grey),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Center(
+                  child: Text(" --- From the Community --- ",
+                   style:  Theme.of(context).textTheme.headline3,
+                   ),
+                ),
+              ),
+              Divider(color: Colors.grey),
               ListTile(
                 leading: Icon(Icons.edit_attributes),
                 title: Text(
-                  "Study Attributes",
+                  "Shared Trades",
+                  style:  Theme.of(context).textTheme.headline2,
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.edit_attributes),
+                title: Text(
+                  "Shared Strategies",
+                  style:  Theme.of(context).textTheme.headline2,
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.edit_attributes),
+                title: Text(
+                  "Shared Studies",
+                  style:  Theme.of(context).textTheme.headline2,
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.edit_attributes),
+                title: Text(
+                  "Shared Trading Plans",
                   style:  Theme.of(context).textTheme.headline2,
                 ),
               ),

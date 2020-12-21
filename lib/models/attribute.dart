@@ -4,21 +4,21 @@
 */
 
 class Attribute {
-  String sid;
-  String id;
+  String suid;
+  String uid;
   String name;
   String description;
   List<String> studyItemsIds = <String>[];
-  Attribute({this.sid, this.id, this.name, this.description, this.studyItemsIds});
+  Attribute({this.suid, this.uid, this.name, this.description, this.studyItemsIds});
 
   factory Attribute.fromJson(Map<String, dynamic> json) {
     List<String> _incoming = <String>[];
     for (var item in json['studyitems'] ?? []) {
-      _incoming.add(item['id'].toString());
+      _incoming.add(item['uid'].toString());
     }
     return Attribute(
-      sid: json['study_id'].toString(),
-      id: json['id'].toString(),
+      suid: json['study_uid'].toString(),
+      uid: json['uid'].toString(),
       name: json['name'],
       description: json['description'],
       studyItemsIds: _incoming,
@@ -27,8 +27,8 @@ class Attribute {
 
   Map<String, dynamic> toJson() =>
     <String, dynamic>{
-      "study_id": sid,
-      "id": id,
+      "study_uid": suid,
+      "uid": uid,
       "name": name,
       "description" : description
     };

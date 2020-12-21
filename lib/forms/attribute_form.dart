@@ -25,7 +25,7 @@ class _AttributeFormState extends State<AttributeForm> {
     if (widget.newAttribute) {
       formTitle = "New";
       saveButtonTitle = "Save this Attribute";
-      _attribute = Attribute(sid: widget.studyId, id: null, name: '', description: '');
+      _attribute = Attribute(suid: widget.studyId, uid: null, name: '', description: '');
     } else {
       formTitle = "Edit";
       saveButtonTitle = "Update Attribute";
@@ -57,7 +57,7 @@ class _AttributeFormState extends State<AttributeForm> {
       //new or edit form
       final _attributes = Provider.of<Attributes>(context, listen: false);
 
-      if (_attribute.id == null) {
+      if (_attribute.uid == null) {
           await _attributes.addAttribute(_attribute).then((value) => {
             setState((){
               done = true;

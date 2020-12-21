@@ -24,7 +24,7 @@ class _StudyFormState extends State<StudyForm> {
     if (widget.newStudy) {
       formTitle = "New";
       saveButtonTitle = "Save this Study";
-      _study = Study(id: null, name: '', description: '');
+      _study = Study(uid: null, name: '', description: '');
     } else {
       formTitle = "Edit";
       saveButtonTitle = "Update Strudy";
@@ -56,7 +56,7 @@ class _StudyFormState extends State<StudyForm> {
       //new or edit form
       final _studies = Provider.of<Studies>(context, listen: false);
 
-      if (_study.id == null) {
+      if (_study.uid == null) {
           await _studies.addStudy(_study).then((value) => {
             setState((){
               done = true;

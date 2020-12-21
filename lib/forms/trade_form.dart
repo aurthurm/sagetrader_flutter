@@ -30,7 +30,7 @@ class _TradeFormState extends State<TradeForm> {
       formTitle = "New";
       saveButtonTitle = "!! Add Trade to your journal !!";
       _trade = Trade(
-        id: null,
+        uid: null,
         instrument: '',
         position: true,
         status: false,
@@ -118,7 +118,7 @@ class _TradeFormState extends State<TradeForm> {
       //new or edit form
       final _trades = Provider.of<Trades>(context, listen: false);
       _trade.date = _pickedDate;
-      if (_trade.id == null) {
+      if (_trade.uid == null) {
         /*
          * Safety checks:
          * If trade is open then pips == 0.0 and outcome is true;
@@ -244,7 +244,7 @@ class _TradeFormState extends State<TradeForm> {
                             ),
                             items: instruments.map((instrument) {
                               return DropdownMenuItem(
-                                value: instrument.id,
+                                value: instrument.uid,
                                 child: Text(instrument.name()),
                               );
                             }).toList(),
@@ -525,7 +525,7 @@ class _TradeFormState extends State<TradeForm> {
                           ),                        
                         ),
                           initialValue:
-                              _trade.id == null ? '' : _trade.pips?.toString() ?? "",
+                              _trade.uid == null ? '' : _trade.pips?.toString() ?? "",
                           onChanged: (String newValue) {
                             setState(() {
                               _trade.pips = double.parse(newValue);
@@ -568,7 +568,7 @@ class _TradeFormState extends State<TradeForm> {
                             items: strategies.map(
                               (strategy) {
                                 return DropdownMenuItem(
-                                  value: strategy.id,
+                                  value: strategy.uid,
                                   child: Text(strategy.name),
                                 );
                               },
@@ -603,7 +603,7 @@ class _TradeFormState extends State<TradeForm> {
                             items: styles.map(
                               (style) {
                                 return DropdownMenuItem(
-                                  value: style.id,
+                                  value: style.uid,
                                   child: Text(style.name()),
                                 );
                               },

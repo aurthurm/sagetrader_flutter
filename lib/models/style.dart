@@ -4,9 +4,9 @@
  * Types are Scalp, Day, Swing, Short Term, Position
 */
 class Style {
-  String id;
+  String uid;
   String title;
-  Style({this.id, this.title});
+  Style({this.uid, this.title});
 
   String name() {
     return title.toUpperCase();
@@ -14,7 +14,7 @@ class Style {
 
   factory Style.fromJson(Map<String, dynamic> json) {
     return Style(
-      id: json['id'].toString(),
+      uid: json['uid'].toString(),
       title: json['name'],
     );
   }

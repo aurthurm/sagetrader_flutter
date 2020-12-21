@@ -5,7 +5,7 @@
 import 'package:msagetrader/models/instrument.dart';
 
 class CurrencyPair extends Instrument {
-  CurrencyPair({id, title}) : super(id: id, title: title);
+  CurrencyPair({uid, title}) : super(uid: uid, title: title);
 
   String base() {
     return title.substring(0, 3);

@@ -17,17 +17,28 @@ class StudyItems with ChangeNotifier {
   List<StudyItem> _studyItems = <StudyItem>[];
   List<Attribute> _filters = <Attribute>[];
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _filters.clear();
+      _studyItems.clear();
+    });
+    notifyListeners();
+  }
+
   List<Attribute> get filters => _filters;
   
   List<StudyItem> get studyitems => _studyItems;
 
   List<StudyItem> studyItemsByStudy(String sid) {
-    List<StudyItem> studyitemz = _studyItems.where((x) => x.sid == sid).toList();
+    List<StudyItem> studyitemz = _studyItems.where((x) => x.suid == sid).toList();
     return applyFilters(studyitemz);
   }
 
   StudyItem findById(String id) {
-    final index = _studyItems.indexWhere((studyitem) => studyitem.id == id);
+    final index = _studyItems.indexWhere((studyitem) => studyitem.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return _studyItems[index];
   }
 
@@ -40,7 +51,7 @@ class StudyItems with ChangeNotifier {
     if(toggled) {
       _filters.add(attr);
     } else {
-      _filters.removeWhere((s) => s.id == attr.id);
+      _filters.removeWhere((s) => s.uid == attr.uid);
     }
     notifyListeners();
   }
@@ -56,22 +67,22 @@ class StudyItems with ChangeNotifier {
     for (StudyItem _si in sitems ?? []) {
       for(Attribute _attr in _si.attributes ?? []) {
         for (Attribute _f in _filters ?? []){
-          if (_attr.id == _f.id) {
-            ids.add(_si.id);
+          if (_attr.uid == _f.uid) {
+            ids.add(_si.uid);
           }
         }
       }
     }
 
-    filtered.retainWhere((x) => ids.remove(x.id));
+    filtered.retainWhere((x) => ids.remove(x.uid));
     return filtered;
   }
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _studyItems.indexWhere((x) => x.id == id);
+    final _oldIndex = _studyItems.indexWhere((x) => x.uid == id);
     StudyItem _oldStudy = _studyItems[_oldIndex];
-    _studyItems.removeWhere((x) => x.id == id);
-    notifyListeners();
+    _studyItems.removeWhere((x) => x.uid == id);
+    await  Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
 
@@ -92,7 +103,7 @@ class StudyItems with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
     final data = json.encode(
       {
-        "study_id": studyItem.sid,
+        "study_id": studyItem.suid,
         "description": studyItem.description,
         "instrument_id": studyItem.instrument,
         "position": studyItem.position,
@@ -124,7 +135,7 @@ class StudyItems with ChangeNotifier {
 
   Future updateStudyItem(StudyItem editedStudyItem) async {
     final index =
-        _studyItems.indexWhere((study) => study.id == editedStudyItem.id);
+        _studyItems.indexWhere((study) => study.uid == editedStudyItem.uid);
     final _oldStudy = _studyItems[index];
     _studyItems[index] = editedStudyItem;
     notifyListeners();
@@ -136,18 +147,18 @@ class StudyItems with ChangeNotifier {
     } else if (editedStudyItem.attributes == null) {
       _attrs = [];
     } else {
-      editedStudyItem.attributes.forEach((element) => _attrs.add(element.id.toString()));
+      editedStudyItem.attributes.forEach((element) => _attrs.add(element.uid.toString()));
     }
 
     final data = json.encode(
       {
-        "id": editedStudyItem.id,
-        "instrument_id": editedStudyItem.instrument,
+        "uid": editedStudyItem.uid,
+        "instrument_uid": editedStudyItem.instrument,
         "position": editedStudyItem.position,
         "outcome": editedStudyItem.outcome,
         "pips": editedStudyItem.pips,
         "date": editedStudyItem.date.toString(),
-        "style_id": editedStudyItem.style,
+        "style_uid": editedStudyItem.style,
         "description": editedStudyItem.description,
         "rrr": editedStudyItem.riskReward,
         "attributes": editedStudyItem.attributes, //_attrs,
@@ -155,7 +166,7 @@ class StudyItems with ChangeNotifier {
     );
     
     final response = await http.put(
-      studyItemsURI + "/${editedStudyItem.id}",
+      studyItemsURI + "/${editedStudyItem.uid}",
       headers: bearerAuthHeader(token),
       body: data,
     );
@@ -180,17 +191,15 @@ class StudyItems with ChangeNotifier {
         //dont add if instrument exists in case of multi reloads
         final StudyItem inComing = StudyItem.fromJson(item);
         final elements =
-            _studyItems.where((element) => element.id == inComing.id);
+            _studyItems.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _studyItems.add(inComing);
         }
       });
       notifyListeners();
-    } else if (response.statusCode == 401) {
+    } else {
       final String message = json.decode(response.body)['detail'];
       throw Exception("(${response.statusCode}): $message");
-    } else {
-      throw Exception("(${response.statusCode}): ${response.body}");
     }
     //
   }

@@ -4,14 +4,14 @@
  * 
 */
 class Task {
-  String id;
+  String uid;
   String title;
   String description;
-  Task({this.id, this.title, this.description});
+  Task({this.uid, this.title, this.description});
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-      id: json['id'].toString(),
+      uid: json['uid'].toString(),
       title: json['name'],
       description: json['description'],
     );

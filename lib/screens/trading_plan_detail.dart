@@ -28,7 +28,7 @@ class TradingPlanDetail extends StatelessWidget {
             color: Colors.white,
             onPressed: () {
               navigateToPage(
-                  context, TradingPlanForm(newPlan: false, planID: plan.id));
+                  context, TradingPlanForm(newPlan: false, planID: plan.uid));
             },
           ),
           IconButton(
@@ -55,9 +55,8 @@ class TradingPlanDetail extends StatelessWidget {
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop(); // pop alert dialog
-                        Navigator.of(context).pop(); // pop from deleted trade
-                        _plans.deleteById(plan.id);
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                        _plans.deleteById(plan.uid);
                       },
                     ),
                     FlatButton(

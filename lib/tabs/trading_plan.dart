@@ -33,28 +33,43 @@ class _TradingPlanTabState extends State<TradingPlanTab> {
     final _plans = Provider.of<TradingPlans>(context);
     List<TradingPlan> plans = _plans.plans;
 
-    return ListView.builder(
-      itemCount: plans.length,
-      itemBuilder: (context, index) {
-        TradingPlan plan = plans[index];
-        return Column(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(
-                Icons.center_focus_weak,
+    return Container(
+      child: plans.length > 0 ?
+      ListView.builder(
+        itemCount: plans.length,
+        itemBuilder: (context, index) {
+          TradingPlan plan = plans[index];
+          return Column(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(
+                  Icons.center_focus_weak,
+                ),
+                title: Text(
+                  plan.title,
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                onTap: () => {
+                  navigateToPage(context, TradingPlanDetail(planID: plan.uid)),
+                },
               ),
-              title: Text(
-                plan.title,
-                style: Theme.of(context).textTheme.headline2,
-              ),
-              onTap: () => {
-                navigateToPage(context, TradingPlanDetail(planID: plan.id)),
-              },
+              Divider(),
+            ],
+          );
+        },
+      )
+      : Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 40),
+          child: Text(
+            "Plan your Trades and trade your Plan. \n\nTrade what you see, not what you think. \n\nTrading plans help you manage your emotions, they are the BluePrint to your trading career. \n\nTreat trading like a business and its profits will take care of you. \n\nAdd your plans here",
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+              color: Theme.of(context).primaryColor,
             ),
-            Divider(),
-          ],
-        );
-      },
+            textAlign: TextAlign.justify,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -13,16 +13,26 @@ class Tasks with ChangeNotifier {
   List<Task> _tasks = <Task>[];
   List<Task> get tasks => _tasks;
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _tasks.clear();
+    });
+    notifyListeners();
+  }
+
   Task findById(String id) {
-    final index = _tasks.indexWhere((item) => item.id == id);
+    final index = _tasks.indexWhere((item) => item.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return _tasks[index];
   }
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _tasks.indexWhere((item) => item.id == id);
+    final _oldIndex = _tasks.indexWhere((item) => item.uid == id);
     Task _oldPlan = _tasks[_oldIndex];
-    _tasks.removeWhere((item) => item.id == id);
-    notifyListeners();
+    _tasks.removeWhere((item) => item.uid == id);
+    await  Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
@@ -50,7 +60,7 @@ class Tasks with ChangeNotifier {
       responseData.forEach((item) {
         //dont add if  exists in case of multi reloads
         final Task inComing = Task.fromJson(item);
-        final elements = _tasks.where((element) => element.id == inComing.id);
+        final elements = _tasks.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _tasks.add(inComing);
         }
@@ -92,18 +102,18 @@ class Tasks with ChangeNotifier {
   }
 
   Future<void> updateTask(Task editedTask) async {
-    final index = _tasks.indexWhere((item) => item.id == editedTask.id);
+    final index = _tasks.indexWhere((item) => item.uid == editedTask.uid);
     final _oldTask = _tasks[index];
     _tasks[index] = editedTask;
     notifyListeners();
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      tasksURI + "/${editedTask.id}",
+      tasksURI + "/${editedTask.uid}",
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
-          "id": editedTask.id,
+          "uid": editedTask.uid,
           "name": editedTask.title,
           "description": editedTask.description,
         },

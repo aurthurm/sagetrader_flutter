@@ -15,7 +15,10 @@ class Styles with ChangeNotifier {
   List<Style> get styles => _styles;
 
   Style findById(String id) {
-    final index = styles.indexWhere((sty) => sty.id == id);
+    final index = styles.indexWhere((sty) => sty.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return styles[index];
   }
 
@@ -31,7 +34,7 @@ class Styles with ChangeNotifier {
       responseData.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Style inComing = Style.fromJson(item);
-        final elements = _styles.where((element) => element.id == inComing.id);
+        final elements = _styles.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _styles.add(inComing);
         }

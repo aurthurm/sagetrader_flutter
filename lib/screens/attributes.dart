@@ -35,7 +35,7 @@ class _AtrributesPageState extends State<AtrributesPage> {
     final _studies = Provider.of<Studies>(context);
     Study study = _studies.findById(widget.studyID);
     final _attributes = Provider.of<Attributes>(context, listen: false);
-    List<Attribute> attributes = _attributes.attrsByStudy(study.id);
+    List<Attribute> attributes = _attributes.attrsByStudy(study.uid);
    
     return Scaffold(
       appBar: AppBar(
@@ -79,7 +79,7 @@ class _AtrributesPageState extends State<AtrributesPage> {
                       FlatButton(
                         onPressed: () => {
                            navigateToPage(context,
-                            AttributeForm(newAttribute: true, studyId: study.id, attributeId: null),
+                            AttributeForm(newAttribute: true, studyId: study.uid, attributeId: null),
                           ),
                         },
                         child: Icon(
@@ -111,11 +111,11 @@ class _AtrributesPageState extends State<AtrributesPage> {
                           ],
                         ),
                       ),
-                      key: Key(attribute.id),
+                      key: Key(attribute.uid),
                       child: GestureDetector(
                           child: AttributeCard(studyItem: attribute),
                           onTap: () => {
-                            navigateToPage(context, AttributeForm(newAttribute: false, studyId: study.id, attributeId: attribute.id)),
+                            navigateToPage(context, AttributeForm(newAttribute: false, studyId: study.uid, attributeId: attribute.uid)),
                           },
                         ),
                       direction: DismissDirection.endToStart,
@@ -143,7 +143,7 @@ class _AtrributesPageState extends State<AtrributesPage> {
                             backgroundColor: Colors.red,
                           ),
                         );
-                        _attributes.deleteById(attribute.id);
+                        _attributes.deleteById(attribute.uid);
                       },
                     );
                       },

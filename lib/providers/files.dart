@@ -21,8 +21,18 @@ class BaseFiles with ChangeNotifier {
 
   List<FileData> get files => _files;
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _files.clear();
+    });
+    notifyListeners();
+  }
+
   FileData findById(String id) {
-    final index = files.indexWhere((file) => file.id == id);
+    final index = files.indexWhere((file) => file.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return files[index];
   }
 
@@ -48,7 +58,7 @@ class Files extends BaseFiles  {
     );
 
     if (response.statusCode == 200) {
-      _files.removeWhere((file) => file.id == fileId);
+      _files.removeWhere((file) => file.uid == fileId);
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
       throw Exception("(${response.statusCode}): $message");
@@ -84,7 +94,7 @@ class Files extends BaseFiles  {
   }
 
   Future uploadFiles(
-    List<FileData> images, String parent, String parentId, dynamic tags) async {
+    List<FileData> images, String parent, String parentId, dynamic tags, String caption) async {
     loading = true;
     await MSPTAuth().getToken().then((String value) => {token = value});
 
@@ -107,8 +117,9 @@ class Files extends BaseFiles  {
         });
 
     request.fields['parent'] = "$parent-$parentId";
-    request.fields['parentId'] = parentId;
+    request.fields['parentUid'] = parentId;
     request.fields['tags'] = tags.join(", ");
+    request.fields['caption'] = caption;
     var _response = await request.send();
     // print(_response.reasonPhrase);
     // print(_response.statusCode);

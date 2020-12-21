@@ -33,28 +33,43 @@ class _StudiesTabState extends State<StudiesTab> {
     final _studies = Provider.of<Studies>(context);
     List<Study> studies = _studies.studies;
 
-    return ListView.builder(
-      itemCount: studies.length,
-      itemBuilder: (context, index) {
-        Study study = studies[index];
-        return Column(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(
-                Icons.repeat,
+    return Container(
+      child: studies.length > 0 ?
+      ListView.builder(
+        itemCount: studies.length,
+        itemBuilder: (context, index) {
+          Study study = studies[index];
+          return Column(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(
+                  Icons.repeat,
+                ),
+                title: Text(
+                  study.name,
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                onTap: () => {
+                  navigateToPage(context, StudyDetail(studyID: study.uid)),
+                },
               ),
-              title: Text(
-                study.name,
-                style: Theme.of(context).textTheme.headline2,
-              ),
-              onTap: () => {
-                navigateToPage(context, StudyDetail(studyID: study.id)),
-              },
+              Divider(),
+            ],
+          );
+        },
+      ) 
+      : Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 40),
+          child: Text(
+            "Studies Help you come up with rhobust trading strategies. \n\nCreate a study, add study attributes that interest you. \n\n Use attributes to tag study items if they have those attrs. \n\nStart studying ...",
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+              color: Theme.of(context).primaryColor,
             ),
-            Divider(),
-          ],
-        );
-      },
+            textAlign: TextAlign.justify,
+          ),
+        ),
+      ),
     );
   }
 }

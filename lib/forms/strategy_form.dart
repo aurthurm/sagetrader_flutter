@@ -24,7 +24,7 @@ class _StrategyFormState extends State<StrategyForm> {
     if (widget.newStrategy) {
       formTitle = "New";
       saveButtonTitle = "Save this Strategy";
-      _strategy = Strategy(id: null, name: '', description: '');
+      _strategy = Strategy(uid: null, name: '', description: '');
     } else {
       formTitle = "Edit";
       saveButtonTitle = "Update Strategy";
@@ -56,7 +56,7 @@ class _StrategyFormState extends State<StrategyForm> {
       //new or edit form
       final _strategies = Provider.of<Strategies>(context, listen: false);
 
-      if (_strategy.id == null) {
+      if (_strategy.uid == null) {
           await _strategies.addStrategy(_strategy).then((value) => {
             setState((){
               done = true;

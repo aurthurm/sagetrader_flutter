@@ -25,6 +25,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
   List<FileData> _byteImageMaps = List<FileData>();
   bool _isInit = true, loading = true;
   List<dynamic> tags = List<dynamic>();
+  String caption = "";
 
   @override
   void initState() {
@@ -86,6 +87,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
         'strategy',
         widget.strategyId,
         tags,
+        caption,
       );
     });
   }
@@ -101,7 +103,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
 
     _file = FileData(
       bytes: img,
-      parentId: widget.strategyId,
+      parentUid: widget.strategyId,
       parent: "strategy",
     );
 
@@ -110,14 +112,16 @@ class _StrategyDetailState extends State<StrategyDetail> {
     });
   }
 
-  _buildTags(Strategy st ) {
+  _buildTagsAlt(Strategy st ) {
     var _tags = [];
     _tags.add(st.name.toUpperCase());
     setState(() {
       tags = _tags;
+      caption = "${st.name} Strategy";
     });
     // print("StrategyTags: $tags");
   }
+
 
   Widget build(BuildContext context) {
     final _strategies = Provider.of<Strategies>(context);
@@ -127,7 +131,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
     setState(() {
       loading = _files.loading;
     });
-    _buildTags(strategy);
+    _buildTagsAlt(strategy);
 
     return Scaffold(
       appBar: AppBar(
@@ -148,7 +152,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
             color: Colors.white,
             onPressed: () {
               navigateToPage(context,
-                  StrategyForm(newStrategy: false, strategyID: strategy.id));
+                  StrategyForm(newStrategy: false, strategyID: strategy.uid));
             },
           ),
           IconButton(
@@ -175,9 +179,8 @@ class _StrategyDetailState extends State<StrategyDetail> {
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop(); // pop alert dialog
-                        Navigator.of(context).pop(); // pop from deleted trade
-                        _strategies.deleteById(strategy.id);
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                        _strategies.deleteById(strategy.uid);
                       },
                     ),
                     FlatButton(
@@ -337,7 +340,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
                                                               context),
                                                           _files.deleteFile(
                                                               'strategy',
-                                                              image.id)
+                                                              image.uid)
                                                         },
                                                       ),
                                                       RaisedButton(

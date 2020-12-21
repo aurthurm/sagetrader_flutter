@@ -16,26 +16,36 @@ class Trades with ChangeNotifier {
   bool _loading = false;
   List<Trade> _trades = <Trade>[];
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _trades.clear();
+    });
+    notifyListeners();
+  }
+
   List<Trade> get trades => _trades;
   bool get loading => _loading;
 
-  void toggleLoading() => {
-    _loading = !_loading,
+  void toggleLoading(bool val) => {
+    _loading = val,
     notifyListeners()
   };
 
   Trade findById(String id) {
-    final index = _trades.indexWhere((trade) => trade.id == id);
+    final index = _trades.indexWhere((trade) => trade.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return trades[index];
   }
   //
   ///
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _trades.indexWhere((inst) => inst.id == id);
+    final _oldIndex = _trades.indexWhere((inst) => inst.uid == id);
     Trade _oldSTrade = _trades[_oldIndex];
-    _trades.removeWhere((trade) => trade.id == id);
-    notifyListeners();
+    _trades.removeWhere((trade) => trade.uid == id);
+    await Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
@@ -74,7 +84,7 @@ class Trades with ChangeNotifier {
   }
 
   Future<void> updateTrade(Trade editedTrade) async {
-    final index = _trades.indexWhere((trade) => trade.id == editedTrade.id);
+    final index = _trades.indexWhere((trade) => trade.uid == editedTrade.uid);
     final _oldTrade = _trades[index];
     _trades[index] = editedTrade;
     notifyListeners();
@@ -83,7 +93,7 @@ class Trades with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
     print(data);
     final response = await http.put(
-      tradesURI + "/${editedTrade.id}",
+      tradesURI + "/${editedTrade.uid}",
       headers: bearerAuthHeader(token),
       body: data,
     );
@@ -96,7 +106,7 @@ class Trades with ChangeNotifier {
   }
 
   Future<List<Trade>> fetchTrades() async {
-    toggleLoading();
+    toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       tradesURI,
@@ -110,17 +120,17 @@ class Trades with ChangeNotifier {
       responseData.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Trade inComing = Trade.fromJson(item);
-        final elements = _trades.where((element) => element.id == inComing.id);
+        final elements = _trades.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _trades.add(inComing);
         }
       });
-      toggleLoading();
+      toggleLoading(false);
       await Future.delayed(Duration(seconds: 2)); 
       return _trades;
     } else {
       final String message = json.decode(response.body)['detail'];
-      toggleLoading();
+      toggleLoading(false);
       throw Exception("(${response.statusCode}): $message");
     }
     //

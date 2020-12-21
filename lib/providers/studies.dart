@@ -17,8 +17,18 @@ class Studies with ChangeNotifier {
 
   List<Study> get studies => _studies;
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _studies.clear();
+    });
+    notifyListeners();
+  }
+
   Study findById(String id) {
-    final index = studies.indexWhere((study) => study.id == id);
+    final index = studies.indexWhere((study) => study.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return studies[index];
   }
 
@@ -26,10 +36,10 @@ class Studies with ChangeNotifier {
   ///
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _studies.indexWhere((inst) => inst.id == id);
+    final _oldIndex = _studies.indexWhere((inst) => inst.uid == id);
     Study _oldStudy = _studies[_oldIndex];
-    _studies.removeWhere((study) => study.id == id);
-    notifyListeners();
+    _studies.removeWhere((study) => study.uid == id);
+    await  Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
 
@@ -73,18 +83,18 @@ class Studies with ChangeNotifier {
 
   Future<void> updateStudy(Study editedStudy) async {
     final index =
-        _studies.indexWhere((study) => study.id == editedStudy.id);
+        _studies.indexWhere((study) => study.uid == editedStudy.uid);
     final _oldStudy = _studies[index];
     _studies[index] = editedStudy;
     notifyListeners();
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      studiesURI + "/${editedStudy.id}",
+      studiesURI + "/${editedStudy.uid}",
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
-          "id": editedStudy.id,
+          "uid": editedStudy.uid,
           "name": editedStudy.name,
         },
       ),
@@ -110,7 +120,7 @@ class Studies with ChangeNotifier {
         //dont add if instrument exists in case of multi reloads
         final Study inComing = Study.fromJson(item);
         final elements =
-            _studies.where((element) => element.id == inComing.id);
+            _studies.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _studies.add(inComing);
         }

@@ -13,7 +13,7 @@ class TradesTab extends StatelessWidget {
   Widget build(BuildContext context) {
    final _trades = Provider.of<Trades>(context);
     List<Trade> trades = _trades.trades;
-
+ 
     return Container(
       child: _trades.loading ?
       Center(
@@ -21,30 +21,28 @@ class TradesTab extends StatelessWidget {
           backgroundColor: Colors.red,
         ),
       ) :
+      trades.length > 0 ?
       ListView.builder(
         itemCount: trades.length,
         itemBuilder: (context, index) {
-            if (trades.length > 0) {
-              return GestureDetector(
-              child: TradeCard(trade: trades[index]),
-              onTap: () => navigateToPage(
-                context,
-                TradeDetail(tradeId: trades[index].id),
-              ),
-            );
-          } else {
-            return Center(
-              child: Text(
-                "You havent Journaled any trades yet.",
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
-                  color: Theme.of(context).primaryColor,
-                )
-              ),
-            );
-          }
+            return GestureDetector(
+            child: TradeCard(trade: trades[index]),
+            onTap: () => navigateToPage(
+              context,
+              TradeDetail(tradeId: trades[index].uid),
+            ),
+          );
         },
         scrollDirection: Axis.vertical,
         // shrinkWrap: true,
+      )
+      : Center(
+        child: Text(
+          "You havent Journaled any trades yet.",
+          style: Theme.of(context).textTheme.bodyText1.copyWith(
+            color: Theme.of(context).primaryColor,
+          )
+        ),
       ),
     );
   }

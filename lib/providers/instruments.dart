@@ -17,16 +17,26 @@ class Instruments with ChangeNotifier {
 
   List<Instrument> get instruments => _instruments;
 
+  Future<void> clearAll() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
+      _instruments.clear();
+    });
+    notifyListeners();
+  }
+
   Instrument findById(String id) {
-    final index = instruments.indexWhere((inst) => inst.id == id);
+    final index = instruments.indexWhere((inst) => inst.uid == id);
+    if(index == -1) {
+      return null;
+    }
     return instruments[index];
   }
 
   Future<void> deleteById(String id) async {
-    final _oldIndex = _instruments.indexWhere((inst) => inst.id == id);
+    final _oldIndex = _instruments.indexWhere((inst) => inst.uid == id);
     Instrument _oldInstrument = _instruments[_oldIndex];
-    _instruments.removeWhere((instrument) => instrument.id == id);
-    notifyListeners();
+    _instruments.removeWhere((instrument) => instrument.uid == id);
+    await  Future.delayed(Duration(seconds: 1)).then((_) => notifyListeners());
 
     await MSPTAuth().getToken().then((String value) => token = value);
 
@@ -45,7 +55,7 @@ class Instruments with ChangeNotifier {
 
   Future<void> addInstrument(Instrument instrument) async {
     // final newId = (_instruments.length + 1).toString();
-    // _instrument.id = newId;
+    // _instrument.uid = newId;
 
     await MSPTAuth().getToken().then((String value) => token = value);
 
@@ -74,7 +84,7 @@ class Instruments with ChangeNotifier {
 
   Future<void> updateInstrument(Instrument editedInstrument) async {
     final index = _instruments
-        .indexWhere((instrument) => instrument.id == editedInstrument.id);
+        .indexWhere((instrument) => instrument.uid == editedInstrument.uid);
     final _oldInstrument = _instruments[index];
     _instruments[index] = editedInstrument;
     notifyListeners();
@@ -82,11 +92,11 @@ class Instruments with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.put(
-      instrumentsURI + "/${editedInstrument.id}",
+      instrumentsURI + "/${editedInstrument.uid}",
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
-          "id": editedInstrument.id,
+          "uid": editedInstrument.uid,
           "name": editedInstrument.name(),
         },
       ),
@@ -112,7 +122,7 @@ class Instruments with ChangeNotifier {
         //dont add if instrument exists in case of multi reloads
         final Instrument inComing = Instrument.fromJson(item);
         final elements =
-            _instruments.where((element) => element.id == inComing.id);
+            _instruments.where((element) => element.uid == inComing.uid);
         if (elements.length == 0) {
           _instruments.add(inComing);
         }

@@ -12,7 +12,8 @@ class StrategiesTab extends StatelessWidget {
     List<Strategy> strategies = _strategies.strategies;
 
     return Container(
-      child: ListView.builder(
+      child: strategies.length > 0 ?
+      ListView.builder(
         itemCount: strategies.length,
         itemBuilder: (context, index) {
           Strategy strategy = strategies[index];
@@ -20,10 +21,21 @@ class StrategiesTab extends StatelessWidget {
             child: StrategyCard(strategy: strategy),
             onTap: () => navigateToPage(
               context,
-              StrategyDetail(strategyId: strategy.id),
+              StrategyDetail(strategyId: strategy.uid),
             ),
           );
         },
+      ) 
+      : Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 40),
+          child: Text(
+            "Strategies are required before you start journaling your trades. \n\nClick the button to add your first Strategy.",
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+              color: Theme.of(context).primaryColor,
+            )
+          ),
+        ),
       ),
     );
   }
@@ -33,8 +45,11 @@ class StrategyCard extends StatelessWidget {
   final Strategy strategy;
   StrategyCard({this.strategy});
 
+  
+
   @override
   Widget build(BuildContext context) {
+
     return Container(
       child: Card(
         child: Padding(

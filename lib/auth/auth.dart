@@ -75,7 +75,7 @@ class MSPTAuth with ChangeNotifier {
     clearMessages();
   }
 
-  Future<MSPTUser> authenticate(String username, String password) async {
+  Future<void> authenticate(String username, String password) async {
     if (await hasNetworkAccess() == false) throw NoConnectionException("You are offline");
     toggleLoading();
     clearMessages();
@@ -150,10 +150,14 @@ class MSPTAuth with ChangeNotifier {
     }
   }
 
-  void logout() {
-    _user = null;
-    clearMessages();
-    clearToken();
-    notifyListeners();
+  Future<bool> logout() async  {
+    await Future.delayed(Duration(seconds: 1)).then((_){
+      print("You are being Logged Out");
+      _user = null;
+      clearMessages();
+      clearToken();
+      notifyListeners();
+    });
+    return true;
   }
 }

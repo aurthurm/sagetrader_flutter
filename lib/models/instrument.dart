@@ -3,9 +3,9 @@
  * Intsrument either in stocks, forex etc
 */
 class Instrument {
-  String id;
+  String uid;
   String title;
-  Instrument({this.id, this.title});
+  Instrument({this.uid, this.title});
 
   String name() {
     return title.toUpperCase();
@@ -13,7 +13,7 @@ class Instrument {
 
   factory Instrument.fromJson(Map<String, dynamic> json) {
     return Instrument(
-      id: json['id'].toString(),
+      uid: json['uid'].toString(),
       title: json['name'],
     );
   }

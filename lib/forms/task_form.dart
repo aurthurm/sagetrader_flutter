@@ -21,7 +21,7 @@ class _TaskFormState extends State<TaskForm> {
     if (widget.newTask) {
       formTitle = "New";
       saveButtonTitle = "Save this Task";
-      _task = Task(id: null, title: '', description: '');
+      _task = Task(uid: null, title: '', description: '');
     } else {
       formTitle = "Edit";
       saveButtonTitle = "Update Task";
@@ -50,7 +50,7 @@ class _TaskFormState extends State<TaskForm> {
       //new or edit form
       final _tasks = Provider.of<Tasks>(context, listen: false);
 
-      if (_task.id == null) {
+      if (_task.uid == null) {
         _tasks.addTask(_task);
       } else {
         _tasks.updateTask(_task);

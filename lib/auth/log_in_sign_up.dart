@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:msagetrader/forms/log_in_form.dart';
 import 'package:msagetrader/forms/sign_up_form.dart';
+import 'package:msagetrader/providers/attributes.dart';
+import 'package:msagetrader/providers/files.dart';
+import 'package:msagetrader/providers/studies.dart';
+import 'package:msagetrader/providers/instruments.dart';
+import 'package:msagetrader/providers/strategies.dart';
+import 'package:msagetrader/providers/study_items.dart';
+import 'package:msagetrader/providers/tasks.dart';
+import 'package:msagetrader/providers/trades.dart';
+import 'package:msagetrader/providers/trading_plans.dart';
+import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key key}) : super(key: key);
@@ -18,6 +28,37 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
   Widget loginSignUP = LogInForm();
   String loginSignUPText = "Sign In to MSPT";
   String hasAccount = "No Account? Sign Up Now.";
+
+ bool _isInit = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() async {
+    if (_isInit) {
+      setState(() {
+        _isInit = false;
+      });
+    }
+    await Provider.of<Studies>(context, listen: false).clearAll();
+    await Provider.of<StudyItems>(context, listen: false).clearAll();
+    await Provider.of<Attributes>(context, listen: false).clearAll();
+    await Provider.of<TradingPlans>(context, listen: false).clearAll();
+    await Provider.of<Tasks>(context, listen: false).clearAll();
+    await Provider.of<Trades>(context, listen: false).clearAll();
+    await Provider.of<Strategies>(context, listen: false).clearAll();
+    await Provider.of<Files>(context, listen: false).clearAll();
+    await Provider.of<Instruments>(context, listen: false).clearAll();
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   void toggleUserAction(bool val) => {
 

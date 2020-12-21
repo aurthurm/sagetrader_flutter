@@ -3,36 +3,34 @@
  * File:  Image, Pdf xlsx, etc
 */
 
-import 'package:msagetrader/config/conf.dart';
-
 enum FileType { image, pdf, word, excel }
 class FileData {
-  String id;
+  String uid;
   FileType type;
   String name;
   String parent;
-  String parentId;
+  String parentUid;
   List<int> bytes;
   String location;
 
   FileData({
-    this.id,
+    this.uid,
     this.name,
     this.bytes,
     this.parent,
-    this.parentId,
+    this.parentUid,
     this.type,
     this.location,
   });
 
   factory FileData.fromJson(Map<String, dynamic> json) {
     return FileData(
-      id: json['id'].toString(),
+      uid: json['uid'].toString(),
       name: json['name'],
       type: FileType.image, //find a way to detect types
       bytes: json['bytes'],
       parent: json['parent'],
-      parentId: json['parent_id'],
+      parentUid: json['parent_uid'],
       location: json['location'], // "$baseURI${json['location']}",
     );
   }

@@ -31,7 +31,8 @@ class _TasksTabState extends State<TasksTab> {
     List<Task> tasks = _tasks.tasks;
 
     return Container(
-      child: StaggeredGridView.countBuilder(
+      child: tasks.length >0 ?
+      StaggeredGridView.countBuilder(
         crossAxisCount: 4,
         itemCount: tasks.length,
         shrinkWrap: true,
@@ -40,12 +41,24 @@ class _TasksTabState extends State<TasksTab> {
           child: TaskItem(tasks: tasks, index: index),
           onTap: () => navigateToPage(
             context,
-            TaskForm(newTask: false, taskID: tasks[index].id),
+            TaskForm(newTask: false, taskID: tasks[index].uid),
           ),
         ),
         staggeredTileBuilder: (index) => StaggeredTile.fit(2),
         mainAxisSpacing: 5.0,
         crossAxisSpacing: 5.0,
+      )
+      : Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 40),
+          child: Text(
+            "Call them Tasks, call them Notes :) Whatever suits you best. \n\nAdd some tasks",
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+              color: Theme.of(context).primaryColor,
+            ),
+            textAlign: TextAlign.justify,
+          ),
+        ),
       ),
     );
   }

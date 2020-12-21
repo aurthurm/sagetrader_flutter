@@ -7,13 +7,13 @@ import 'package:msagetrader/models/attribute.dart';
 */
 
 class Study {
-  String id;
+  String uid;
   String name;
   String description;
   List<StudyItem> items = <StudyItem>[];
   List<Attribute> attributes = <Attribute>[];
   Study(
-      {this.id, this.name, this.description, this.attributes});
+      {this.uid, this.name, this.description, this.attributes});
 
   factory Study.fromJson(Map<String, dynamic> json) {
     List<Attribute> _attr = <Attribute>[];
@@ -23,7 +23,7 @@ class Study {
     }
 
     return Study(
-      id: json['id'].toString(),
+      uid: json['uid'].toString(),
       name: json['name'],
       description: json['description'],
       attributes: [],
@@ -39,8 +39,8 @@ class Study {
 */
 
 class StudyItem {
-  String sid;  //study id
-  String id;
+  String suid;  //study uid
+  String uid;
   String name = "Study Item"; //default value
   String description;
   String instrument;
@@ -53,8 +53,8 @@ class StudyItem {
   List<Attribute> attributes = <Attribute>[];
 
   StudyItem({
-    this.sid,
-    this.id,
+    this.suid,
+    this.uid,
     this.instrument,
     this.position,
     this.style,
@@ -74,15 +74,15 @@ class StudyItem {
     }
 
     return StudyItem(
-      sid: json['study_id'].toString(),
-      id: json['id'].toString(),
+      suid: json['study_uid'].toString(),
+      uid: json['uid'].toString(),
       description: json['description'],
-      instrument: json['instrument_id'].toString(),
+      instrument: json['instrument_uid'].toString(),
       position: json['position'],
       outcome: json['outcome'],
       pips: double.parse(json['pips'].toString()),
       date: json['date'].toString(),
-      style: json['style_id'].toString(),
+      style: json['style_uid'].toString(),
       riskReward: json['rrr'],
       attributes: _attr,
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msagetrader/auth/auth.dart';
 import 'package:msagetrader/forms/study_form.dart';
 import 'package:msagetrader/forms/study_item_form.dart';
 import 'package:msagetrader/models/attribute.dart';
@@ -26,8 +27,18 @@ class _StudyDetailState extends State<StudyDetail> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Provider.of<Attributes>(context).fetchStudyAttrs(widget.studyID);
-      Provider.of<StudyItems>(context).fetchStudyItems(widget.studyID);
+      Provider.of<Attributes>(context).fetchStudyAttrs(widget.studyID).catchError((err){
+        print(err.toString());
+        Provider.of<MSPTAuth>(context, listen: false).logout().then((_){
+          Future.delayed(Duration(seconds: 4)).then((_) {
+            Navigator.pop(context, true);
+          });
+        });
+      });
+      Provider.of<StudyItems>(context).fetchStudyItems(widget.studyID).catchError((err){
+        print(err.toString());
+        // Provider.of<MSPTAuth>(context, listen: false).logout();
+      });
     }
     setState(() {
       _isInit = false;
@@ -44,9 +55,9 @@ class _StudyDetailState extends State<StudyDetail> {
     final _studies = Provider.of<Studies>(context);
     Study study = _studies.findById(widget.studyID);
     final _studyItems = Provider.of<StudyItems>(context, listen: false);
-    List<StudyItem> studyItems = _studyItems.studyItemsByStudy(study.id);
+    List<StudyItem> studyItems = _studyItems.studyItemsByStudy(study.uid);
     final _studyAttrs = Provider.of<Attributes>(context, listen: false);
-    List<Attribute> studyAttrs = _studyAttrs.attrsByStudy(study.id);
+    List<Attribute> studyAttrs = _studyAttrs.attrsByStudy(study.uid);
 
     return WillPopScope(
       onWillPop: () async {
@@ -67,7 +78,7 @@ class _StudyDetailState extends State<StudyDetail> {
               icon: Icon(Icons.edit_attributes_rounded),
             color: Colors.white,
               onPressed: () {
-                navigateToPage(context, AtrributesPage(studyID: study.id));
+                navigateToPage(context, AtrributesPage(studyID: study.uid));
               },
             ),
             IconButton(
@@ -75,7 +86,7 @@ class _StudyDetailState extends State<StudyDetail> {
             color: Colors.white,
               onPressed: () {
                 navigateToPage(
-                    context, StudyForm(newStudy: false, studyID: study.id));
+                    context, StudyForm(newStudy: false, studyID: study.uid));
               },
             ),
             IconButton(
@@ -104,7 +115,7 @@ class _StudyDetailState extends State<StudyDetail> {
                         onPressed: () {
                           Navigator.of(context).pop(); // pop alert dialog
                           Navigator.of(context).pop(); // pop from deleted trade
-                          _studies.deleteById(study.id);
+                          _studies.deleteById(study.uid);
                         },
                       ),
                       FlatButton(
@@ -175,7 +186,7 @@ class _StudyDetailState extends State<StudyDetail> {
                         FlatButton(
                           onPressed: () => {
                              navigateToPage(context,
-                              StudyItemForm(newStudyItem: true, studyId: study.id, studyItemId: null),
+                              StudyItemForm(newStudyItem: true, studyId: study.uid, studyItemId: null),
                             ),
                           },
                           child: Icon(
@@ -207,11 +218,11 @@ class _StudyDetailState extends State<StudyDetail> {
                                 ],
                               ),
                             ),
-                            key: Key(studyItem.id),
+                            key: Key(studyItem.uid),
                             child: GestureDetector(
                                 child: StudyItemCard(studyItem: studyItem),
                                 onTap: () => {
-                                  navigateToPage(context, StudyItemDetail(studyItemId: studyItem.id)),
+                                  navigateToPage(context, StudyItemDetail(studyItemId: studyItem.uid)),
                                 },
                               ),
                             direction: DismissDirection.endToStart,
@@ -239,7 +250,7 @@ class _StudyDetailState extends State<StudyDetail> {
                                   backgroundColor: Colors.red,
                                 ),
                               );
-                              _studyItems.deleteById(studyItem.id);
+                              _studyItems.deleteById(studyItem.uid);
                             },
                           );
                         },
@@ -283,7 +294,7 @@ class _FilterTagState extends State<FilterTag> {
   }
 
   bool isToggled(Attribute attr) {
-    final index = widget.studyitems.filters.indexWhere((a) => a.id == attr.id);
+    final index = widget.studyitems.filters.indexWhere((a) => a.uid == attr.uid);
     if (index == -1) {
       return false;
     }

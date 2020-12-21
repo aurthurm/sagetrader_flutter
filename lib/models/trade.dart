@@ -6,7 +6,7 @@ import 'package:msagetrader/utils/utils.dart';
  * Trade
 */
 class Trade {
-  String id;
+  String uid;
   String instrument;
   bool position;
   bool status;
@@ -30,7 +30,7 @@ class Trade {
   bool correlatedPosition;
 
   Trade({
-    this.id,
+    this.uid,
     this.instrument,
     this.position,
     this.status,
@@ -56,16 +56,16 @@ class Trade {
 
   factory Trade.fromJson(Map<String, dynamic> json) {
     return Trade(
-        id: json['id'].toString(),
-        instrument: json['instrument_id'].toString(),
+        uid: json['uid'].toString(),
+        instrument: json['instrument_uid'].toString(),
         position: json['position'],
         status: json['status'],
         outcome: json['outcome'],
         pips: processNull(json['pips']),
         date: json['date'].toString(),
-        style: json['style_id'].toString(),
+        style: json['style_uid'].toString(),
         description: json['description'],
-        strategy: json['strategy_id'].toString(),
+        strategy: json['strategy_uid'].toString(),
         riskReward: json['rr'],
         sl: processNull(json['sl']),
         tp: processNull(json['tp']),
@@ -83,16 +83,16 @@ class Trade {
 
   Map<String, dynamic> toJson() =>
     <String, dynamic>{
-      "id": instrument,
-      "instrument_id": instrument,
+      "uid": instrument,
+      "instrument_uid": instrument,
       "position": position,
       "status": status,
-      "style_id": style,
+      "style_uid": style,
       "pips": pips,
       "outcome": outcome,
       "date": date,
       "description": description,
-      "strategy_id": strategy,
+      "strategy_uid": strategy,
       "rr": riskReward,
       "sl": sl,
       "tp": tp,

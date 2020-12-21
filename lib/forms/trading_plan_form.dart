@@ -21,7 +21,7 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
     if (widget.newPlan) {
       formTitle = "New";
       saveButtonTitle = "Save this TradingPlan";
-      _plan = TradingPlan(id: null, title: '', description: '');
+      _plan = TradingPlan(uid: null, title: '', description: '');
     } else {
       formTitle = "Edit";
       saveButtonTitle = "Update TradingPlan";
@@ -50,7 +50,7 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
       //new or edit form
       final _plans = Provider.of<TradingPlans>(context, listen: false);
 
-      if (_plan.id == null) {
+      if (_plan.uid == null) {
         _plans.addPlan(_plan);
       } else {
         _plans.updatePlan(_plan);
