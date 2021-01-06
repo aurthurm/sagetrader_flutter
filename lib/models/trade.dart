@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:msagetrader/auth/auth.dart';
+import 'package:msagetrader/models/instrument.dart';
+import 'package:msagetrader/models/strategy.dart';
+import 'package:msagetrader/models/style.dart';
 import 'package:msagetrader/utils/utils.dart';
 
 /*
@@ -7,15 +11,15 @@ import 'package:msagetrader/utils/utils.dart';
 */
 class Trade {
   String uid;
-  String instrument;
+  Instrument instrument;
   bool position;
   bool status;
-  String style;
+  Style style;
   double pips;
   bool outcome;
   String date;
   String description;
-  String strategy;
+  Strategy strategy;
   double riskReward;
   double sl;
   double tp;
@@ -28,6 +32,8 @@ class Trade {
   bool scaledIn;
   bool scaledOut;
   bool correlatedPosition;
+  MSPTUser owner;
+  bool public;
 
   Trade({
     this.uid,
@@ -52,20 +58,26 @@ class Trade {
     this.scaledIn,
     this.scaledOut,
     this.correlatedPosition,
+    this.owner,
+    this.public,
   });
+
+  bool hasStyle() => ![style.uid].contains(null);
+  bool hasStrategy() => ![strategy.uid].contains(null);
+  bool hasInstrument() => ![instrument.uid].contains(null);
 
   factory Trade.fromJson(Map<String, dynamic> json) {
     return Trade(
         uid: json['uid'].toString(),
-        instrument: json['instrument_uid'].toString(),
+        instrument: Instrument.fromJson(json['instrument']),
         position: json['position'],
         status: json['status'],
         outcome: json['outcome'],
         pips: processNull(json['pips']),
         date: json['date'].toString(),
-        style: json['style_uid'].toString(),
+        style: Style.fromJson(json['style']),
         description: json['description'],
-        strategy: json['strategy_uid'].toString(),
+        strategy: Strategy.fromJson(json['strategy']),
         riskReward: json['rr'],
         sl: processNull(json['sl']),
         tp: processNull(json['tp']),
@@ -78,21 +90,23 @@ class Trade {
         scaledIn:  json['scaled_in'],
         scaledOut:  json['scaled_out'],
         correlatedPosition:  json['correlated_position'],
+        owner: MSPTUser.fromJson(json['owner']),
+        public:  json['public'],
       );
   }
 
   Map<String, dynamic> toJson() =>
     <String, dynamic>{
-      "uid": instrument,
-      "instrument_uid": instrument,
+      "uid": uid,
+      "instrument_uid": instrument?.uid,
       "position": position,
       "status": status,
-      "style_uid": style,
+      "style_uid": style?.uid,
       "pips": pips,
       "outcome": outcome,
       "date": date,
       "description": description,
-      "strategy_uid": strategy,
+      "strategy_uid": strategy?.uid,
       "rr": riskReward,
       "sl": sl,
       "tp": tp,
@@ -105,6 +119,8 @@ class Trade {
       "scaled_in": scaledIn,
       "scaled_out": scaledOut,
       "correlated_position": correlatedPosition,
+      "owner_uid": owner?.uid,
+      "public": public,
     };
 
   String positionAsText() {

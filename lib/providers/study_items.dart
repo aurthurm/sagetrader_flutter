@@ -14,8 +14,11 @@ final String studyItemsURI = serverURI + "mspt/studyitems";
  * Provider: StudyItems Provider
 */
 class StudyItems with ChangeNotifier {
+  bool _loading = false;
   List<StudyItem> _studyItems = <StudyItem>[];
+  String _nextUrl;
   List<Attribute> _filters = <Attribute>[];
+  bool get loading => _loading;
 
   Future<void> clearAll() async {
     await Future.delayed(Duration(seconds: 1)).then((_) {
@@ -24,6 +27,16 @@ class StudyItems with ChangeNotifier {
     });
     notifyListeners();
   }
+
+  bool hasMoreData(){
+    if (_nextUrl == null) return false;
+    return true;
+  }
+
+  void toggleLoading(bool val) => {
+    _loading = val,
+    notifyListeners()
+  };
 
   List<Attribute> get filters => _filters;
   
@@ -103,14 +116,14 @@ class StudyItems with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
     final data = json.encode(
       {
-        "study_id": studyItem.suid,
+        "study_uid": studyItem.suid,
         "description": studyItem.description,
-        "instrument_id": studyItem.instrument,
+        "instrument_uid": studyItem.instrument,
         "position": studyItem.position,
         "outcome": studyItem.outcome,
         "pips": studyItem.pips,
         "date": studyItem.date.toString(),
-        "style_id": studyItem.style,
+        "style_uid": studyItem.style,
         "rrr": studyItem.riskReward,
         "attributes": studyItem.attributes, //_attrs,
       },
@@ -179,6 +192,7 @@ class StudyItems with ChangeNotifier {
   }
 
   Future<void> fetchStudyItems(String sid) async {
+    toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       studyItemsURI + "/$sid",
@@ -186,8 +200,10 @@ class StudyItems with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body);
-      responseData.forEach((item) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+      List<dynamic> _items = responseData['items'];
+      _nextUrl = responseData['next_url'];
+      _items.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final StudyItem inComing = StudyItem.fromJson(item);
         final elements =
@@ -196,9 +212,10 @@ class StudyItems with ChangeNotifier {
           _studyItems.add(inComing);
         }
       });
-      notifyListeners();
+      toggleLoading(false);
     } else {
       final String message = json.decode(response.body)['detail'];
+      toggleLoading(false);
       throw Exception("(${response.statusCode}): $message");
     }
     //

@@ -5,6 +5,10 @@ import 'package:msagetrader/forms/study_form.dart';
 import 'package:msagetrader/forms/task_form.dart';
 import 'package:msagetrader/providers/studies.dart';
 import 'package:msagetrader/screens/instruments.dart';
+import 'package:msagetrader/screens/shared_strategies.dart';
+import 'package:msagetrader/screens/shared_studies.dart';
+import 'package:msagetrader/screens/shared_trades.dart';
+import 'package:msagetrader/screens/shared_trading_plans.dart';
 
 import 'package:provider/provider.dart';
 import 'package:msagetrader/forms/strategy_form.dart';
@@ -153,6 +157,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   "Shared Trades",
                   style:  Theme.of(context).textTheme.headline2,
                 ),
+                onTap: () => {
+                  navigateToPage(context, SharedTrades()),
+                },
               ),
               ListTile(
                 leading: Icon(Icons.edit_attributes),
@@ -160,6 +167,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   "Shared Strategies",
                   style:  Theme.of(context).textTheme.headline2,
                 ),
+                onTap: () => {
+                  navigateToPage(context, SharedStrategies()),
+                },
               ),
               ListTile(
                 leading: Icon(Icons.edit_attributes),
@@ -167,6 +177,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   "Shared Studies",
                   style:  Theme.of(context).textTheme.headline2,
                 ),
+                onTap: () => {
+                  navigateToPage(context, SharedStudies()),
+                },
               ),
               ListTile(
                 leading: Icon(Icons.edit_attributes),
@@ -174,6 +187,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   "Shared Trading Plans",
                   style:  Theme.of(context).textTheme.headline2,
                 ),
+                onTap: () => {
+                  navigateToPage(context, SharedTradingPlans()),
+                },
               ),
               Divider(color: Colors.grey),
               Center(

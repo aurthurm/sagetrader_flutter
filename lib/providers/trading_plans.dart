@@ -10,8 +10,35 @@ String token;
 final String tradingPlansURI = serverURI + "mspt/trading-plan";
 
 class TradingPlans with ChangeNotifier {
+  bool _loading = false;
   List<TradingPlan> _plans = <TradingPlan>[];
+  String _nextUrl;
+
+  bool get loading => _loading;
   List<TradingPlan> get plans => _plans;
+
+  List<TradingPlan> getShared({int excludeUid}){
+    // get shared
+    var _pl = _plans.where((item) => item.public == true);
+    // eclude 
+    if (excludeUid != null) {
+      _pl = _pl.where((item) => item.owner.uid != excludeUid);
+    }
+    return _pl.toList();
+  }
+
+
+  List<TradingPlan> getForUser(int ownerUid) => _plans.where((item) => item.owner.uid == ownerUid).toList();
+
+  bool hasMoreData(){
+    if (_nextUrl == null) return false;
+    return true;
+  }
+
+  void toggleLoading(bool val) => {
+    _loading = val,
+    notifyListeners()
+  };
 
   Future<void> clearAll() async {
     await Future.delayed(Duration(seconds: 1)).then((_) {
@@ -48,16 +75,25 @@ class TradingPlans with ChangeNotifier {
     }
   }
 
-  Future<void> fetchPlans() async {
+  Future<void> fetchPlans({bool shared=false, bool loadMore=false}) async {
+    String fetchURL;
     await MSPTAuth().getToken().then((String value) => token = value);
-    final response = await http.get(
-      tradingPlansURI,
-      headers: bearerAuthHeader(token),
-    );
+
+    if(loadMore) {
+      if (hasMoreData() == false) return null;
+        fetchURL = _nextUrl;
+    } else {
+        fetchURL = tradingPlansURI + "?shared=$shared";
+        toggleLoading(true);
+    }
+    
+    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
     
     if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body);
-      responseData.forEach((item) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+      List<dynamic> _items = responseData['items'];
+      _nextUrl = responseData['next_url'];
+      _items.forEach((item) {
         //dont add if  exists in case of multi reloads
         final TradingPlan inComing = TradingPlan.fromJson(item);
         final elements = _plans.where((element) => element.uid == inComing.uid);
@@ -65,11 +101,13 @@ class TradingPlans with ChangeNotifier {
           _plans.add(inComing);
         }
       });
-      notifyListeners();
+      loadMore ? notifyListeners() : toggleLoading(false);
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
+      loadMore ? notifyListeners() : toggleLoading(false);
       throw Exception("(${response.statusCode}): $message");
     } else {
+      loadMore ? notifyListeners() : toggleLoading(false);
       throw Exception("(${response.statusCode}): ${response.body}");
     }
     //

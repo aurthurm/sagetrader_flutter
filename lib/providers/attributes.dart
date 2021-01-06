@@ -10,8 +10,15 @@ String token;
 final String attributesURI = serverURI + "mspt/attribute";
 
 class Attributes with ChangeNotifier {
+  bool _loading = false;
   List<Attribute> _attributes = <Attribute>[];
   List<Attribute> _selected = <Attribute>[];
+  bool get loading => _loading;
+
+  void toggleLoading(bool val) => {
+    _loading = val,
+    notifyListeners()
+  };
 
   Future<void> clearAll() async {
     await Future.delayed(Duration(seconds: 1)).then((_) {
@@ -118,6 +125,7 @@ class Attributes with ChangeNotifier {
   }
 
   Future<void> fetchStudyAttrs(String studyId) async {
+    toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
       attributesURI + "/$studyId",
@@ -134,9 +142,10 @@ class Attributes with ChangeNotifier {
           _attributes.add(inComing);
         }
       });
-      notifyListeners();
+      toggleLoading(false);
     } else {
       final String message = json.decode(response.body)['detail'];
+      toggleLoading(false);
       throw Exception("(${response.statusCode}): $message");
     }
     //

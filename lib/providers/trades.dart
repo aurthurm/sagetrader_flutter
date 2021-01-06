@@ -15,12 +15,30 @@ final String tradesURI = serverURI + "mspt/trade";
 class Trades with ChangeNotifier {
   bool _loading = false;
   List<Trade> _trades = <Trade>[];
+  String _nextUrl;
+
+  List<Trade> getShared({int excludeUid}){
+    // get shared
+    var _tr = _trades.where((item) => item.public == true);
+    // eclude 
+    if (excludeUid != null) {
+      _tr = _tr.where((item) => item.owner.uid != excludeUid);
+    }
+    return _tr.toList();
+  }
+
+  List<Trade> getForUser(int ownerUid) => _trades.where((item) => item.owner.uid == ownerUid).toList();
 
   Future<void> clearAll() async {
     await Future.delayed(Duration(seconds: 1)).then((_) {
       _trades.clear();
     });
     notifyListeners();
+  }
+
+  bool hasMoreData(){
+    if (_nextUrl == null) return false;
+    return true;
   }
 
   List<Trade> get trades => _trades;
@@ -105,19 +123,27 @@ class Trades with ChangeNotifier {
     }
   }
 
-  Future<List<Trade>> fetchTrades() async {
-    toggleLoading(true);
+  Future<List<Trade>> fetchTrades({bool shared=false, bool loadMore=false}) async {
+    String fetchURL;
     await MSPTAuth().getToken().then((String value) => token = value);
-    final response = await http.get(
-      tradesURI,
-      headers: bearerAuthHeader(token),
-    );
+
+    if(loadMore) {
+      if (hasMoreData() == false) return null;
+        fetchURL = _nextUrl;
+    } else {
+        fetchURL = tradesURI + "?shared=$shared";
+        toggleLoading(true);
+    }
+    
+    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
 
     // await Future.delayed(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body);
-      responseData.forEach((item) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+      List<dynamic> _items = responseData['items'];
+      _nextUrl = responseData['next_url'];
+      _items.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Trade inComing = Trade.fromJson(item);
         final elements = _trades.where((element) => element.uid == inComing.uid);
@@ -125,14 +151,15 @@ class Trades with ChangeNotifier {
           _trades.add(inComing);
         }
       });
-      toggleLoading(false);
+      loadMore ? notifyListeners() : toggleLoading(false);
       await Future.delayed(Duration(seconds: 2)); 
       return _trades;
     } else {
       final String message = json.decode(response.body)['detail'];
-      toggleLoading(false);
+      loadMore ? notifyListeners() : toggleLoading(false);
       throw Exception("(${response.statusCode}): $message");
     }
     //
   }
+  //
 }

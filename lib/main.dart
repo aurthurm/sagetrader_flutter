@@ -14,7 +14,7 @@ import 'package:msagetrader/providers/strategies.dart';
 import 'package:msagetrader/providers/instruments.dart';
 import 'package:msagetrader/providers/styles.dart';
 
-void main() => runApp(MSPTApp()); // MSPT: Meticulous Sage Precision Trading Jornaling App
+void main() => runApp(MSPTApp()); // MSPT: Meticulous Sage Precision Trading Journaling App
 
 class MSPTApp extends StatelessWidget {
   @override

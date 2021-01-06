@@ -37,10 +37,10 @@ class _StudyItemFormState extends State<StudyItemForm> {
       _studyItem = StudyItem(
         suid: widget.studyId,
         uid: null,
-        instrument: '',
+        instrument: Instrument(),
         position: true,
         outcome: true,
-        style: '',
+        style: Style(),
         description: '',
         pips: 0,
         riskReward: 0,
@@ -234,8 +234,8 @@ class _StudyItemFormState extends State<StudyItemForm> {
                               // FocusScope.of(context).requestFocus(_pipsFocus);
                             },
                             child: DropdownButtonFormField(
-                              value: _studyItem.instrument.isNotEmpty
-                                  ? _studyItem.instrument
+                              value: _studyItem.instrument.uid != null
+                                  ? _studyItem.instrument.uid
                                   : null,
                               hint: Text(
                                 'Select an Instrument',
@@ -247,7 +247,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
                               color: Theme.of(context).primaryColor
                             ),
                               onChanged: (value) =>
-                                  setState(() => _studyItem.instrument = value),
+                                  setState(() => _studyItem.instrument = _instruments.findById(value)),
                               validator: (value) => _validateChoices(
                                 value,
                                 "Please Select an Instrument",
@@ -346,7 +346,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
                             },
                             child: DropdownButtonFormField(
                               value:
-                                  _studyItem.style.isNotEmpty ? _studyItem.style : null,
+                                  _studyItem.style != null ? _studyItem.style.uid : null,
                               hint: Text(
                                 'Select a trading style',
                                 style: Theme.of(context).textTheme.headline5.copyWith(
@@ -357,7 +357,7 @@ class _StudyItemFormState extends State<StudyItemForm> {
                                   color: Theme.of(context).primaryColor
                               ),
                               onChanged: (value) =>
-                                  setState(() => _studyItem.style = value),
+                                  setState(() => _studyItem.style = _styles.findById(value)),
                               validator: (value) => _validateChoices(
                                 value,
                                 "Please select a trading Style",

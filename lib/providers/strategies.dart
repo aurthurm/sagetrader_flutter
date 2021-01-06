@@ -13,9 +13,30 @@ final String strategiesURI = serverURI + "mspt/strategy";
  * Provider: Strateies Provider
 */
 class Strategies with ChangeNotifier {
+  bool _loading = false;
   List<Strategy> _strategies = <Strategy>[];
+  String _nextUrl;
 
+
+  bool hasMoreData(){
+    if (_nextUrl == null) return false;
+    return true;
+  }
+  
+  bool get loading => _loading;
   List<Strategy> get strategies => _strategies;
+
+  List<Strategy> getShared({int excludeUid}){
+    // get shared
+    var _str = _strategies.where((item) => item.public == true);
+    // eclude 
+    if (excludeUid != null) {
+      _str = _str.where((item) => item.owner.uid != excludeUid);
+    }
+    return _str.toList();
+  }
+
+  List<Strategy> getForUser(int ownerUid) => _strategies.where((item) => item.owner.uid == ownerUid).toList();
 
   Future<void> clearAll() async {
     await Future.delayed(Duration(seconds: 1)).then((_) {
@@ -23,6 +44,11 @@ class Strategies with ChangeNotifier {
     });
     notifyListeners();
   }
+
+  void toggleLoading(bool val) => {
+    _loading = val,
+    notifyListeners()
+  };
 
   Strategy findById(String id) {
     final index = strategies.indexWhere((strat) => strat.uid == id);
@@ -107,16 +133,26 @@ class Strategies with ChangeNotifier {
     }
   }
 
-  Future<void> fetchStrategies() async {
+  Future<void> fetchStrategies({bool shared=false, bool loadMore=false}) async {
+    String fetchURL;
     await MSPTAuth().getToken().then((String value) => token = value);
-    final response = await http.get(
-      strategiesURI,
-      headers: bearerAuthHeader(token),
-    );
+
+    if(loadMore) {
+      if (_nextUrl == null) return null;
+        fetchURL = _nextUrl;
+    } else {
+        fetchURL = strategiesURI + "?shared=$shared";
+        toggleLoading(true);
+    }
+    
+    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
+
 
     if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body);
-      responseData.forEach((item) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+      List<dynamic> _items = responseData['items'];
+      _nextUrl = responseData['next_url'];
+      _items.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Strategy inComing = Strategy.fromJson(item);
         final elements =
@@ -125,11 +161,13 @@ class Strategies with ChangeNotifier {
           _strategies.add(inComing);
         }
       });
-      notifyListeners();
+     loadMore ? notifyListeners() : toggleLoading(false);
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
+      loadMore ? notifyListeners() : toggleLoading(false);
       throw Exception("(${response.statusCode}): $message");
     } else {
+      loadMore ? notifyListeners() : toggleLoading(false);
       throw Exception("(${response.statusCode}): ${response.body}");
     }
     //

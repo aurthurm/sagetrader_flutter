@@ -13,9 +13,30 @@ final String studiesURI = serverURI + "mspt/study";
  * Provider: Studies Provider
 */
 class Studies with ChangeNotifier {
+  bool _loading = false;
   List<Study> _studies = <Study>[];
+  String _nextUrl;
+
+  bool hasMoreData(){
+    if (_nextUrl == null) return false;
+    return true;
+  }
+
+  bool get loading => _loading;
 
   List<Study> get studies => _studies;
+
+  List<Study> getShared({int excludeUid}){
+    // get shared
+    var _st = _studies.where((item) => item.public == true);
+    // eclude 
+    if (excludeUid != null) {
+      _st = _st.where((item) => item.owner.uid != excludeUid);
+    }
+    return _st.toList();
+  }
+
+  List<Study> getForUser(int ownerUid) => _studies.where((item) => item.owner.uid == ownerUid).toList();
 
   Future<void> clearAll() async {
     await Future.delayed(Duration(seconds: 1)).then((_) {
@@ -23,6 +44,11 @@ class Studies with ChangeNotifier {
     });
     notifyListeners();
   }
+
+  void toggleLoading(bool val) => {
+    _loading = val,
+    notifyListeners()
+  };
 
   Study findById(String id) {
     final index = studies.indexWhere((study) => study.uid == id);
@@ -107,16 +133,25 @@ class Studies with ChangeNotifier {
     }
   }
 
-  Future<void> fetchStudies() async {
+  Future<void> fetchStudies({bool shared=false, bool loadMore=false}) async {
+    String fetchURL;
     await MSPTAuth().getToken().then((String value) => token = value);
-    final response = await http.get(
-      studiesURI,
-      headers: bearerAuthHeader(token),
-    );
+
+    if(loadMore) {
+      if (_nextUrl == null) return null;
+        fetchURL = _nextUrl;
+    } else {
+        fetchURL = studiesURI + "?shared=$shared";
+        toggleLoading(true);
+    }
+    
+    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
 
     if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body);
-      responseData.forEach((item) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+      List<dynamic> _items = responseData['items'];
+      _nextUrl = responseData['next_url'];
+      _items.forEach((item) {
         //dont add if instrument exists in case of multi reloads
         final Study inComing = Study.fromJson(item);
         final elements =
@@ -125,11 +160,13 @@ class Studies with ChangeNotifier {
           _studies.add(inComing);
         }
       });
-      notifyListeners();
+      loadMore ? notifyListeners() : toggleLoading(false);
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
+      loadMore ? notifyListeners() : toggleLoading(false);
       throw Exception("(${response.statusCode}): $message");
     } else {
+      loadMore ? notifyListeners() : toggleLoading(false);
       throw Exception("(${response.statusCode}): ${response.body}");
     }
     //

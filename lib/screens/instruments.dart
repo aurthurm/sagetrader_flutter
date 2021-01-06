@@ -63,8 +63,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
         title: Text("Your Trading Istruments"),
       ),
       body: RefreshIndicator(
-        onRefresh: () =>
-            Provider.of<Instruments>(context, listen: false).fetchInstruments(),
+        onRefresh: () => Provider.of<Instruments>(context, listen: false).fetchInstruments(),
         child: Container(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -74,10 +73,10 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                   Expanded(
                     child: Text(
                       "When you journal your trades. You will be limited to the instruments that you have set here.",
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w500,
+                        color: Theme.of(context).primaryColor.withOpacity(0.8),
                       ),
                     ),
                   ),
@@ -128,9 +127,8 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                               padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                               child: Text(
                                 instrument.name(),
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
+                                style: Theme.of(context).textTheme.headline3.copyWith(
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
                             ),
@@ -209,7 +207,8 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                       decoration: InputDecoration(
                           labelText: "Instrument Name",
                           filled: true,
-                          fillColor: Colors.grey.shade100),
+                          fillColor: Colors.grey.shade100
+                      ),
                       initialValue: _instrument.name(),
                       onSaved: (String value) {
                         setState(() {
@@ -268,7 +267,13 @@ Future<bool> _showConfirmationDialog(
         title: Text('Do you want to Delete ${instrument.name()} ?'),
         actions: <Widget>[
           FlatButton(
-            child: Text('Delete'),
+            child: Text(
+              'Delete',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             onPressed: () {
               Navigator.pop(context, true);
             },

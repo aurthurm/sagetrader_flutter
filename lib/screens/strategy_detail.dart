@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msagetrader/auth/auth.dart';
 import 'package:msagetrader/providers/files.dart';
 import 'package:msagetrader/widgets/keyvaluepair.dart';
 import 'package:provider/provider.dart';
@@ -124,6 +125,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
 
 
   Widget build(BuildContext context) {
+    final auth = Provider.of<MSPTAuth>(context);
     final _strategies = Provider.of<Strategies>(context);
     Strategy strategy = _strategies.findById(widget.strategyId);
     final _files = Provider.of<Files>(context);
@@ -141,7 +143,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
             color: Colors.white,
           ),
         ),
-        actions: <Widget>[
+        actions: auth.user.uid == strategy.owner.uid ? <Widget>[
           IconButton(
             icon: Icon(Icons.attach_file),
             color: Colors.white,
@@ -166,7 +168,9 @@ class _StrategyDetailState extends State<StrategyDetail> {
                   title: Text(
                     "Warning",
                     style: TextStyle(
+                    fontSize: 20,
                       color: Colors.red,
+                    fontWeight: FontWeight.bold,
                     ),
                   ),
                   content: Text(
@@ -194,7 +198,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
               },
             ),
           ),
-        ],
+        ] : [],
       ),
       body: Container(
         child: Column(

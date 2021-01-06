@@ -27,18 +27,10 @@ class _StudyDetailState extends State<StudyDetail> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Provider.of<Attributes>(context).fetchStudyAttrs(widget.studyID).catchError((err){
-        print(err.toString());
-        Provider.of<MSPTAuth>(context, listen: false).logout().then((_){
-          Future.delayed(Duration(seconds: 4)).then((_) {
-            Navigator.pop(context, true);
-          });
-        });
-      });
-      Provider.of<StudyItems>(context).fetchStudyItems(widget.studyID).catchError((err){
-        print(err.toString());
-        // Provider.of<MSPTAuth>(context, listen: false).logout();
-      });
+       Future.delayed(Duration.zero, (){
+        Provider.of<Attributes>(context).fetchStudyAttrs(widget.studyID);
+        Provider.of<StudyItems>(context).fetchStudyItems(widget.studyID);
+       });
     }
     setState(() {
       _isInit = false;
@@ -46,12 +38,9 @@ class _StudyDetailState extends State<StudyDetail> {
     super.didChangeDependencies();
   }
 
-  void toggleFilter(Attribute attr, toggled) {
-
-  }
-
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<MSPTAuth>(context);
     final _studies = Provider.of<Studies>(context);
     Study study = _studies.findById(widget.studyID);
     final _studyItems = Provider.of<StudyItems>(context, listen: false);
@@ -73,7 +62,7 @@ class _StudyDetailState extends State<StudyDetail> {
               color: Colors.white,
             ),
           ),
-          actions: <Widget>[
+          actions: auth.user.uid == study.owner.uid ? <Widget>[
             IconButton(
               icon: Icon(Icons.edit_attributes_rounded),
             color: Colors.white,
@@ -100,7 +89,9 @@ class _StudyDetailState extends State<StudyDetail> {
                     title: Text(
                       "Warning",
                       style: TextStyle(
+                        fontSize: 20,
                         color: Colors.red,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     content: Text(
@@ -129,7 +120,7 @@ class _StudyDetailState extends State<StudyDetail> {
                 },
               ),
             ),
-          ],
+          ] : [],
         ),
         body: Container(
           child: SingleChildScrollView(
@@ -163,10 +154,16 @@ class _StudyDetailState extends State<StudyDetail> {
                           "Filter by Attributes",
                           style: Theme.of(context).textTheme.headline3,
                         ),
+                        _studyAttrs.loading ? 
+                        Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).primaryColor,
+                          ),
+                        ) : 
                         Wrap(
                           direction: Axis.horizontal,
-                          children: studyAttrs.length == 0 ? <Widget>[] : 
-                          studyAttrs.map<Widget>(
+                          children: studyAttrs.length == 0 ? 
+                          <Widget>[] : studyAttrs.map<Widget>(
                             (attr) => FilterTag(attribute: attr, studyitems: _studyItems)
                           ).toList(),
                         ),
@@ -183,7 +180,7 @@ class _StudyDetailState extends State<StudyDetail> {
                           "Study Items:",
                           style: Theme.of(context).textTheme.headline2,
                         ),
-                        FlatButton(
+                        auth.user.uid == study.owner.uid ? FlatButton(
                           onPressed: () => {
                              navigateToPage(context,
                               StudyItemForm(newStudyItem: true, studyId: study.uid, studyItemId: null),
@@ -193,13 +190,19 @@ class _StudyDetailState extends State<StudyDetail> {
                             Icons.add_box,
                             color: Theme.of(context).primaryColor,
                           ),
-                        ),
+                        ):  Container(),
                       ],
                     ),
                   ),
                   Divider(),
                   Container(
-                      child: ListView.builder(
+                      child:  _studyItems.loading ? 
+                      Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                      ) : 
+                      ListView.builder(
                         primary: false,
                         itemCount: studyItems.length,
                         itemBuilder: (context, index) {

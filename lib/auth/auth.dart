@@ -22,14 +22,24 @@ Map<String, String> bearerAuthHeader(token) {
 class MSPTUser {
   String firstname;
   String lastname;
+  int uid;
+  bool isActive;
+  bool isSuperuser;
   String token;
 
-  MSPTUser({this.token, this.firstname, this.lastname});
+  String getFullName(){
+    return firstname + " " + lastname;
+  }
+
+  MSPTUser({this.token, this.uid, this.firstname, this.lastname, this.isSuperuser, this.isActive});
 
   factory MSPTUser.fromJson(Map<String, dynamic> json) {
     return MSPTUser(
+      uid: json['uid'],
       firstname: json['first_name'],
       lastname: json['last_name'],
+      isActive: json['is_active'],
+      isSuperuser: json['is_superuser'],
       token: json['access_token'],
     );
   }

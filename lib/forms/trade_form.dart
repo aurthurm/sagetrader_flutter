@@ -31,12 +31,12 @@ class _TradeFormState extends State<TradeForm> {
       saveButtonTitle = "!! Add Trade to your journal !!";
       _trade = Trade(
         uid: null,
-        instrument: '',
+        instrument: Instrument(),
         position: true,
         status: false,
         outcome: true,
-        style: '',
-        strategy: '',
+        style: Style(),
+        strategy: Strategy(),
         description: '',
         pips: null,
         riskReward: null,
@@ -58,6 +58,8 @@ class _TradeFormState extends State<TradeForm> {
       saveButtonTitle = "!! Save updated to your journal !!";
       _trade = _trades.findById(widget.tradeID);
     }
+    print(_trade.toJson());
+    print(_trade.instrument.uid);
     super.initState();
   }
 
@@ -224,9 +226,7 @@ class _TradeFormState extends State<TradeForm> {
                             // FocusScope.of(context).requestFocus(_riskRewardFocus);
                           },
                           child: DropdownButtonFormField(
-                            value: _trade.instrument.isNotEmpty
-                                ? _trade.instrument
-                                : null,
+                            value: _trade.hasInstrument() ? _trade.instrument.uid : null,
                             hint: Text(
                               'Select an Instrument',
                               style: Theme.of(context).textTheme.headline5.copyWith(
@@ -237,7 +237,9 @@ class _TradeFormState extends State<TradeForm> {
                                 color: Theme.of(context).primaryColor
                             ),
                             onChanged: (value) =>
-                                setState(() => _trade.instrument = value),
+                                setState((){
+                                  _trade.instrument = _instruments.findById(value);
+                                }),
                             validator: (value) => _validateChoices(
                               value,
                               "Please Select an Instrument",
@@ -547,9 +549,7 @@ class _TradeFormState extends State<TradeForm> {
                             FocusScope.of(context).requestFocus(_styleFocus);
                           },
                           child: DropdownButtonFormField(
-                            value: _trade.strategy.isNotEmpty
-                                ? _trade.strategy
-                                : null,
+                            value: _trade.hasStrategy() ? _trade.strategy.uid : null,
                             hint: Text(
                               'Select a trading strategy',
                               style: Theme.of(context).textTheme.headline5.copyWith(
@@ -560,7 +560,7 @@ class _TradeFormState extends State<TradeForm> {
                                 color: Theme.of(context).primaryColor
                             ),
                             onChanged: (value) =>
-                                setState(() => _trade.strategy = value),
+                                setState(() => _trade.strategy = _strategies.findById(value)),
                             validator: (value) => _validateChoices(
                               value,
                               "Please select a strategy",
@@ -583,8 +583,7 @@ class _TradeFormState extends State<TradeForm> {
                             // FocusScope.of(context).requestFocus(_descriptionFocus);
                           },
                           child: DropdownButtonFormField(
-                            value:
-                                _trade.style.isNotEmpty ? _trade.style : null,
+                            value: _trade.hasStyle() ? _trade.style.uid : null,
                             hint: Text(
                               'Select a trading style',
                               style: Theme.of(context).textTheme.headline5.copyWith(
@@ -595,7 +594,7 @@ class _TradeFormState extends State<TradeForm> {
                                 color: Theme.of(context).primaryColor
                             ),
                             onChanged: (value) =>
-                                setState(() => _trade.style = value),
+                                setState(() => _trade.style = _styles.findById(value)),
                             validator: (value) => _validateChoices(
                               value,
                               "Please select a trading Style",

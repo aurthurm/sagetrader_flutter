@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:msagetrader/auth/auth.dart';
 import 'package:msagetrader/models/file.dart';
 import 'package:msagetrader/providers/files.dart';
 import 'package:msagetrader/widgets/keyvaluepair.dart';
@@ -8,13 +9,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:msagetrader/forms/trade_form.dart';
-import 'package:msagetrader/models/instrument.dart';
-import 'package:msagetrader/models/strategy.dart';
-import 'package:msagetrader/models/style.dart';
 import 'package:msagetrader/models/trade.dart';
-import 'package:msagetrader/providers/instruments.dart';
-import 'package:msagetrader/providers/strategies.dart';
-import 'package:msagetrader/providers/styles.dart';
 import 'package:msagetrader/providers/trades.dart';
 import 'package:msagetrader/utils/utils.dart';
 
@@ -114,35 +109,30 @@ class _TradeDetailState extends State<TradeDetail> {
     });
   }
 
-  _buildTagsAlt(Trade tr, Instrument ins, Style sty, Strategy str) {
+  _buildTagsAlt(Trade trade) {
     var _tags = [];
-    _tags.add(ins.title.toUpperCase());
-    _tags.add(tr.positionAsText().toUpperCase());
-    _tags.add(sty.title.toUpperCase());
-    _tags.add(str.name.toUpperCase());
+    _tags.add(trade.instrument.title.toUpperCase());
+    _tags.add(trade.positionAsText().toUpperCase());
+    _tags.add(trade.style.title.toUpperCase());
+    _tags.add(trade.strategy.name.toUpperCase());
     setState(() {
       tags = _tags;
-      caption = "${tr.positionAsText().toUpperCase()} ${ins.title.toUpperCase()} ${sty.title.toUpperCase()} Trade";
+      caption = "${trade.positionAsText().toUpperCase()} ${trade.instrument.title.toUpperCase()} ${trade.strategy.name.toUpperCase()} Trade";
     });
     // print("TradeTags: $tags");
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<MSPTAuth>(context);
     final _trades = Provider.of<Trades>(context);
-    final _strategies = Provider.of<Strategies>(context, listen: false);
-    final _instruments = Provider.of<Instruments>(context, listen: false);
-    final _styles = Provider.of<Styles>(context, listen: false);
     Trade trade = _trades.findById(widget.tradeId);
-    Instrument instrument = _instruments.findById(trade.instrument);
-    Strategy strategy = _strategies.findById(trade.strategy);
-    Style style = _styles.findById(trade.style);
     final _files = Provider.of<Files>(context);
     List<FileData> files = _files.files;
     setState(() {
       loading = _files.loading;
     });
-    _buildTagsAlt(trade, instrument, style, strategy);
+    _buildTagsAlt(trade);
 
     return Scaffold(
       appBar: AppBar(
@@ -150,7 +140,7 @@ class _TradeDetailState extends State<TradeDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              instrument.name() + " Trade Detail",
+              trade.instrument.name() + " Trade Detail",
               style:  Theme.of(context).textTheme.headline2.copyWith(
                 color: Colors.white,
               ),
@@ -161,7 +151,7 @@ class _TradeDetailState extends State<TradeDetail> {
             ),
           ],
         ),
-        actions: <Widget>[
+        actions: auth.user.uid == trade.owner.uid ? <Widget>[
           IconButton(
             icon: Icon(Icons.attach_file),
             color: Colors.white,
@@ -186,7 +176,9 @@ class _TradeDetailState extends State<TradeDetail> {
                   title: Text(
                     "Warning",
                     style: TextStyle(
+                      fontSize: 20,
                       color: Colors.red,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   content: Text(
@@ -214,7 +206,7 @@ class _TradeDetailState extends State<TradeDetail> {
               },
             ),
           ),
-        ],
+        ] : [],
       ),
       body: Container(
         child: SingleChildScrollView(
@@ -254,13 +246,13 @@ class _TradeDetailState extends State<TradeDetail> {
                     SizedBox(height: 10),
                     KeyValuePair(
                       label: "Strategy:",
-                      value: strategy.name,
+                      value: trade.strategy.name,
                       color: Colors.black87,
                     ),
                     SizedBox(height: 10),
                     KeyValuePair(
                       label: "Style:",
-                      value: style.name(),
+                      value: trade.style.name(),
                       color: Colors.black87,
                     ),
                     SizedBox(height: 10),

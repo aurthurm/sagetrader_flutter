@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:msagetrader/auth/auth.dart';
 import 'package:msagetrader/models/attribute.dart';
+import 'package:msagetrader/models/instrument.dart';
+import 'package:msagetrader/models/style.dart';
 
 /*
  * Model: 
@@ -12,8 +15,10 @@ class Study {
   String description;
   List<StudyItem> items = <StudyItem>[];
   List<Attribute> attributes = <Attribute>[];
+  MSPTUser owner;
+  bool public;
   Study(
-      {this.uid, this.name, this.description, this.attributes});
+      {this.uid, this.name, this.description, this.attributes, this.owner, this.public});
 
   factory Study.fromJson(Map<String, dynamic> json) {
     List<Attribute> _attr = <Attribute>[];
@@ -27,6 +32,8 @@ class Study {
       name: json['name'],
       description: json['description'],
       attributes: [],
+      owner: MSPTUser.fromJson(json['owner']),
+      public: json['public'],
     );
   }
   //
@@ -43,14 +50,15 @@ class StudyItem {
   String uid;
   String name = "Study Item"; //default value
   String description;
-  String instrument;
+  Instrument instrument;
   bool position;
-  String style;
+  Style style;
   double pips;
   bool outcome;
   String date;
   double riskReward;
   List<Attribute> attributes = <Attribute>[];
+  bool public;
 
   StudyItem({
     this.suid,
@@ -64,6 +72,7 @@ class StudyItem {
     this.description,
     this.riskReward,
     this.attributes,
+    this.public,
   });
 
   factory StudyItem.fromJson(Map<String, dynamic> json) {
@@ -77,14 +86,15 @@ class StudyItem {
       suid: json['study_uid'].toString(),
       uid: json['uid'].toString(),
       description: json['description'],
-      instrument: json['instrument_uid'].toString(),
+      instrument: Instrument.fromJson(json['instrument']),
       position: json['position'],
       outcome: json['outcome'],
       pips: double.parse(json['pips'].toString()),
       date: json['date'].toString(),
-      style: json['style_uid'].toString(),
+      style: Style.fromJson(json['style']),
       riskReward: json['rrr'],
       attributes: _attr,
+      public: json['public'],
     );
   }
 

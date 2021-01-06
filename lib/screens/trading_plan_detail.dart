@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msagetrader/auth/auth.dart';
 import 'package:msagetrader/forms/trading_plan_form.dart';
 import 'package:msagetrader/models/trading_plan.dart';
 import 'package:msagetrader/providers/trading_plans.dart';
@@ -11,6 +12,7 @@ class TradingPlanDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<MSPTAuth>(context);
     final _plans = Provider.of<TradingPlans>(context);
     TradingPlan plan = _plans.findById(planID);
 
@@ -22,7 +24,7 @@ class TradingPlanDetail extends StatelessWidget {
             color: Colors.white,
           )
         ),
-        actions: <Widget>[
+        actions: auth.user.uid == plan.owner.uid ? <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
             color: Colors.white,
@@ -43,6 +45,8 @@ class TradingPlanDetail extends StatelessWidget {
                     "Warning",
                     style: TextStyle(
                       color: Colors.red,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   content: Text(
@@ -70,23 +74,25 @@ class TradingPlanDetail extends StatelessWidget {
               },
             ),
           ),
-        ],
+        ] : [],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "Plan Detail",
-              style:  Theme.of(context).textTheme.headline2,
-            ),
-            Divider(),
-            Text(
-              plan.description,
-              style:  Theme.of(context).textTheme.bodyText1
-            )
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "Plan Detail",
+                style:  Theme.of(context).textTheme.headline2,
+              ),
+              Divider(),
+              Text(
+                plan.description,
+                style:  Theme.of(context).textTheme.bodyText1
+              )
+            ],
+          ),
         ),
       ),
     );
