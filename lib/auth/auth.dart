@@ -86,7 +86,7 @@ class MSPTAuth with ChangeNotifier {
   }
 
   Future<void> authenticate(String username, String password) async {
-    if (await hasNetworkAccess() == false) throw NoConnectionException("You are offline");
+    if (await hasInternetAccess() == false) throw NoConnectionException("You are offline");
     toggleLoading();
     clearMessages();
     final _authData = Map<String, dynamic>();
@@ -95,13 +95,11 @@ class MSPTAuth with ChangeNotifier {
 
     try {
       var responseJson;
-      print(loginURI);
       final response = await http.post(loginURI, body: _authData).timeout(timeout);
       responseJson = responseHandler(response);
       _user = MSPTUser.fromJson(responseJson);
       resetToken(_user.token);
       toggleLoading();
-      notifyListeners();
       return user;
     } catch (err) {
       clearToken();
@@ -117,7 +115,7 @@ class MSPTAuth with ChangeNotifier {
   }
 
   Future createUser(dynamic payload) async {
-    if (await hasNetworkAccess() == false) throw NoConnectionException("You are offline");
+    if (await hasInternetAccess() == false) throw NoConnectionException("You are offline");
     toggleLoading();
     clearMessages();
 
@@ -128,10 +126,9 @@ class MSPTAuth with ChangeNotifier {
       _user = MSPTUser.fromJson(responseJson);
       resetToken(_user.token);
       toggleLoading();
-      notifyListeners();
       return user;
     } catch (err) {
-      notifyListeners();
+      toggleLoading();
       if (err.toString().contains('Invalid Request')) {
         throw PersistException(err.toString());
       }
@@ -163,7 +160,6 @@ class MSPTAuth with ChangeNotifier {
 
   Future<bool> logout() async  {
     await Future.delayed(Duration(seconds: 1)).then((_){
-      print("You are being Logged Out");
       _user = null;
       clearMessages();
       clearToken();

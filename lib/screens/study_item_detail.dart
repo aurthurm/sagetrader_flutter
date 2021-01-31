@@ -124,7 +124,6 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
       tags = _tags;
       caption = "${st.positionAsText().toUpperCase()} ${st.instrument.title.toUpperCase()} ${st.style.title.toUpperCase()} Study";
     });
-    // print("StudyItemTags: $tags");
   }
 
   Widget build(BuildContext context) {

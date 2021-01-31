@@ -119,7 +119,6 @@ class _TradeDetailState extends State<TradeDetail> {
       tags = _tags;
       caption = "${trade.positionAsText().toUpperCase()} ${trade.instrument.title.toUpperCase()} ${trade.strategy.name.toUpperCase()} Trade";
     });
-    // print("TradeTags: $tags");
   }
 
   @override

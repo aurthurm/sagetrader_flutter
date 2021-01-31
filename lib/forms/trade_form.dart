@@ -58,8 +58,6 @@ class _TradeFormState extends State<TradeForm> {
       saveButtonTitle = "!! Save updated to your journal !!";
       _trade = _trades.findById(widget.tradeID);
     }
-    print(_trade.toJson());
-    print(_trade.instrument.uid);
     super.initState();
   }
 

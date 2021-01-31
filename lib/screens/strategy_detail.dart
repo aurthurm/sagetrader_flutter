@@ -120,7 +120,6 @@ class _StrategyDetailState extends State<StrategyDetail> {
       tags = _tags;
       caption = "${st.name} Strategy";
     });
-    // print("StrategyTags: $tags");
   }
 
 

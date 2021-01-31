@@ -109,7 +109,6 @@ class Trades with ChangeNotifier {
     final data = json.encode(editedTrade.toJson());
 
     await MSPTAuth().getToken().then((String value) => token = value);
-    print(data);
     final response = await http.put(
       tradesURI + "/${editedTrade.uid}",
       headers: bearerAuthHeader(token),

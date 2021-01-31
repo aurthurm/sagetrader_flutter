@@ -121,10 +121,6 @@ class Files extends BaseFiles  {
     request.fields['tags'] = tags.join(", ");
     request.fields['caption'] = caption;
     var _response = await request.send();
-    // print(_response.reasonPhrase);
-    // print(_response.statusCode);
-    // http.Response.fromStream(_response)
-    //     .then((_) => fetchFiles(parent, parentId));
     http.Response.fromStream(_response)
     .then((res) {
       if (res.statusCode == 200) {

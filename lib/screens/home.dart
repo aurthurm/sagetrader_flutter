@@ -59,7 +59,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     // Using didChangeDependencies
     // Future.delayed(Duration.zero).then(
     //   (_) {
-    //     print("Inside initState fetching instruments $_isInit");
     //     Provider.of<Instruments>(context).fetchInstruments();
     //   },
     // );
