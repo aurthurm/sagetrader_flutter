@@ -94,6 +94,7 @@ class Attributes with ChangeNotifier {
       notifyListeners();
       return true;
     } else {
+      notifyListeners();
       throw Exception('Failed to Add Attribute: Try Again <<sc ${response.statusCode} | ${response.body}>>');
     }
   }
@@ -118,8 +119,10 @@ class Attributes with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
+      notifyListeners();
     } else {
       _attributes[index] = _oldAttribute;
+      notifyListeners();
       throw Exception("StatusCode: ${response.statusCode}, Error Body: ${response.body}");
     }
   }

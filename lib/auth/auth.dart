@@ -95,6 +95,7 @@ class MSPTAuth with ChangeNotifier {
 
     try {
       var responseJson;
+      print(loginURI);
       final response = await http.post(loginURI, body: _authData).timeout(timeout);
       responseJson = responseHandler(response);
       _user = MSPTUser.fromJson(responseJson);

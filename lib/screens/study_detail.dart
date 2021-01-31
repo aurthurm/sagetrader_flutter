@@ -28,8 +28,8 @@ class _StudyDetailState extends State<StudyDetail> {
   void didChangeDependencies() {
     if (_isInit) {
        Future.delayed(Duration.zero, (){
-        Provider.of<Attributes>(context).fetchStudyAttrs(widget.studyID);
-        Provider.of<StudyItems>(context).fetchStudyItems(widget.studyID);
+        Provider.of<Attributes>(context, listen: false).fetchStudyAttrs(widget.studyID);
+        Provider.of<StudyItems>(context, listen: false).fetchStudyItems(widget.studyID);
        });
     }
     setState(() {
@@ -43,9 +43,9 @@ class _StudyDetailState extends State<StudyDetail> {
     final auth = Provider.of<MSPTAuth>(context);
     final _studies = Provider.of<Studies>(context);
     Study study = _studies.findById(widget.studyID);
-    final _studyItems = Provider.of<StudyItems>(context, listen: false);
+    final _studyItems = Provider.of<StudyItems>(context);
     List<StudyItem> studyItems = _studyItems.studyItemsByStudy(study.uid);
-    final _studyAttrs = Provider.of<Attributes>(context, listen: false);
+    final _studyAttrs = Provider.of<Attributes>(context);
     List<Attribute> studyAttrs = _studyAttrs.attrsByStudy(study.uid);
 
     return WillPopScope(

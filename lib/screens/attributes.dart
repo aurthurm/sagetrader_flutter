@@ -22,7 +22,9 @@ class _AtrributesPageState extends State<AtrributesPage> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Provider.of<Attributes>(context).fetchStudyAttrs(widget.studyID);
+      Future.delayed(Duration.zero, (){
+        Provider.of<Attributes>(context, listen: false).fetchStudyAttrs(widget.studyID);
+      });
     }
     setState(() {
       _isInit = false;
@@ -34,7 +36,7 @@ class _AtrributesPageState extends State<AtrributesPage> {
   Widget build(BuildContext context) {
     final _studies = Provider.of<Studies>(context);
     Study study = _studies.findById(widget.studyID);
-    final _attributes = Provider.of<Attributes>(context, listen: false);
+    final _attributes = Provider.of<Attributes>(context);
     List<Attribute> attributes = _attributes.attrsByStudy(study.uid);
    
     return Scaffold(
