@@ -84,7 +84,6 @@ class _TaskFormState extends State<TaskForm> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,8 +111,8 @@ class _TaskFormState extends State<TaskForm> {
                       TextFormField(
                         decoration: _buildInputDecoration("Task Name"),
                         style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          color: Theme.of(context).primaryColor,
-                        ),
+                              color: Theme.of(context).primaryColor,
+                            ),
                         initialValue: _task.title,
                         onChanged: (String value) {
                           setState(() {
@@ -135,8 +134,8 @@ class _TaskFormState extends State<TaskForm> {
                       TextFormField(
                         decoration: _buildInputDecoration("Task Detail"),
                         style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          color: Theme.of(context).primaryColor,
-                        ),
+                              color: Theme.of(context).primaryColor,
+                            ),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _task.description,
@@ -154,13 +153,14 @@ class _TaskFormState extends State<TaskForm> {
                         focusNode: _descriptionFocus,
                       ),
                       SizedBox(height: 10),
-                      RaisedButton(
-                        color: Theme.of(context).primaryColor,
+                      ElevatedButton(
+                        // color: Theme.of(context).primaryColor,
                         child: Text(
                           saveButtonTitle.toUpperCase(),
-                          style: Theme.of(context).textTheme.headline4.copyWith(
-                            color: Colors.white
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              .copyWith(color: Colors.white),
                         ),
                         onPressed: _saveForm,
                       ),

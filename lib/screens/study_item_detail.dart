@@ -23,10 +23,10 @@ class StudyItemDetail extends StatefulWidget {
 }
 
 class _StudyItemDetailState extends State<StudyItemDetail> {
-  List<Asset> _images = List<Asset>();
-  List<FileData> _byteImageMaps = List<FileData>();
+  List<Asset> _images = List<Asset>.empty(growable: true);
+  List<FileData> _byteImageMaps = List<FileData>.empty(growable: true);
   bool _isInit = true, loading = true;
-  List<dynamic> tags = List<dynamic>();
+  List<dynamic> tags = List<dynamic>.empty(growable: true);
   String caption = "";
 
   @override
@@ -50,7 +50,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     setState(() {
       loading = true;
     });
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty(growable: true);
 
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -85,12 +85,7 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
 
     Future.delayed(Duration(seconds: 2)).then((_) {
       Provider.of<Files>(context, listen: false).uploadFiles(
-        _byteImageMaps,
-        'studyitem',
-        widget.studyItemId,
-        tags,
-        caption
-      );
+          _byteImageMaps, 'studyitem', widget.studyItemId, tags, caption);
     });
   }
 
@@ -114,15 +109,18 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     });
   }
 
-  _buildTagsAlt(StudyItem st,) {
+  _buildTagsAlt(
+    StudyItem st,
+  ) {
     var _tags = [];
     _tags.add(st.instrument.title.toUpperCase());
     _tags.add(st.positionAsText().toUpperCase());
     _tags.add(st.style.title.toUpperCase());
-    st.attributes.forEach((attr) =>  _tags.add(attr.name.toUpperCase()));
+    st.attributes.forEach((attr) => _tags.add(attr.name.toUpperCase()));
     setState(() {
       tags = _tags;
-      caption = "${st.positionAsText().toUpperCase()} ${st.instrument.title.toUpperCase()} ${st.style.title.toUpperCase()} Study";
+      caption =
+          "${st.positionAsText().toUpperCase()} ${st.instrument.title.toUpperCase()} ${st.style.title.toUpperCase()} Study";
     });
   }
 
@@ -142,62 +140,70 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
     return Scaffold(
       appBar: AppBar(
         title: Text(studyItem.name),
-        actions: auth.user.uid == study.owner.uid ? <Widget>[
-          IconButton(
-            icon: Icon(Icons.attach_file),
-            color: Colors.white,
-            onPressed: () => _pickImages(context),
-          ),
-          IconButton(
-            icon: Icon(Icons.edit),
-            color: Colors.white,
-            onPressed: () {
-              navigateToPage(context,
-                  StudyItemForm(newStudyItem: false, studyId: study.uid, studyItemId: studyItem.uid,));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_forever),
-            color: Colors.red,
-            onPressed: () => showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(
-                    "Warning",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+        actions: auth.user.uid == study.owner.uid
+            ? <Widget>[
+                IconButton(
+                  icon: Icon(Icons.attach_file),
+                  color: Colors.white,
+                  onPressed: () => _pickImages(context),
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  color: Colors.white,
+                  onPressed: () {
+                    navigateToPage(
+                        context,
+                        StudyItemForm(
+                          newStudyItem: false,
+                          studyId: study.uid,
+                          studyItemId: studyItem.uid,
+                        ));
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_forever),
+                  color: Colors.red,
+                  onPressed: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          "Warning",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Text(
+                          "You are about to delete this studyItem. Note that this action is irrevesibe. Are you sure about this?",
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop(); // pop alert dialog
+                              Navigator.of(context)
+                                  .pop(); // pop from deleted trade
+                              _studyItems.deleteById(studyItem.uid);
+                            },
+                          ),
+                          TextButton(
+                            child: Text("Cancel"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                  content: Text(
-                    "You are about to delete this studyItem. Note that this action is irrevesibe. Are you sure about this?",
-                  ),
-                  actions: [
-                    FlatButton(
-                      child: Text(
-                        "Delete",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(); // pop alert dialog
-                        Navigator.of(context).pop(); // pop from deleted trade
-                        _studyItems.deleteById(studyItem.uid);
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ] : [],
+                ),
+              ]
+            : [],
       ),
       body: Container(
         child: SingleChildScrollView(
@@ -229,10 +235,8 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
                     SizedBox(height: 10),
                     KeyValuePair(
                       label: "Outcome:",
-                      value: (studyItem.outcome
-                              ? "+"
-                              : "-") 
-                              + "${studyItem.pips} pips",
+                      value: (studyItem.outcome ? "+" : "-") +
+                          "${studyItem.pips} pips",
                       color: studyItem.outcome ? Colors.green : Colors.red,
                     ),
                     SizedBox(height: 10),
@@ -251,168 +255,169 @@ class _StudyItemDetailState extends State<StudyItemDetail> {
                     Divider(color: Colors.grey.shade600),
                     Wrap(
                       direction: Axis.horizontal,
-                      children: studyItem.attributes.length == 0 ? 
-                      [
-                        Center(
-                          child: Text("... No Attributes ...")
-                        ),
-                      ] : 
-                      studyItem.attributes.map(
-                        (attr) => 
-                          Padding(
-                            padding: const EdgeInsets.only(right: 4),
-                            child: Chip(
-                              elevation: 3,
-                              label: Text(
-                                attr.name,
-                                style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.white,
-                                )
-                              ),
-                              backgroundColor: Theme.of(context).primaryColor,
-                            ),
-                          )
-                      ).toList(),
+                      children: studyItem.attributes.length == 0
+                          ? [
+                              Center(child: Text("... No Attributes ...")),
+                            ]
+                          : studyItem.attributes
+                              .map((attr) => Padding(
+                                    padding: const EdgeInsets.only(right: 4),
+                                    child: Chip(
+                                      elevation: 3,
+                                      label: Text(attr.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2
+                                              .copyWith(
+                                                fontStyle: FontStyle.italic,
+                                                color: Colors.white,
+                                              )),
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                    ),
+                                  ))
+                              .toList(),
                     ),
                     Divider(color: Colors.grey.shade600),
                   ],
                 ),
               ),
               loading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : files.length == 0 // _images.length == 0
-              ? Center(
-                  child: Text(
-                    "We have not found any images for this study item",
-                    style: TextStyle(color: Colors.red),
-                  ),
-                )
-              : Container(
-                  height: 120.0,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: files.length, // _byteImageMaps.length,
-                    itemBuilder: (context, index) {
-                      // final bytes = _byteImageMaps[index].bytes;
-                      final image = files[index];
-                      return Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 4),
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: 0,
-                            top: 10,
-                            right: 5,
-                            bottom: 10,
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : files.length == 0 // _images.length == 0
+                      ? Center(
+                          child: Text(
+                            "We have not found any images for this study item",
+                            style: TextStyle(color: Colors.red),
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: Offset(
-                                  2,
-                                  3,
-                                ),
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: GestureDetector(
-                              child: Image.network(
-                                  image.location), // Image.memory(bytes),
-                              onTap: () => showGeneralDialog(
-                                context: context,
-                                barrierColor: Colors.black12.withOpacity(0.6),
-                                barrierDismissible: false,
-                                barrierLabel: "Text Dialog",
-                                transitionDuration: Duration(milliseconds: 400),
-                                pageBuilder: (_, __, ___) {
-                                  return SizedBox.expand(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Expanded(
-                                          flex: 9,
-                                          child: SizedBox.expand(
-                                            child: Center(
-                                              child: Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                  child: PhotoView(
-                                                    imageProvider:
-                                                        NetworkImage(image
-                                                            .location), // MemoryImage(bytes),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
+                        )
+                      : Container(
+                          height: 120.0,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: files.length, // _byteImageMaps.length,
+                            itemBuilder: (context, index) {
+                              // final bytes = _byteImageMaps[index].bytes;
+                              final image = files[index];
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4),
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    left: 0,
+                                    top: 10,
+                                    right: 5,
+                                    bottom: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: Offset(
+                                          2,
+                                          3,
                                         ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: SizedBox.expand(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceAround,
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: GestureDetector(
+                                      child: Image.network(image
+                                          .location), // Image.memory(bytes),
+                                      onTap: () => showGeneralDialog(
+                                        context: context,
+                                        barrierColor:
+                                            Colors.black12.withOpacity(0.6),
+                                        barrierDismissible: false,
+                                        barrierLabel: "Text Dialog",
+                                        transitionDuration:
+                                            Duration(milliseconds: 400),
+                                        pageBuilder: (_, __, ___) {
+                                          return SizedBox.expand(
+                                            child: Column(
                                               children: <Widget>[
-                                                RaisedButton(
-                                                  color: Colors.red,
-                                                  child: Text(
-                                                    "Delete",
-                                                    style: TextStyle(
-                                                      fontSize: 40,
-                                                      color:
-                                                          Colors.white70,
+                                                Expanded(
+                                                  flex: 9,
+                                                  child: SizedBox.expand(
+                                                    child: Center(
+                                                      child: Expanded(
+                                                        flex: 1,
+                                                        child: Container(
+                                                          child: PhotoView(
+                                                            imageProvider:
+                                                                NetworkImage(image
+                                                                    .location), // MemoryImage(bytes),
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
-                                                  onPressed: () => {
-                                                    Navigator.pop(
-                                                        context),
-                                                    _files.deleteFile(
-                                                        'studyitem',
-                                                        image.uid)
-                                                  },
                                                 ),
-                                                RaisedButton(
-                                                  color: Colors.blue,
-                                                  child: Text(
-                                                    "Close",
-                                                    style: TextStyle(
-                                                        fontSize: 40),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: SizedBox.expand(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: <Widget>[
+                                                        ElevatedButton(
+                                                          // color: Colors.red,
+                                                          child: Text(
+                                                            "Delete",
+                                                            style: TextStyle(
+                                                              fontSize: 40,
+                                                              color: Colors
+                                                                  .white70,
+                                                            ),
+                                                          ),
+                                                          onPressed: () => {
+                                                            Navigator.pop(
+                                                                context),
+                                                            _files.deleteFile(
+                                                                'studyitem',
+                                                                image.uid)
+                                                          },
+                                                        ),
+                                                        ElevatedButton(
+                                                          // color: Colors.blue,
+                                                          child: Text(
+                                                            "Close",
+                                                            style: TextStyle(
+                                                                fontSize: 40),
+                                                          ),
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context),
-                                                ),
+                                                )
                                               ],
                                             ),
-                                          ),
-                                        )
-                                      ],
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  );
-                                },
-                              ),
-                            ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Column(

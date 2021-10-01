@@ -22,8 +22,9 @@ class _AtrributesPageState extends State<AtrributesPage> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Future.delayed(Duration.zero, (){
-        Provider.of<Attributes>(context, listen: false).fetchStudyAttrs(widget.studyID);
+      Future.delayed(Duration.zero, () {
+        Provider.of<Attributes>(context, listen: false)
+            .fetchStudyAttrs(widget.studyID);
       });
     }
     setState(() {
@@ -38,33 +39,33 @@ class _AtrributesPageState extends State<AtrributesPage> {
     Study study = _studies.findById(widget.studyID);
     final _attributes = Provider.of<Attributes>(context);
     List<Attribute> attributes = _attributes.attrsByStudy(study.uid);
-   
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Attrs | " + study.name,
-          style:  Theme.of(context).textTheme.headline2.copyWith(
-            color: Colors.white,
-          ),
+          style: Theme.of(context).textTheme.headline2.copyWith(
+                color: Colors.white,
+              ),
         ),
         actions: <Widget>[],
       ),
       body: Container(
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Attributes are the various concentration Parameters/features/variations to be considered during this study",
-                        style:  Theme.of(context).textTheme.bodyText1.copyWith(
-                         fontStyle: FontStyle.italic
-                        )  
-                      ),
+                          "Attributes are the various concentration Parameters/features/variations to be considered during this study",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              .copyWith(fontStyle: FontStyle.italic)),
                     ],
                   ),
                 ),
@@ -76,12 +77,16 @@ class _AtrributesPageState extends State<AtrributesPage> {
                     children: <Widget>[
                       Text(
                         "Add Attribute",
-                        style:  Theme.of(context).textTheme.headline2,
+                        style: Theme.of(context).textTheme.headline2,
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () => {
-                           navigateToPage(context,
-                            AttributeForm(newAttribute: true, studyId: study.uid, attributeId: null),
+                          navigateToPage(
+                            context,
+                            AttributeForm(
+                                newAttribute: true,
+                                studyId: study.uid,
+                                attributeId: null),
                           ),
                         },
                         child: Icon(
@@ -94,80 +99,82 @@ class _AtrributesPageState extends State<AtrributesPage> {
                 ),
                 Divider(),
                 Container(
-                    child: ListView.builder(
-                      primary: false,
-                      itemCount: attributes.length,
-                      itemBuilder: (context, index) {
-                        final attribute = attributes[index];
-                        return Dismissible(
-                      dismissThresholds: {
-                        DismissDirection.endToStart: 0.1,
-                        DismissDirection.startToEnd: 0.2
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        child: Row(
-                          children: <Widget>[
-                            Spacer(),
-                            Icon(Icons.delete),
-                          ],
+                  child: ListView.builder(
+                    primary: false,
+                    itemCount: attributes.length,
+                    itemBuilder: (context, index) {
+                      final attribute = attributes[index];
+                      return Dismissible(
+                        dismissThresholds: {
+                          DismissDirection.endToStart: 0.1,
+                          DismissDirection.startToEnd: 0.2
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          child: Row(
+                            children: <Widget>[
+                              Spacer(),
+                              Icon(Icons.delete),
+                            ],
+                          ),
                         ),
-                      ),
-                      key: Key(attribute.uid),
-                      child: GestureDetector(
+                        key: Key(attribute.uid),
+                        child: GestureDetector(
                           child: AttributeCard(studyItem: attribute),
                           onTap: () => {
-                            navigateToPage(context, AttributeForm(newAttribute: false, studyId: study.uid, attributeId: attribute.uid)),
+                            navigateToPage(
+                                context,
+                                AttributeForm(
+                                    newAttribute: false,
+                                    studyId: study.uid,
+                                    attributeId: attribute.uid)),
                           },
                         ),
-                      direction: DismissDirection.endToStart,
-                      confirmDismiss:
-                          (DismissDirection dismissDirection) async {
-                        switch (dismissDirection) {
-                          case DismissDirection.endToStart:
-                            return await _showConfirmationDialog(context,
-                                    'Delete', attribute, _attributes) ==
-                                true;
-                          case DismissDirection.startToEnd:
-                          case DismissDirection.horizontal:
-                          case DismissDirection.vertical:
-                          case DismissDirection.up:
-                          case DismissDirection.down:
-                        }
-                        return false;
-                      },
-                      onDismissed: (direction) {
-                        Scaffold.of(context).hideCurrentSnackBar();
-                        Scaffold.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                "${attribute.name} was deleted successfully"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                        _attributes.deleteById(attribute.uid);
-                      },
-                    );
-                      },
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                    ),
+                        direction: DismissDirection.endToStart,
+                        confirmDismiss:
+                            (DismissDirection dismissDirection) async {
+                          switch (dismissDirection) {
+                            case DismissDirection.endToStart:
+                              return await _showConfirmationDialog(context,
+                                      'Delete', attribute, _attributes) ==
+                                  true;
+                            case DismissDirection.startToEnd:
+                            case DismissDirection.horizontal:
+                            case DismissDirection.vertical:
+                            case DismissDirection.up:
+                            case DismissDirection.down:
+                          }
+                          return false;
+                        },
+                        onDismissed: (direction) {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  "${attribute.name} was deleted successfully"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          _attributes.deleteById(attribute.uid);
+                        },
+                      );
+                    },
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
                   ),
-            ]
-          ),
+                ),
+              ]),
         ),
       ),
     );
   }
 }
 
-
 class AttributeCard extends StatelessWidget {
   final studyItem;
   const AttributeCard({this.studyItem});
   @override
   Widget build(BuildContext context) {
-
     return Card(
       elevation: 0.2,
       child: Container(
@@ -184,8 +191,8 @@ class AttributeCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                child:  Padding(
-                  padding:  EdgeInsets.symmetric(vertical:0, horizontal:10),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                   child: Icon(Icons.edit_attributes),
                 ),
               ),
@@ -195,7 +202,7 @@ class AttributeCard extends StatelessWidget {
                   children: [
                     Text(
                       studyItem.name.toUpperCase(),
-                      style:  Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headline4,
                     ),
                     Divider(
                       color: Colors.grey,
@@ -204,7 +211,10 @@ class AttributeCard extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
                       child: Text(
                         getExerpt(studyItem.description, 40),
-                        style:  Theme.of(context).textTheme.bodyText2.copyWith(fontStyle: FontStyle.italic),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .copyWith(fontStyle: FontStyle.italic),
                       ),
                     ),
                   ],
@@ -219,8 +229,6 @@ class AttributeCard extends StatelessWidget {
   }
 }
 
-
-
 Future<bool> _showConfirmationDialog(
     BuildContext context, String action, Attribute attribute, attributes) {
   return showDialog<bool>(
@@ -230,13 +238,13 @@ Future<bool> _showConfirmationDialog(
       return AlertDialog(
         title: Text('Do you want to Delete ${attribute.name} ?'),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text('Delete'),
             onPressed: () {
               Navigator.pop(context, true);
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text('Cancel'),
             onPressed: () {
               Navigator.pop(context, false); // showDialog() returns false
@@ -247,4 +255,3 @@ Future<bool> _showConfirmationDialog(
     },
   );
 }
-

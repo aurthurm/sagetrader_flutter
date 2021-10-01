@@ -8,9 +8,8 @@ class MSPTTheme {
   static final ThemeData baseDark = ThemeData.dark();
 
   // Base Text Theme Style
-  static TextTheme baseTextTheme(TextTheme defaultBase){
+  static TextTheme baseTextTheme(TextTheme defaultBase) {
     return defaultBase.copyWith(
-      
       headline1: defaultBase.headline1.copyWith(
         fontSize: 24,
         fontWeight: FontWeight.w800,
@@ -30,7 +29,7 @@ class MSPTTheme {
       ),
       headline5: defaultBase.headline1.copyWith(
         fontSize: 14,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
       ),
       headline6: defaultBase.headline1.copyWith(
         fontSize: 12,
@@ -53,16 +52,15 @@ class MSPTTheme {
         color: Colors.grey.withOpacity(0.9),
         fontSize: 14,
       ),
-      
     );
   }
 
   // Light Theme
   static final ThemeData lightTheme = baseLight.copyWith(
-    primaryColor: Color(0xFF023047), // 
+    primaryColor: Color(0xFF023047), //
     scaffoldBackgroundColor: Color(0xFFE5E5E5),
     brightness: Brightness.light,
-    accentColor: Color(0xA6023047),
+    // accentColor: Color(0xA6023047),
     textTheme: baseTextTheme(baseLight.textTheme),
   );
 

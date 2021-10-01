@@ -27,11 +27,17 @@ class MSPTUser {
   bool isSuperuser;
   String token;
 
-  String getFullName(){
+  String getFullName() {
     return firstname + " " + lastname;
   }
 
-  MSPTUser({this.token, this.uid, this.firstname, this.lastname, this.isSuperuser, this.isActive});
+  MSPTUser(
+      {this.token,
+      this.uid,
+      this.firstname,
+      this.lastname,
+      this.isSuperuser,
+      this.isActive});
 
   factory MSPTUser.fromJson(Map<String, dynamic> json) {
     return MSPTUser(
@@ -43,7 +49,6 @@ class MSPTUser {
       token: json['access_token'],
     );
   }
-
 }
 
 class MSPTAuth with ChangeNotifier {
@@ -52,17 +57,14 @@ class MSPTAuth with ChangeNotifier {
   String _signInMessage = "";
   String _signUpMessage = "";
 
-  Duration timeout = Duration(seconds: 15);
+  Duration timeout = Duration(seconds: 30);
 
   MSPTUser get user => _user;
   String get signInMessage => _signInMessage;
   String get signUpMessage => _signUpMessage;
   bool get loading => _loading;
 
-  void toggleLoading() => {
-    _loading = !_loading,
-    notifyListeners()
-  };
+  void toggleLoading() => {_loading = !_loading, notifyListeners()};
 
   Future<String> getToken() async {
     final String _token = await storage.read(key: "access_token");
@@ -86,16 +88,22 @@ class MSPTAuth with ChangeNotifier {
   }
 
   Future<void> authenticate(String username, String password) async {
-    if (await hasInternetAccess() == false) throw NoConnectionException("You are offline");
+    if (checkForNetowk == true) {
+      if (await hasInternetAccess() == false)
+        throw NoConnectionException("You are offline");
+    }
     toggleLoading();
     clearMessages();
     final _authData = Map<String, dynamic>();
-    _authData['username'] = username;
-    _authData['password'] = password;
+    _authData['username'] = username.replaceAll(' ', '');
+    _authData['password'] = password.replaceAll(' ', '');
 
+    print(loginURI);
     try {
       var responseJson;
-      final response = await http.post(loginURI, body: _authData).timeout(timeout);
+      final response =
+          await http.post(loginURI, body: _authData); // .timeout(timeout);
+      print(response);
       responseJson = responseHandler(response);
       _user = MSPTUser.fromJson(responseJson);
       resetToken(_user.token);
@@ -111,17 +119,18 @@ class MSPTAuth with ChangeNotifier {
       }
       handleCommonExceptions(err);
     }
-    
   }
 
   Future createUser(dynamic payload) async {
-    if (await hasInternetAccess() == false) throw NoConnectionException("You are offline");
+    if (await hasInternetAccess() == false)
+      throw NoConnectionException("You are offline");
     toggleLoading();
     clearMessages();
 
     try {
       var responseJson;
-      final response = await http.post(usersURI, body: payload).timeout(timeout);
+      final response =
+          await http.post(usersURI, body: payload).timeout(timeout);
       responseJson = _createResponseHandler(response);
       _user = MSPTUser.fromJson(responseJson);
       resetToken(_user.token);
@@ -139,8 +148,8 @@ class MSPTAuth with ChangeNotifier {
   _createResponseHandler(res) {
     var responseJson = json.decode(res.body.toString()); // res.body ??
     var message = responseJson['detail'];
-    switch(res.statusCode) {
-      case 200:      
+    switch (res.statusCode) {
+      case 200:
         return responseJson;
       case 400:
         _signUpMessage = message;
@@ -152,14 +161,16 @@ class MSPTAuth with ChangeNotifier {
       case 500:
 
       default:
-        _signUpMessage = "Error in creating your account: try again in a few minutes";
+        _signUpMessage =
+            "Error in creating your account: try again in a few minutes";
         notifyListeners();
-        throw UnknownException("(${res.statusCode}) - An Unknown Error Encountered");
+        throw UnknownException(
+            "(${res.statusCode}) - An Unknown Error Encountered");
     }
   }
 
-  Future<bool> logout() async  {
-    await Future.delayed(Duration(seconds: 1)).then((_){
+  Future<bool> logout() async {
+    await Future.delayed(Duration(seconds: 1)).then((_) {
       _user = null;
       clearMessages();
       clearToken();

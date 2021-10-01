@@ -56,7 +56,7 @@ class _SignUpFormState extends State<SignUpForm> {
         "last_name": lastname,
         "password": password1,
       });
-      await _auth.createUser(payload).catchError((onError){
+      await _auth.createUser(payload).catchError((onError) {
         setState(() {
           showError = true;
           errorMsgs = onError.toString();
@@ -91,8 +91,6 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final _auth = Provider.of<MSPTAuth>(context, listen: false);
@@ -104,8 +102,11 @@ class _SignUpFormState extends State<SignUpForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             TextFormField(
-              style: TextStyle(color: Colors.white,),
-              decoration: _buildInputHintDecoration("Enter your First Name ..."),   
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              decoration:
+                  _buildInputHintDecoration("Enter your First Name ..."),
               initialValue: firstname,
               onChanged: (String value) {
                 setState(() {
@@ -119,13 +120,14 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (_) {
-                FocusScope.of(context)
-                    .requestFocus(_lastNameFocus);
+                FocusScope.of(context).requestFocus(_lastNameFocus);
               },
             ),
             SizedBox(height: 10),
             TextFormField(
-              style: TextStyle(color: Colors.white,),
+              style: TextStyle(
+                color: Colors.white,
+              ),
               decoration: _buildInputHintDecoration("Enter your Last Name ..."),
               initialValue: lastname,
               onChanged: (String value) {
@@ -141,14 +143,16 @@ class _SignUpFormState extends State<SignUpForm> {
               textInputAction: TextInputAction.next,
               focusNode: _lastNameFocus,
               onFieldSubmitted: (_) {
-                FocusScope.of(context)
-                    .requestFocus(_emailFocus);
+                FocusScope.of(context).requestFocus(_emailFocus);
               },
             ),
             SizedBox(height: 10),
             TextFormField(
-              style: TextStyle(color: Colors.white,),
-              decoration:  _buildInputHintDecoration("Enter your Email Adress ..."),
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              decoration:
+                  _buildInputHintDecoration("Enter your Email Adress ..."),
               initialValue: email,
               onChanged: (String value) {
                 setState(() {
@@ -163,15 +167,16 @@ class _SignUpFormState extends State<SignUpForm> {
               textInputAction: TextInputAction.next,
               focusNode: _emailFocus,
               onFieldSubmitted: (_) {
-                FocusScope.of(context)
-                    .requestFocus(_password1Focus);
+                FocusScope.of(context).requestFocus(_password1Focus);
               },
             ),
             SizedBox(height: 10),
             TextFormField(
-              style: TextStyle(color: Colors.white,),
+              style: TextStyle(
+                color: Colors.white,
+              ),
               obscureText: true,
-              decoration:  _buildInputHintDecoration("Enter your password ..."),
+              decoration: _buildInputHintDecoration("Enter your password ..."),
               initialValue: password1,
               onChanged: (String value) {
                 setState(() {
@@ -186,15 +191,16 @@ class _SignUpFormState extends State<SignUpForm> {
               textInputAction: TextInputAction.next,
               focusNode: _password1Focus,
               onFieldSubmitted: (_) {
-                FocusScope.of(context)
-                    .requestFocus(_password2Focus);
+                FocusScope.of(context).requestFocus(_password2Focus);
               },
             ),
             SizedBox(height: 10),
             TextFormField(
-              style: TextStyle(color: Colors.white,),
+              style: TextStyle(
+                color: Colors.white,
+              ),
               obscureText: true,
-              decoration:  _buildInputHintDecoration("Confirm your Password"),
+              decoration: _buildInputHintDecoration("Confirm your Password"),
               initialValue: password2,
               onChanged: (String value) {
                 setState(() {
@@ -213,32 +219,29 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Text(
                 _auth.signUpMessage,
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  color: Colors.red,
-                ),
+                      color: Colors.red,
+                    ),
               ),
             ),
             SizedBox(height: 15),
-            _auth.loading ? 
-            Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-              )
-            ) :
-            RaisedButton(
-              color: Colors.orange,
-              child: Text(
-                "Sign Up",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-              onPressed: _saveForm,
-            ),
-            showError ? 
-            offlineMessageCard(context, errorMsgs)
-            : Text(""),
+            _auth.loading
+                ? Center(
+                    child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ))
+                : ElevatedButton(
+                    // color: Colors.orange,
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: _saveForm,
+                  ),
+            showError ? offlineMessageCard(context, errorMsgs) : Text(""),
             SizedBox(height: 10),
           ],
         ),

@@ -18,7 +18,7 @@ class _StrategyFormState extends State<StrategyForm> {
   bool done, loading;
   @override
   void initState() {
-    done  = false;
+    done = false;
     loading = false;
     final _strategies = Provider.of<Strategies>(context, listen: false);
     if (widget.newStrategy) {
@@ -49,7 +49,7 @@ class _StrategyFormState extends State<StrategyForm> {
   void _saveForm() async {
     setState(() {
       loading = true;
-    }); 
+    });
     bool formIsValid = _formKey.currentState.validate();
     if (formIsValid) {
       _formKey.currentState.save();
@@ -57,25 +57,27 @@ class _StrategyFormState extends State<StrategyForm> {
       final _strategies = Provider.of<Strategies>(context, listen: false);
 
       if (_strategy.uid == null) {
-          await _strategies.addStrategy(_strategy).then((value) => {
-            setState((){
-              done = true;
-            })
-          }).catchError((error) => {
-            throw Exception("$error")
-          });     
+        await _strategies
+            .addStrategy(_strategy)
+            .then((value) => {
+                  setState(() {
+                    done = true;
+                  })
+                })
+            .catchError((error) => {throw Exception("$error")});
       } else {
-        await _strategies.updateStrategy(_strategy).then((value) => {
-            setState((){
-              done = true;
-            })
-          }).catchError((error) => {
-            throw Exception("$error")
-          });  
+        await _strategies
+            .updateStrategy(_strategy)
+            .then((value) => {
+                  setState(() {
+                    done = true;
+                  })
+                })
+            .catchError((error) => {throw Exception("$error")});
       }
       setState(() {
         loading = false;
-      }); 
+      });
       if (done) {
         Navigator.of(context).pop();
       } else {
@@ -85,7 +87,6 @@ class _StrategyFormState extends State<StrategyForm> {
       return;
     }
   }
-
 
   InputDecoration _buildInputDecoration(String hintText) {
     return InputDecoration(
@@ -122,101 +123,113 @@ class _StrategyFormState extends State<StrategyForm> {
           ),
         ],
       ),
-      body: loading ? 
-      // showDialog(
-      //   context: context, 
-      //   barrierDismissible: false,
-      //   builder: (BuildContext context) {
-      //     return SimpleDialog(
-      //       elevation: 0.0,
-      //       backgroundColor: Colors.transparent,
-      //       children: <Widget>[
-      //         Center(
-      //           child: CircularProgressIndicator(),
-      //         )
-      //       ],
-      //     );
-      //   }
-      // )
-      Center(
-        child: CircularProgressIndicator(),
-      ) 
-      : Container(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(4, 2, 4, 0),
-          child: Builder(
-            builder: (context) => Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      TextFormField(
-                        decoration: _buildInputDecoration("Strategy Name"),
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          color: Theme.of(context).primaryColor,
+      body: loading
+          ?
+          // showDialog(
+          //   context: context,
+          //   barrierDismissible: false,
+          //   builder: (BuildContext context) {
+          //     return SimpleDialog(
+          //       elevation: 0.0,
+          //       backgroundColor: Colors.transparent,
+          //       children: <Widget>[
+          //         Center(
+          //           child: CircularProgressIndicator(),
+          //         )
+          //       ],
+          //     );
+          //   }
+          // )
+          Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(4, 2, 4, 0),
+                child: Builder(
+                  builder: (context) => Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            TextFormField(
+                              decoration:
+                                  _buildInputDecoration("Strategy Name"),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                              initialValue: _strategy.name,
+                              onChanged: (String value) {
+                                setState(() {
+                                  _strategy.name = value;
+                                });
+                              },
+                              validator: (value) => _validateLength(
+                                value,
+                                3,
+                                "Strategy Name is too short!!",
+                              ),
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_descriptionFocus);
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              decoration:
+                                  _buildInputDecoration("Strategy Description"),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                              minLines: 5,
+                              maxLines: 20,
+                              initialValue: _strategy.description,
+                              onChanged: (String value) {
+                                setState(() {
+                                  _strategy.description = value;
+                                });
+                              },
+                              validator: (value) => _validateLength(
+                                value,
+                                10,
+                                "Trade Description is too short!!",
+                              ),
+                              textInputAction: TextInputAction.newline,
+                              focusNode: _descriptionFocus,
+                            ),
+                            SizedBox(height: 10),
+                            ElevatedButton(
+                              // color: Theme.of(context).primaryColor,
+                              child: Text(
+                                saveButtonTitle.toUpperCase(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    .copyWith(color: Colors.white),
+                              ),
+                              onPressed: _saveForm,
+                            ),
+                            SizedBox(height: 10),
+                          ],
                         ),
-                        initialValue: _strategy.name,
-                        onChanged: (String value) {
-                          setState(() {
-                            _strategy.name = value;
-                          });
-                        },
-                        validator: (value) => _validateLength(
-                          value,
-                          3,
-                          "Strategy Name is too short!!",
-                        ),
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (_) {
-                          FocusScope.of(context)
-                              .requestFocus(_descriptionFocus);
-                        },
                       ),
-                      SizedBox(height: 10,),
-                      TextFormField(
-                        decoration:  _buildInputDecoration("Strategy Description"),
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        minLines: 5,
-                        maxLines: 20,
-                        initialValue: _strategy.description,
-                        onChanged: (String value) {
-                          setState(() {
-                            _strategy.description = value;
-                          });
-                        },
-                        validator: (value) => _validateLength(
-                          value,
-                          10,
-                          "Trade Description is too short!!",
-                        ),
-                        textInputAction: TextInputAction.newline,
-                        focusNode: _descriptionFocus,
-                      ),
-                      SizedBox(height: 10),
-                      RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        child: Text(
-                          saveButtonTitle.toUpperCase(),
-                          style: Theme.of(context).textTheme.headline4.copyWith(
-                            color: Colors.white
-                          ),
-                        ),
-                        onPressed: _saveForm,
-                      ),
-                      SizedBox(height: 10),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

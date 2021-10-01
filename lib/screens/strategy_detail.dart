@@ -22,10 +22,10 @@ class StrategyDetail extends StatefulWidget {
 }
 
 class _StrategyDetailState extends State<StrategyDetail> {
-  List<Asset> _images = List<Asset>();
-  List<FileData> _byteImageMaps = List<FileData>();
+  List<Asset> _images = List<Asset>.empty(growable: true);
+  List<FileData> _byteImageMaps = List<FileData>.empty(growable: true);
   bool _isInit = true, loading = true;
-  List<dynamic> tags = List<dynamic>();
+  List<dynamic> tags = List<dynamic>.empty(growable: true);
   String caption = "";
 
   @override
@@ -49,7 +49,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
     setState(() {
       loading = true;
     });
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty(growable: true);
 
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -113,7 +113,7 @@ class _StrategyDetailState extends State<StrategyDetail> {
     });
   }
 
-  _buildTagsAlt(Strategy st ) {
+  _buildTagsAlt(Strategy st) {
     var _tags = [];
     _tags.add(st.name.toUpperCase());
     setState(() {
@@ -121,7 +121,6 @@ class _StrategyDetailState extends State<StrategyDetail> {
       caption = "${st.name} Strategy";
     });
   }
-
 
   Widget build(BuildContext context) {
     final auth = Provider.of<MSPTAuth>(context);
@@ -138,66 +137,71 @@ class _StrategyDetailState extends State<StrategyDetail> {
       appBar: AppBar(
         title: Text(
           strategy.name + " Strategy",
-          style:  Theme.of(context).textTheme.headline2.copyWith(
-            color: Colors.white,
-          ),
+          style: Theme.of(context).textTheme.headline2.copyWith(
+                color: Colors.white,
+              ),
         ),
-        actions: auth.user.uid == strategy.owner.uid ? <Widget>[
-          IconButton(
-            icon: Icon(Icons.attach_file),
-            color: Colors.white,
-            onPressed: () => _pickImages(context),
-          ),
-          IconButton(
-            icon: Icon(Icons.edit),
-            color: Colors.white,
-            onPressed: () {
-              navigateToPage(context,
-                  StrategyForm(newStrategy: false, strategyID: strategy.uid));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_forever),
-            color: Colors.red,
-            onPressed: () => showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(
-                    "Warning",
-                    style: TextStyle(
-                    fontSize: 20,
-                      color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    ),
+        actions: auth.user.uid == strategy.owner.uid
+            ? <Widget>[
+                IconButton(
+                  icon: Icon(Icons.attach_file),
+                  color: Colors.white,
+                  onPressed: () => _pickImages(context),
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  color: Colors.white,
+                  onPressed: () {
+                    navigateToPage(
+                        context,
+                        StrategyForm(
+                            newStrategy: false, strategyID: strategy.uid));
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_forever),
+                  color: Colors.red,
+                  onPressed: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          "Warning",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Text(
+                          "You are about to delete this strategy. Note that this action is irrevesibe. Are you sure about this?",
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              Navigator.popUntil(
+                                  context, (route) => route.isFirst);
+                              _strategies.deleteById(strategy.uid);
+                            },
+                          ),
+                          TextButton(
+                            child: Text("Cancel"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                  content: Text(
-                    "You are about to delete this strategy. Note that this action is irrevesibe. Are you sure about this?",
-                  ),
-                  actions: [
-                    FlatButton(
-                      child: Text(
-                        "Delete",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      onPressed: () {
-                        Navigator.popUntil(context, (route) => route.isFirst);
-                        _strategies.deleteById(strategy.uid);
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ] : [],
+                ),
+              ]
+            : [],
       ),
       body: Container(
         child: Column(
@@ -328,8 +332,8 @@ class _StrategyDetailState extends State<StrategyDetail> {
                                                         MainAxisAlignment
                                                             .spaceAround,
                                                     children: <Widget>[
-                                                      RaisedButton(
-                                                        color: Colors.red,
+                                                      ElevatedButton(
+                                                        // color: Colors.red,
                                                         child: Text(
                                                           "Delete",
                                                           style: TextStyle(
@@ -346,8 +350,8 @@ class _StrategyDetailState extends State<StrategyDetail> {
                                                               image.uid)
                                                         },
                                                       ),
-                                                      RaisedButton(
-                                                        color: Colors.blue,
+                                                      ElevatedButton(
+                                                        // color: Colors.blue,
                                                         child: Text(
                                                           "Close",
                                                           style: TextStyle(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:msagetrader/auth/auth.dart';
 import 'package:msagetrader/auth/auth_redirect.dart';
 import 'package:msagetrader/providers/attributes.dart';
+import 'package:msagetrader/providers/cot.dart';
 import 'package:msagetrader/providers/files.dart';
 import 'package:msagetrader/providers/studies.dart';
 import 'package:msagetrader/providers/study_items.dart';
@@ -14,7 +15,8 @@ import 'package:msagetrader/providers/strategies.dart';
 import 'package:msagetrader/providers/instruments.dart';
 import 'package:msagetrader/providers/styles.dart';
 
-void main() => runApp(MSPTApp()); // MSPT: Meticulous Sage Precision Trading Journaling App
+void main() =>
+    runApp(MSPTApp()); // MSPT: Meticulous Sage Precision Trading Journaling App
 
 class MSPTApp extends StatelessWidget {
   @override
@@ -53,6 +55,9 @@ class MSPTApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => Attributes(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CFTC(),
         ),
       ],
       child: MaterialApp(

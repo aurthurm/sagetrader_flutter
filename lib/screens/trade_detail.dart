@@ -22,10 +22,10 @@ class TradeDetail extends StatefulWidget {
 }
 
 class _TradeDetailState extends State<TradeDetail> {
-  List<Asset> _images = List<Asset>();
-  List<FileData> _byteImageMaps = List<FileData>();
+  List<Asset> _images = List<Asset>.empty(growable: true);
+  List<FileData> _byteImageMaps = List<FileData>.empty(growable: true);
   bool _isInit = true, loading = true;
-  List<dynamic> tags = List<dynamic>();
+  List<dynamic> tags = List<dynamic>.empty(growable: true);
   String caption = "";
 
   @override
@@ -49,7 +49,7 @@ class _TradeDetailState extends State<TradeDetail> {
     setState(() {
       loading = true;
     });
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = List<Asset>.empty(growable: true);
 
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -79,13 +79,8 @@ class _TradeDetailState extends State<TradeDetail> {
     _images.forEach((asset) => assetToUint8ListFile(asset));
 
     Future.delayed(Duration(seconds: 2)).then((_) {
-      Provider.of<Files>(context, listen: false).uploadFiles(
-        _byteImageMaps,
-        'trade',
-        widget.tradeId,
-        tags,
-        caption
-      );
+      Provider.of<Files>(context, listen: false)
+          .uploadFiles(_byteImageMaps, 'trade', widget.tradeId, tags, caption);
     });
   }
 
@@ -117,7 +112,8 @@ class _TradeDetailState extends State<TradeDetail> {
     _tags.add(trade.strategy.name.toUpperCase());
     setState(() {
       tags = _tags;
-      caption = "${trade.positionAsText().toUpperCase()} ${trade.instrument.title.toUpperCase()} ${trade.strategy.name.toUpperCase()} Trade";
+      caption =
+          "${trade.positionAsText().toUpperCase()} ${trade.instrument.title.toUpperCase()} ${trade.strategy.name.toUpperCase()} Trade";
     });
   }
 
@@ -140,72 +136,73 @@ class _TradeDetailState extends State<TradeDetail> {
           children: <Widget>[
             Text(
               trade.instrument.name() + " Trade Detail",
-              style:  Theme.of(context).textTheme.headline2.copyWith(
-                color: Colors.white,
-              ),
+              style: Theme.of(context).textTheme.headline2.copyWith(
+                    color: Colors.white,
+                  ),
             ),
-            Text(
-              humanizeDate(trade.date),
-              style:  Theme.of(context).textTheme.subtitle2
-            ),
+            Text(humanizeDate(trade.date),
+                style: Theme.of(context).textTheme.subtitle2),
           ],
         ),
-        actions: auth.user.uid == trade.owner.uid ? <Widget>[
-          IconButton(
-            icon: Icon(Icons.attach_file),
-            color: Colors.white,
-            onPressed: () => _pickImages(context),
-          ),
-          IconButton(
-            icon: Icon(Icons.edit),
-            color: Colors.white,
-            onPressed: () {
-              navigateToPage(
-                  context, TradeForm(newTrade: false, tradeID: trade.uid));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_forever),
-            color: Colors.red,
-            onPressed: () => showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(
-                    "Warning",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
+        actions: auth.user.uid == trade.owner.uid
+            ? <Widget>[
+                IconButton(
+                  icon: Icon(Icons.attach_file),
+                  color: Colors.white,
+                  onPressed: () => _pickImages(context),
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  color: Colors.white,
+                  onPressed: () {
+                    navigateToPage(context,
+                        TradeForm(newTrade: false, tradeID: trade.uid));
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_forever),
+                  color: Colors.red,
+                  onPressed: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          "Warning",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Text(
+                          "You are about to delete this trade entry. Note that this action is irrevesibe. Are you sure about this?",
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              Navigator.popUntil(
+                                  context, (route) => route.isFirst);
+                              _trades.deleteById(trade.uid);
+                            },
+                          ),
+                          TextButton(
+                            child: Text("Cancel"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                  content: Text(
-                    "You are about to delete this trade entry. Note that this action is irrevesibe. Are you sure about this?",
-                  ),
-                  actions: [
-                    FlatButton(
-                      child: Text(
-                        "Delete",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      onPressed: () {
-                        Navigator.popUntil(context, (route) => route.isFirst);
-                        _trades.deleteById(trade.uid);
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ] : [],
+                ),
+              ]
+            : [],
       ),
       body: Container(
         child: SingleChildScrollView(
@@ -240,7 +237,9 @@ class _TradeDetailState extends State<TradeDetail> {
                               : "Lost - ${trade.pips} pips",
                       color: trade.status
                           ? Colors.black87
-                          : trade.outcome ? Colors.green : Colors.red,
+                          : trade.outcome
+                              ? Colors.green
+                              : Colors.red,
                     ),
                     SizedBox(height: 10),
                     KeyValuePair(
@@ -331,14 +330,17 @@ class _TradeDetailState extends State<TradeDetail> {
                 ),
               ),
               loading
-                  ? Center(child: CircularProgressIndicator(),)
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
                   : files.length == 0 // _images.length == 0
                       ? Center(
                           child: Text(
                             "We have not found any images for this trade",
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Colors.red,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyText2.copyWith(
+                                      color: Colors.red,
+                                    ),
                           ),
                         )
                       : Container(
@@ -383,26 +385,35 @@ class _TradeDetailState extends State<TradeDetail> {
                                     borderRadius: BorderRadius.circular(10.0),
                                     child: GestureDetector(
                                       child: Image.network(
-                                          image.location,
-                                          errorBuilder: (context, _, __) => 
-                                          Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0,),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                        image.location,
+                                        errorBuilder: (context, _, __) =>
+                                            Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 0,
+                                            ),
+                                            child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  Icon(Icons.error, color: Colors.red,),
+                                                  Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  ),
                                                   SizedBox(height: 10),
                                                   Text(
                                                     "Not Found",
-                                                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                                      color: Colors.red,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2
+                                                        .copyWith(
+                                                          color: Colors.red,
+                                                        ),
                                                   )
-                                                ]
-                                              ),
-                                            ),
+                                                ]),
                                           ),
+                                        ),
                                       ), // Image.memory(bytes),
                                       onTap: () => showGeneralDialog(
                                         context: context,
@@ -422,40 +433,68 @@ class _TradeDetailState extends State<TradeDetail> {
                                                     child: Center(
                                                       child: Container(
                                                         child: PhotoView(
-                                                          imageProvider: NetworkImage(image .location), // MemoryImage(bytes),
-                                                          loadFailedChild: 
-                                                          Container(
-                                                            color: Theme.of(context).primaryColor,
+                                                          imageProvider:
+                                                              NetworkImage(image
+                                                                  .location), // MemoryImage(bytes),
+                                                          loadFailedChild:
+                                                              Container(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
                                                             child: Center(
                                                               child: Padding(
-                                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0,),
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .symmetric(
+                                                                  horizontal:
+                                                                      10,
+                                                                  vertical: 0,
+                                                                ),
                                                                 child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-                                                                    Icon(Icons.error, color: Colors.red,),
-                                                                    SizedBox(height: 10),
-                                                                    Text(
-                                                                      "Image Not Found",
-                                                                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                                                        color: Colors.red,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .error,
+                                                                        color: Colors
+                                                                            .red,
                                                                       ),
-                                                                    ),
-                                                                    SizedBox(height: 10),
-                                                                    Divider(),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.all(20.0),
-                                                                      child: Text(
-                                                                        "Click Delete to remove reference to old image and re upload",
-                                                                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                                                          color: Colors.red,
+                                                                      SizedBox(
+                                                                          height:
+                                                                              10),
+                                                                      Text(
+                                                                        "Image Not Found",
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyText2
+                                                                            .copyWith(
+                                                                              color: Colors.red,
+                                                                            ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                          height:
+                                                                              10),
+                                                                      Divider(),
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(20.0),
+                                                                        child:
+                                                                            Text(
+                                                                          "Click Delete to remove reference to old image and re upload",
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .bodyText2
+                                                                              .copyWith(
+                                                                                color: Colors.red,
+                                                                              ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  ]
-                                                                ),
+                                                                    ]),
                                                               ),
                                                             ),
-                                                          ), 
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -469,25 +508,26 @@ class _TradeDetailState extends State<TradeDetail> {
                                                           MainAxisAlignment
                                                               .spaceAround,
                                                       children: <Widget>[
-                                                        RaisedButton(
-                                                          color: Colors.red,
+                                                        ElevatedButton(
+                                                          // color: Colors.red,
                                                           child: Text(
                                                             "Delete",
                                                             style: TextStyle(
                                                               fontSize: 40,
-                                                              color:
-                                                                  Colors.white70,
+                                                              color: Colors
+                                                                  .white70,
                                                             ),
                                                           ),
                                                           onPressed: () => {
                                                             Navigator.pop(
                                                                 context),
                                                             _files.deleteFile(
-                                                                'trade', image.uid)
+                                                                'trade',
+                                                                image.uid)
                                                           },
                                                         ),
-                                                        RaisedButton(
-                                                          color: Colors.blue,
+                                                        ElevatedButton(
+                                                          // color: Colors.blue,
                                                           child: Text(
                                                             "Close",
                                                             style: TextStyle(

@@ -9,7 +9,7 @@ class FABStack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
+      // overflow: Overflow.visible,
       children: <Widget>[
         Positioned(
           bottom: 15,

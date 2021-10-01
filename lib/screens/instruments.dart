@@ -63,7 +63,8 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
         title: Text("Your Trading Istruments"),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Provider.of<Instruments>(context, listen: false).fetchInstruments(),
+        onRefresh: () =>
+            Provider.of<Instruments>(context, listen: false).fetchInstruments(),
         child: Container(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -74,13 +75,14 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                     child: Text(
                       "When you journal your trades. You will be limited to the instruments that you have set here.",
                       style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).primaryColor.withOpacity(0.8),
-                      ),
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w500,
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.8),
+                          ),
                     ),
                   ),
-                  FlatButton(
+                  TextButton(
                     onPressed: () => {
                       // New Instrument Creation
                       _buttomText = "Add",
@@ -127,13 +129,16 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                               padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                               child: Text(
                                 instrument.name(),
-                                style: Theme.of(context).textTheme.headline3.copyWith(
-                                  color: Theme.of(context).primaryColor,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline3
+                                    .copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                               ),
                             ),
                             Spacer(),
-                            FlatButton(
+                            TextButton(
                               onPressed: () => {
                                 setState(() {
                                   _buttomText = "Edit";
@@ -167,8 +172,8 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                         return false;
                       },
                       onDismissed: (direction) {
-                        Scaffold.of(context).hideCurrentSnackBar();
-                        Scaffold.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
                                 "${instrument.name()} was deleted successfully"),
@@ -192,7 +197,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
     return showDialog(
       context: context,
       barrierDismissible: true,
-      child: AlertDialog(
+      builder: (context) => AlertDialog(
         contentPadding: EdgeInsets.all(16.0),
         content: Builder(
           builder: (context) => Form(
@@ -207,8 +212,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                       decoration: InputDecoration(
                           labelText: "Instrument Name",
                           filled: true,
-                          fillColor: Colors.grey.shade100
-                      ),
+                          fillColor: Colors.grey.shade100),
                       initialValue: _instrument.name(),
                       onSaved: (String value) {
                         setState(() {
@@ -229,28 +233,26 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
           ),
         ),
         actions: <Widget>[
-          FlatButton(
-            color: Colors.orange,
-            child: Text('Cancel', 
-              style: Theme.of(context).textTheme.headline5.copyWith(
-                color: Colors.white,
-              )
-            ),
-            onPressed: () {
-              _instrument = Instrument(uid: null, title: "");
-              Navigator.pop(context);
-          }),
-          FlatButton(
-            color: Theme.of(context).primaryColor,
-            child: Text(_buttomText, 
-              style: Theme.of(context).textTheme.headline5.copyWith(
-                color: Colors.white,
-              )
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              _saveForm();
-          })
+          TextButton(
+              // color: Colors.orange,
+              child: Text('Cancel',
+                  style: Theme.of(context).textTheme.headline5.copyWith(
+                        color: Colors.white,
+                      )),
+              onPressed: () {
+                _instrument = Instrument(uid: null, title: "");
+                Navigator.pop(context);
+              }),
+          TextButton(
+              // color: Theme.of(context).primaryColor,
+              child: Text(_buttomText,
+                  style: Theme.of(context).textTheme.headline5.copyWith(
+                        color: Colors.white,
+                      )),
+              onPressed: () {
+                Navigator.pop(context);
+                _saveForm();
+              })
         ],
       ),
     );
@@ -266,7 +268,7 @@ Future<bool> _showConfirmationDialog(
       return AlertDialog(
         title: Text('Do you want to Delete ${instrument.name()} ?'),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(
               'Delete',
               style: TextStyle(
@@ -278,7 +280,7 @@ Future<bool> _showConfirmationDialog(
               Navigator.pop(context, true);
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text('Cancel'),
             onPressed: () {
               Navigator.pop(context, false); // showDialog() returns false

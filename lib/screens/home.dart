@@ -4,6 +4,8 @@ import 'package:msagetrader/auth/auth.dart';
 import 'package:msagetrader/forms/study_form.dart';
 import 'package:msagetrader/forms/task_form.dart';
 import 'package:msagetrader/providers/studies.dart';
+import 'package:msagetrader/screens/cot_biases.dart';
+import 'package:msagetrader/screens/cot_data.dart';
 import 'package:msagetrader/screens/instruments.dart';
 import 'package:msagetrader/screens/shared_strategies.dart';
 import 'package:msagetrader/screens/shared_studies.dart';
@@ -33,7 +35,6 @@ import 'package:msagetrader/providers/styles.dart';
 
 import 'package:msagetrader/forms/trading_plan_form.dart';
 
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -46,10 +47,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    _tabController = TabController(
-        vsync: this, 
-      length: menuItemTabs.length
-    );
+    _tabController = TabController(vsync: this, length: menuItemTabs.length);
     _tabController.addListener(() {
       setState(() {
         index = _tabController.index;
@@ -91,7 +89,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final _auth = Provider.of<MSPTAuth>(context, listen: true);
-    final traderName = _auth.user?.firstname == null ? "Hello Trader" : _auth.user.firstname;
+    final traderName =
+        _auth.user?.firstname == null ? "Hello Trader" : _auth.user.firstname;
 
     return Scaffold(
       drawer: Drawer(
@@ -112,19 +111,20 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     children: <Widget>[
                       Text(
                         traderName,
-                        style:  Theme.of(context).textTheme.headline1.copyWith(
-                          color: Colors.white
-                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1
+                            .copyWith(color: Colors.white),
                       ),
                       Divider(
                         color: Colors.grey,
                       ),
                       Text(
                         "Plan your trades and trade your plan",
-                        style:  Theme.of(context).textTheme.headline4.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: Colors.white,
-                        ),
+                        style: Theme.of(context).textTheme.headline4.copyWith(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.white,
+                            ),
                       ),
                     ],
                   ),
@@ -134,7 +134,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 leading: Icon(Icons.assignment),
                 title: Text(
                   "Instruments",
-                  style:  Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 onTap: () => {
                   navigateToPage(context, InstrumentsPage()),
@@ -144,9 +144,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Center(
-                  child: Text(" --- From the Community --- ",
-                   style:  Theme.of(context).textTheme.headline3,
-                   ),
+                  child: Text(
+                    " --- From the Community --- ",
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
                 ),
               ),
               Divider(color: Colors.grey),
@@ -154,7 +155,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 leading: Icon(Icons.edit_attributes),
                 title: Text(
                   "Shared Trades",
-                  style:  Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 onTap: () => {
                   navigateToPage(context, SharedTrades()),
@@ -164,7 +165,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 leading: Icon(Icons.edit_attributes),
                 title: Text(
                   "Shared Strategies",
-                  style:  Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 onTap: () => {
                   navigateToPage(context, SharedStrategies()),
@@ -174,7 +175,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 leading: Icon(Icons.edit_attributes),
                 title: Text(
                   "Shared Studies",
-                  style:  Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 onTap: () => {
                   navigateToPage(context, SharedStudies()),
@@ -184,20 +185,50 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 leading: Icon(Icons.edit_attributes),
                 title: Text(
                   "Shared Trading Plans",
-                  style:  Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 onTap: () => {
                   navigateToPage(context, SharedTradingPlans()),
                 },
               ),
               Divider(color: Colors.grey),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Center(
+                  child: Text(
+                    " --- Other --- ",
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.edit_attributes),
+                title: Text(
+                  "COT Data",
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                onTap: () => {
+                  navigateToPage(context, COTData()),
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.edit_attributes),
+                title: Text(
+                  "COT Pair Biases",
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                onTap: () => {
+                  navigateToPage(context, COTPairBias()),
+                },
+              ),
+              Divider(color: Colors.grey),
               Center(
-                child: FlatButton.icon(
-                  onPressed: () => _auth.logout(), 
-                  icon: Icon(Icons.logout), 
+                child: TextButton.icon(
+                  onPressed: () => _auth.logout(),
+                  icon: Icon(Icons.logout),
                   label: Text(
                     "Log Out",
-                    style:  Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
               )

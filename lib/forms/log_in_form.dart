@@ -40,7 +40,7 @@ class _LogInFormState extends State<LogInForm> {
     bool formIsValid = _formKey.currentState.validate();
     if (formIsValid) {
       _formKey.currentState.save();
-      await _auth.authenticate(username, password).catchError((onError){
+      await _auth.authenticate(username, password).catchError((onError) {
         setState(() {
           showError = true;
           errorMsgs = onError.toString();
@@ -50,7 +50,7 @@ class _LogInFormState extends State<LogInForm> {
       return;
     }
   }
-    
+
   InputDecoration _buildInputHintDecoration(String hintText, Icon icon) {
     return InputDecoration(
       isDense: true,
@@ -78,60 +78,61 @@ class _LogInFormState extends State<LogInForm> {
   Widget _buildEmailFormField() {
     return Container(
       child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          decoration: _buildInputHintDecoration(
+        style: TextStyle(color: Colors.white),
+        decoration: _buildInputHintDecoration(
             "Enter your Email ...",
-            Icon(Icons.email, color: Colors.white,)
-          ),
-          initialValue: username,
-          onChanged: (String value) {
-            setState(() {
-              username = value;
-            });
-          },
-          validator: (value) => _validateLength(
-            value,
-            1,
-            "Email Required",
-          ),
-          textInputAction: TextInputAction.next,
-          onFieldSubmitted: (_) {
-            FocusScope.of(context)
-                .requestFocus(_passwordFocus);
-          },
+            Icon(
+              Icons.email,
+              color: Colors.white,
+            )),
+        initialValue: username,
+        onChanged: (String value) {
+          setState(() {
+            username = value;
+          });
+        },
+        validator: (value) => _validateLength(
+          value,
+          1,
+          "Email Required",
         ),
+        textInputAction: TextInputAction.next,
+        onFieldSubmitted: (_) {
+          FocusScope.of(context).requestFocus(_passwordFocus);
+        },
+      ),
     );
   }
 
   Widget _buildPasswordFormField() {
     return Container(
-      child: ClipRect(
-        // clipper: ,
-          child: TextFormField(
-          style: TextStyle(color: Colors.white),
-          decoration: _buildInputHintDecoration(
+        child: ClipRect(
+      // clipper: ,
+      child: TextFormField(
+        style: TextStyle(color: Colors.white),
+        decoration: _buildInputHintDecoration(
             "Enter your Password ...",
-            Icon(Icons.lock, color: Colors.white,)
-          ),
-          initialValue: password,
-          obscureText: true,
-          onChanged: (String value) {
-            setState(() {
-              password = value;
-            });
-          },
-          validator: (value) => _validateLength(
-            value,
-            1,
-            "Password Required",
-          ),
-          textInputAction: TextInputAction.next,
-          focusNode: _passwordFocus,
+            Icon(
+              Icons.lock,
+              color: Colors.white,
+            )),
+        initialValue: password,
+        obscureText: true,
+        onChanged: (String value) {
+          setState(() {
+            password = value;
+          });
+        },
+        validator: (value) => _validateLength(
+          value,
+          1,
+          "Password Required",
         ),
-      )
-    );
+        textInputAction: TextInputAction.next,
+        focusNode: _passwordFocus,
+      ),
+    ));
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -151,38 +152,39 @@ class _LogInFormState extends State<LogInForm> {
               child: Text(
                 _auth.signInMessage,
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  color: Colors.red,
-                ),
+                      color: Colors.red,
+                    ),
               ),
             ),
             SizedBox(height: 15),
-            _auth.loading ? 
-            Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-              )
-            ) :
-            RaisedButton(
-              color: Colors.orange,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                Icon(Icons.login, color: Colors.white70,),
-                SizedBox(width: 20),
-                Text(
-                  "Sign In",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+            _auth.loading
+                ? Center(
+                    child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ))
+                : ElevatedButton(
+                    // color: Colors.orange,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.login,
+                          color: Colors.white70,
+                        ),
+                        SizedBox(width: 20),
+                        Text(
+                          "Sign In",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
+                    onPressed: _saveForm,
                   ),
-                )
-              ],),
-              onPressed: _saveForm,
-            ),
-            showError ? 
-            offlineMessageCard(context, errorMsgs)
-            : Text(""),
+            showError ? offlineMessageCard(context, errorMsgs) : Text(""),
             SizedBox(height: 10),
           ],
         ),

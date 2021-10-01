@@ -18,63 +18,64 @@ class TradingPlanDetail extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          plan.title,
-          style:  Theme.of(context).textTheme.headline2.copyWith(
-            color: Colors.white,
-          )
-        ),
-        actions: auth.user.uid == plan.owner.uid ? <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            color: Colors.white,
-            onPressed: () {
-              navigateToPage(
-                  context, TradingPlanForm(newPlan: false, planID: plan.uid));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_forever),
-            color: Colors.red,
-            onPressed: () => showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(
-                    "Warning",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+        title: Text(plan.title,
+            style: Theme.of(context).textTheme.headline2.copyWith(
+                  color: Colors.white,
+                )),
+        actions: auth.user.uid == plan.owner.uid
+            ? <Widget>[
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  color: Colors.white,
+                  onPressed: () {
+                    navigateToPage(context,
+                        TradingPlanForm(newPlan: false, planID: plan.uid));
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete_forever),
+                  color: Colors.red,
+                  onPressed: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          "Warning",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Text(
+                          "You are about to delete this Tradin Plan. Note that this action is irrevesibe. Are you sure about this?",
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              Navigator.popUntil(
+                                  context, (route) => route.isFirst);
+                              _plans.deleteById(plan.uid);
+                            },
+                          ),
+                          TextButton(
+                            child: Text("Cancel"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                  content: Text(
-                    "You are about to delete this Tradin Plan. Note that this action is irrevesibe. Are you sure about this?",
-                  ),
-                  actions: [
-                    FlatButton(
-                      child: Text(
-                        "Delete",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      onPressed: () {
-                        Navigator.popUntil(context, (route) => route.isFirst);
-                        _plans.deleteById(plan.uid);
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ] : [],
+                ),
+              ]
+            : [],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
@@ -84,13 +85,11 @@ class TradingPlanDetail extends StatelessWidget {
             children: <Widget>[
               Text(
                 "Plan Detail",
-                style:  Theme.of(context).textTheme.headline2,
+                style: Theme.of(context).textTheme.headline2,
               ),
               Divider(),
-              Text(
-                plan.description,
-                style:  Theme.of(context).textTheme.bodyText1
-              )
+              Text(plan.description,
+                  style: Theme.of(context).textTheme.bodyText1)
             ],
           ),
         ),

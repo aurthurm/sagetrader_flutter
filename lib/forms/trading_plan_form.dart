@@ -61,7 +61,6 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
     }
   }
 
-
   InputDecoration _buildInputDecoration(String hintText) {
     return InputDecoration(
       isDense: true,
@@ -84,7 +83,6 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +111,8 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
                       TextFormField(
                         decoration: _buildInputDecoration("Trading Plan Name"),
                         style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          color: Theme.of(context).primaryColor,
-                        ),
+                              color: Theme.of(context).primaryColor,
+                            ),
                         initialValue: _plan.title,
                         onChanged: (String value) {
                           setState(() {
@@ -134,10 +132,11 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
                       ),
                       SizedBox(height: 10),
                       TextFormField(
-                        decoration: _buildInputDecoration("Trading Plan Description"),
+                        decoration:
+                            _buildInputDecoration("Trading Plan Description"),
                         style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          color: Theme.of(context).primaryColor,
-                        ),
+                              color: Theme.of(context).primaryColor,
+                            ),
                         minLines: 5,
                         maxLines: 20,
                         initialValue: _plan.description,
@@ -155,13 +154,14 @@ class _TradingPlanFormState extends State<TradingPlanForm> {
                         focusNode: _descriptionFocus,
                       ),
                       SizedBox(height: 10),
-                      RaisedButton(
-                        color: Theme.of(context).primaryColor,
+                      ElevatedButton(
+                        // color: Theme.of(context).primaryColor,
                         child: Text(
                           saveButtonTitle.toUpperCase(),
-                          style: Theme.of(context).textTheme.headline4.copyWith(
-                            color: Colors.white
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              .copyWith(color: Colors.white),
                         ),
                         onPressed: _saveForm,
                       ),
