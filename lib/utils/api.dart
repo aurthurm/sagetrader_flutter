@@ -7,7 +7,7 @@ class APIManager {
   Duration timeLimit = Duration(seconds: 10);
 
   // POST REQUEST
-  Future<dynamic> post(String url, Map params) async {
+  Future<dynamic> post(Uri url, Map params) async {
     var responseJson;
     try {
       final response = await http.post(url, body: params).timeout(timeLimit);
@@ -20,7 +20,7 @@ class APIManager {
   }
 
   // GET REQUEST
-  Future<dynamic> get(String url, Map params) async {
+  Future<dynamic> get(Uri url, Map params) async {
     var responseJson;
     try {
       final response = await http.get(url).timeout(timeLimit);

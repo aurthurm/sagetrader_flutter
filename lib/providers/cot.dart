@@ -28,12 +28,13 @@ class CFTC with ChangeNotifier {
   Map get biases => _biases;
   bool get loading => _loading;
 
-  void toggleLoading(bool val) => {_loading = val, notifyListeners()};
+  void toggleLoading(bool val) => {_loading = val};  // , notifyListeners()
 
   Future<void> fetchContracts() async {
+    toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      cotURI + "/fetch-cot-contracts",
+      Uri.parse(cotURI + "/fetch-cot-contracts"),
       headers: bearerAuthHeader(token),
     );
 
@@ -47,6 +48,7 @@ class CFTC with ChangeNotifier {
           _contracts.add(inComing);
         }
       });
+      toggleLoading(false);
       notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
@@ -62,7 +64,7 @@ class CFTC with ChangeNotifier {
     toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      cotURI + "/fetch-cot-reports/" + contract,
+      Uri.parse(cotURI + "/fetch-cot-reports/" + contract),
       headers: bearerAuthHeader(token),
     );
 
@@ -77,6 +79,7 @@ class CFTC with ChangeNotifier {
         }
       });
       toggleLoading(false);
+      notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
       throw Exception("(${response.statusCode}): $message");
@@ -91,7 +94,7 @@ class CFTC with ChangeNotifier {
     toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      cotURI + "/fetch-cot-pair-biases",
+      Uri.parse(cotURI + "/fetch-cot-pair-biases"),
       headers: bearerAuthHeader(token),
     );
 
@@ -99,6 +102,7 @@ class CFTC with ChangeNotifier {
       Map<String, dynamic> responseData = json.decode(response.body);
       _biases = responseData;
       toggleLoading(false);
+      notifyListeners();
     } else if (response.statusCode == 401) {
       final String message = json.decode(response.body)['detail'];
       throw Exception("(${response.statusCode}): $message");

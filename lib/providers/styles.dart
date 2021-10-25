@@ -25,7 +25,7 @@ class Styles with ChangeNotifier {
   Future<void> fetchStyles() async {
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      stylesURI,
+      Uri.parse(stylesURI),
       headers: bearerAuthHeader(token),
     );
 

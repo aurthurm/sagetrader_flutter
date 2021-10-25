@@ -32,7 +32,7 @@ class __PageCOTDataState extends State<_PageCOTData> {
   bool _isInit = true;
   ScrollController scrollController = ScrollController();
   final _formKey = GlobalKey<FormState>();
-  String _cot_group;
+  String _cot_group = "Non Commercials";
   String _cot_contract;
 
   @override

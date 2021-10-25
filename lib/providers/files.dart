@@ -53,7 +53,7 @@ class Files extends BaseFiles  {
     loading = true;
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
-      deleteFileURI + "/$parent-$fileId",
+      Uri.parse(deleteFileURI + "/$parent-$fileId"),
       headers: bearerAuthHeader(token),
     );
 
@@ -75,7 +75,7 @@ class Files extends BaseFiles  {
     clearFiles();
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      filesFetchURI + "/$parent-$parentId",
+      Uri.parse(filesFetchURI + "/$parent-$parentId"),
       headers: bearerAuthHeader(token),
     );
 

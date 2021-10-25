@@ -41,7 +41,7 @@ class Instruments with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.delete(
-      instrumentsURI + "/$id",
+      Uri.parse(instrumentsURI + "/$id"),
       headers: bearerAuthHeader(token),
     );
 
@@ -60,7 +60,7 @@ class Instruments with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.post(
-      instrumentsURI,
+      Uri.parse(instrumentsURI),
       body: json.encode(
         {
           "name": instrument.name(),
@@ -92,7 +92,7 @@ class Instruments with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.put(
-      instrumentsURI + "/${editedInstrument.uid}",
+      Uri.parse(instrumentsURI + "/${editedInstrument.uid}"),
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
@@ -112,7 +112,7 @@ class Instruments with ChangeNotifier {
   Future<void> fetchInstruments() async {
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      instrumentsURI,
+      Uri.parse(instrumentsURI),
       headers: bearerAuthHeader(token),
     );
 

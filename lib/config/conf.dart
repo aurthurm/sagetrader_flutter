@@ -1,6 +1,6 @@
 // MSPT BACKEND - FastAPI
 final String baseURI =
-    "http://192.168.0.195:8000/"; // "http://10.42.0.1:8000/"; // dev1
+    "http://10.42.0.1:8000/"; // "/"; // dev1
 // final String baseURI =  "http://192.168.43.237:8000/"; // dev2
 // final String baseURI =  "https://sagetrader.herokuapp.com/"; // live
 final String serverURI = "${baseURI}api/v1/";

@@ -63,7 +63,7 @@ class TradingPlans with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
-      tradingPlansURI + "/$id",
+      Uri.parse(tradingPlansURI + "/$id"),
       headers: bearerAuthHeader(token),
     );
 
@@ -87,7 +87,7 @@ class TradingPlans with ChangeNotifier {
         toggleLoading(true);
     }
     
-    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
+    final response = await http.get(Uri.parse(fetchURL), headers: bearerAuthHeader(token));
     
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = json.decode(response.body);
@@ -116,7 +116,7 @@ class TradingPlans with ChangeNotifier {
   Future<void> addPlan(TradingPlan plan) async {
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.post(
-      tradingPlansURI,
+      Uri.parse(tradingPlansURI),
       body: json.encode(
         {
           "name": plan.title,
@@ -146,7 +146,7 @@ class TradingPlans with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      tradingPlansURI + "/${editedPlan.uid}",
+      Uri.parse(tradingPlansURI + "/${editedPlan.uid}"),
       headers: bearerAuthHeader(token),
       body: json.encode(
         {

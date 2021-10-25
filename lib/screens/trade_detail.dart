@@ -433,68 +433,66 @@ class _TradeDetailState extends State<TradeDetail> {
                                                     child: Center(
                                                       child: Container(
                                                         child: PhotoView(
-                                                          imageProvider:
-                                                              NetworkImage(image
-                                                                  .location), // MemoryImage(bytes),
-                                                          loadFailedChild:
-                                                              Container(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor,
-                                                            child: Center(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .symmetric(
-                                                                  horizontal:
-                                                                      10,
-                                                                  vertical: 0,
-                                                                ),
-                                                                child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Icon(
-                                                                        Icons
-                                                                            .error,
-                                                                        color: Colors
-                                                                            .red,
-                                                                      ),
-                                                                      SizedBox(
-                                                                          height:
-                                                                              10),
-                                                                      Text(
-                                                                        "Image Not Found",
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .bodyText2
-                                                                            .copyWith(
-                                                                              color: Colors.red,
-                                                                            ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                          height:
-                                                                              10),
-                                                                      Divider(),
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(20.0),
-                                                                        child:
-                                                                            Text(
-                                                                          "Click Delete to remove reference to old image and re upload",
-                                                                          style: Theme.of(context)
-                                                                              .textTheme
-                                                                              .bodyText2
-                                                                              .copyWith(
-                                                                                color: Colors.red,
-                                                                              ),
-                                                                        ),
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ),
-                                                          ),
+                                                          imageProvider: NetworkImage(image.location), // MemoryImage(bytes),
+                                                          // loadFailedChild:
+                                                          //     Container(
+                                                          //   color: Theme.of(
+                                                          //           context)
+                                                          //       .primaryColor,
+                                                          //   child: Center(
+                                                          //     child: Padding(
+                                                          //       padding:
+                                                          //           const EdgeInsets
+                                                          //               .symmetric(
+                                                          //         horizontal:
+                                                          //             10,
+                                                          //         vertical: 0,
+                                                          //       ),
+                                                          //       child: Column(
+                                                          //           mainAxisAlignment:
+                                                          //               MainAxisAlignment
+                                                          //                   .center,
+                                                          //           children: [
+                                                          //             Icon(
+                                                          //               Icons
+                                                          //                   .error,
+                                                          //               color: Colors
+                                                          //                   .red,
+                                                          //             ),
+                                                          //             SizedBox(
+                                                          //                 height:
+                                                          //                     10),
+                                                          //             Text(
+                                                          //               "Image Not Found",
+                                                          //               style: Theme.of(context)
+                                                          //                   .textTheme
+                                                          //                   .bodyText2
+                                                          //                   .copyWith(
+                                                          //                     color: Colors.red,
+                                                          //                   ),
+                                                          //             ),
+                                                          //             SizedBox(
+                                                          //                 height:
+                                                          //                     10),
+                                                          //             Divider(),
+                                                          //             Padding(
+                                                          //               padding:
+                                                          //                   const EdgeInsets.all(20.0),
+                                                          //               child:
+                                                          //                   Text(
+                                                          //                 "Click Delete to remove reference to old image and re upload",
+                                                          //                 style: Theme.of(context)
+                                                          //                     .textTheme
+                                                          //                     .bodyText2
+                                                          //                     .copyWith(
+                                                          //                       color: Colors.red,
+                                                          //                     ),
+                                                          //               ),
+                                                          //             ),
+                                                          //           ]),
+                                                          //     ),
+                                                          //   ),
+                                                          // ),
                                                         ),
                                                       ),
                                                     ),

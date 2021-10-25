@@ -143,6 +143,9 @@ class _AtrributesPageState extends State<AtrributesPage> {
                             case DismissDirection.vertical:
                             case DismissDirection.up:
                             case DismissDirection.down:
+                            case DismissDirection.none:
+                              // TODO: Handle this case.
+                              break;
                           }
                           return false;
                         },

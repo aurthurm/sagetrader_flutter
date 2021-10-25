@@ -100,7 +100,7 @@ class StudyItems with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.delete(
-      studyItemsURI + "/$id",
+      Uri.parse(studyItemsURI + "/$id"),
       headers: bearerAuthHeader(token),
     );
 
@@ -130,7 +130,7 @@ class StudyItems with ChangeNotifier {
     );
     
     final response = await http.post(
-      studyItemsURI,
+      Uri.parse(studyItemsURI),
       body: data,
       headers: bearerAuthHeader(token),
     );
@@ -179,7 +179,7 @@ class StudyItems with ChangeNotifier {
     );
     
     final response = await http.put(
-      studyItemsURI + "/${editedStudyItem.uid}",
+      Uri.parse(studyItemsURI + "/${editedStudyItem.uid}"),
       headers: bearerAuthHeader(token),
       body: data,
     );
@@ -195,7 +195,7 @@ class StudyItems with ChangeNotifier {
     toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      studyItemsURI + "/$sid",
+      Uri.parse(studyItemsURI + "/$sid"),
       headers: bearerAuthHeader(token),
     );
 

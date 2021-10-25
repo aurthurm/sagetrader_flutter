@@ -70,7 +70,7 @@ class Studies with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.delete(
-      studiesURI + "/$id",
+      Uri.parse(studiesURI + "/$id"),
       headers: bearerAuthHeader(token),
     );
 
@@ -85,7 +85,7 @@ class Studies with ChangeNotifier {
   Future<void> addStudy(Study study) async {
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.post(
-      studiesURI,
+      Uri.parse(studiesURI),
       body: json.encode(
         {
           "name": study.name,
@@ -116,7 +116,7 @@ class Studies with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      studiesURI + "/${editedStudy.uid}",
+      Uri.parse(studiesURI + "/${editedStudy.uid}"),
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
@@ -145,7 +145,7 @@ class Studies with ChangeNotifier {
         toggleLoading(true);
     }
     
-    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
+    final response = await http.get(Uri.parse(fetchURL), headers: bearerAuthHeader(token));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = json.decode(response.body);

@@ -49,7 +49,7 @@ class Tasks with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
-      tasksURI + "/$id",
+      Uri.parse(tasksURI + "/$id"),
       headers: bearerAuthHeader(token),
     );
 
@@ -73,7 +73,7 @@ class Tasks with ChangeNotifier {
     toggleLoading(true);
     }
   
-    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
+    final response = await http.get(Uri.parse(fetchURL), headers: bearerAuthHeader(token));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = json.decode(response.body);
@@ -102,7 +102,7 @@ class Tasks with ChangeNotifier {
   Future<void> addTask(Task task) async {
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.post(
-      tasksURI,
+      Uri.parse(tasksURI),
       body: json.encode(
         {
           "name": task.title,
@@ -133,7 +133,7 @@ class Tasks with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      tasksURI + "/${editedTask.uid}",
+      Uri.parse(tasksURI + "/${editedTask.uid}"),
       headers: bearerAuthHeader(token),
       body: json.encode(
         {

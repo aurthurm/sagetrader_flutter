@@ -67,7 +67,7 @@ class Trades with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.delete(
-      tradesURI + "/$id",
+      Uri.parse(tradesURI + "/$id"),
       headers: bearerAuthHeader(token),
     );
 
@@ -83,7 +83,7 @@ class Trades with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
     final data = json.encode(trade.toJson());
     final response = await http.post(
-      tradesURI,
+      Uri.parse(tradesURI),
       body: data,
       headers: bearerAuthHeader(token),
     );
@@ -110,7 +110,7 @@ class Trades with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      tradesURI + "/${editedTrade.uid}",
+      Uri.parse(tradesURI + "/${editedTrade.uid}"),
       headers: bearerAuthHeader(token),
       body: data,
     );
@@ -134,7 +134,7 @@ class Trades with ChangeNotifier {
         toggleLoading(true);
     }
     
-    final response = await http.get(fetchURL, headers: bearerAuthHeader(token));
+    final response = await http.get(Uri.parse(fetchURL), headers: bearerAuthHeader(token));
 
     // await Future.delayed(Duration(seconds: 10));
 

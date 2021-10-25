@@ -66,7 +66,7 @@ class Attributes with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
 
     final response = await http.delete(
-      attributesURI + "/$id",
+      Uri.parse(attributesURI + "/$id"),
       headers: bearerAuthHeader(token),
     );
 
@@ -82,7 +82,7 @@ class Attributes with ChangeNotifier {
     await MSPTAuth().getToken().then((String value) => token = value);
     final data = json.encode(attribute.toJson());
     final response = await http.post(
-      attributesURI,
+      Uri.parse(attributesURI),
       body: data,
       headers: bearerAuthHeader(token),
     );
@@ -108,7 +108,7 @@ class Attributes with ChangeNotifier {
 
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.put(
-      attributesURI + "/${editedAttribute.uid}",
+      Uri.parse(attributesURI + "/${editedAttribute.uid}"),
       headers: bearerAuthHeader(token),
       body: json.encode(
         {
@@ -131,7 +131,7 @@ class Attributes with ChangeNotifier {
     toggleLoading(true);
     await MSPTAuth().getToken().then((String value) => token = value);
     final response = await http.get(
-      attributesURI + "/$studyId",
+      Uri.parse(attributesURI + "/$studyId"),
       headers: bearerAuthHeader(token),
     );
 

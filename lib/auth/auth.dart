@@ -8,8 +8,8 @@ import 'package:msagetrader/utils/api.dart';
 import 'package:msagetrader/utils/connectivity.dart';
 import 'package:msagetrader/utils/exceptions.dart';
 
-final String loginURI = serverURI + "login/access-token";
-final String usersURI = serverURI + "users/";
+final Uri loginURI = Uri.parse(serverURI + "login/access-token");
+final Uri usersURI = Uri.parse(serverURI + "users/");
 
 // Create storage
 final storage = FlutterSecureStorage();

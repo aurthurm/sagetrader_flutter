@@ -168,6 +168,9 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
                           case DismissDirection.vertical:
                           case DismissDirection.up:
                           case DismissDirection.down:
+                          case DismissDirection.none:
+                            // TODO: Handle this case.
+                            break;
                         }
                         return false;
                       },
@@ -237,7 +240,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
               // color: Colors.orange,
               child: Text('Cancel',
                   style: Theme.of(context).textTheme.headline5.copyWith(
-                        color: Colors.white,
+                        color: Colors.red,
                       )),
               onPressed: () {
                 _instrument = Instrument(uid: null, title: "");
@@ -247,7 +250,7 @@ class _InstrumentsPageState extends State<InstrumentsPage> {
               // color: Theme.of(context).primaryColor,
               child: Text(_buttomText,
                   style: Theme.of(context).textTheme.headline5.copyWith(
-                        color: Colors.white,
+                        color: Colors.blue,
                       )),
               onPressed: () {
                 Navigator.pop(context);
